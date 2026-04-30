@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ὁ Σοφός — Il Cammino di Socrate</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --gold-dim: #7a5f2a;
+    --marble: #1a1614;
+    --marble2: #231f1b;
+    --marble3: #2e2820;
+    --marble4: #3a3028;
+    --text: #f0e8d8;
+    --text-dim: #a09070;
+    --red: #c04040;
+    --red-dark: #801c1c;
+    --blue: #4080b0;
+    --blue-light: #60aadd;
+    --green: #5a9a5a;
+    --purple: #8060b0;
+    --purple-light: #a080d0;
+    --border: rgba(201,168,76,0.25);
+    --border-strong: rgba(201,168,76,0.5);
+  }
+
+  body {
+    background: var(--marble);
+    color: var(--text);
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 16px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(96,130,180,0.04) 0%, transparent 50%),
+      repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(201,168,76,0.015) 60px, rgba(201,168,76,0.015) 61px),
+      repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(201,168,76,0.015) 60px, rgba(201,168,76,0.015) 61px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #app {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 16px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 16px;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    border: 1px solid var(--border-strong);
+    background: linear-gradient(135deg, var(--marble2), var(--marble3));
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::after {
+    content: 'Ω Φ Σ Λ Π';
+    position: absolute;
+    right: 200px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    color: rgba(201,168,76,0.08);
+    letter-spacing: 16px;
+    pointer-events: none;
+  }
+  .game-title {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 3px;
+    text-shadow: 0 0 30px rgba(201,168,76,0.3);
+  }
+  .game-subtitle {
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .header-stats {
+    display: flex;
+    gap: 24px;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+  }
+  .hstat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .hstat-val {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gold-light);
+  }
+  .hstat-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 280px;
+    gap: 16px;
+    align-items: start;
+  }
+
+  /* ── PANELS ── */
+  .panel {
+    background: linear-gradient(160deg, var(--marble2), var(--marble3));
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    position: relative;
+  }
+  .panel-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── ARENA ── */
+  .arena {
+    grid-column: 1 / 3;
+  }
+  .arena-floor {
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .arena-floor span {
+    color: var(--gold-light);
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  /* combatants */
+  .combatants {
+    display: grid;
+    grid-template-columns: 1fr 80px 1fr;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .combatant {
+    padding: 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+    position: relative;
+    transition: border-color 0.3s;
+  }
+  .combatant.active-turn {
+    border-color: var(--gold-light);
+    box-shadow: inset 0 0 20px rgba(201,168,76,0.05);
+  }
+  .combatant.player-side { border-left: 3px solid var(--blue); }
+  .combatant.enemy-side { border-left: 3px solid var(--red); }
+
+  .combatant-name {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .combatant-title {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+
+  .hp-bar-wrap { margin-bottom: 6px; }
+  .hp-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 3px;
+  }
+  .bar-track {
+    height: 8px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+  .hp-fill { background: linear-gradient(90deg, #5a9a5a, #80cc80); }
+  .mp-fill { background: linear-gradient(90deg, #4060a0, #6090d0); }
+  .hp-fill.low { background: linear-gradient(90deg, var(--red-dark), var(--red)); }
+  .hp-fill.critical { background: linear-gradient(90deg, #8b0000, #cc2020);
+    animation: pulse-red 0.6s infinite alternate; }
+  @keyframes pulse-red { to { opacity: 0.7; } }
+
+  .enemy-hp-fill { background: linear-gradient(90deg, #8b2020, #cc4040); }
+
+  .combatant-status {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .status-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
+  }
+  .status-buff { background: rgba(90,154,90,0.3); color: #a0e0a0; border: 1px solid rgba(90,154,90,0.4); }
+  .status-debuff { background: rgba(180,60,60,0.3); color: #e0a0a0; border: 1px solid rgba(180,60,60,0.4); }
+  .status-stun { background: rgba(180,160,40,0.3); color: #e0d080; border: 1px solid rgba(180,160,40,0.4); }
+
+  .vs-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .vs-text {
+    font-family: 'Cinzel', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--border-strong);
+    text-shadow: 0 0 20px rgba(201,168,76,0.2);
+  }
+
+  /* damage pop */
+  .dmg-pop {
+    position: absolute;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 22px;
+    pointer-events: none;
+    animation: dmg-rise 1.2s ease-out forwards;
+    z-index: 100;
+  }
+  @keyframes dmg-rise {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    60% { opacity: 1; transform: translateY(-40px) scale(1.2); }
+    100% { opacity: 0; transform: translateY(-70px) scale(0.8); }
+  }
+
+  /* ── SKILLS ── */
+  .skills-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .skill-btn {
+    background: linear-gradient(160deg, var(--marble3), var(--marble4));
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-btn:hover:not(:disabled) {
+    border-color: var(--gold);
+    background: linear-gradient(160deg, var(--marble4), rgba(201,168,76,0.08));
+    transform: translateY(-1px);
+  }
+  .skill-btn:active:not(:disabled) { transform: translateY(0); }
+  .skill-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .skill-btn.on-cooldown { border-color: rgba(100,80,40,0.4); }
+  .skill-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+  .skill-name {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    display: block;
+  }
+  .skill-desc { font-size: 10px; color: var(--text-dim); display: block; margin-top: 2px; }
+  .skill-cd {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold-light);
+    border-radius: 6px;
+  }
+  .skill-cost { font-size: 9px; color: var(--blue-light); display: block; margin-top: 2px; }
+
+  /* combat controls */
+  .combat-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 8px 20px;
+    border: 1px solid var(--border-strong);
+    background: linear-gradient(160deg, var(--marble3), var(--marble4));
+    color: var(--gold-light);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+  .btn:hover { background: linear-gradient(160deg, var(--marble4), rgba(201,168,76,0.12)); border-color: var(--gold); }
+  .btn:active { transform: scale(0.97); }
+  .btn.primary {
+    background: linear-gradient(160deg, rgba(201,168,76,0.2), rgba(201,168,76,0.1));
+    border-color: var(--gold);
+  }
+  .btn.auto-on {
+    background: linear-gradient(160deg, rgba(90,154,90,0.25), rgba(90,154,90,0.1));
+    border-color: var(--green);
+    color: #a0e0a0;
+  }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── COMBAT LOG ── */
+  .log-panel {
+    border: 1px solid var(--border);
+    background: rgba(0,0,0,0.25);
+    border-radius: 6px;
+    padding: 10px 12px;
+    height: 140px;
+    overflow-y: auto;
+    margin-top: 12px;
+    scroll-behavior: smooth;
+  }
+  .log-panel::-webkit-scrollbar { width: 4px; }
+  .log-panel::-webkit-scrollbar-track { background: transparent; }
+  .log-panel::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+  .log-entry {
+    font-size: 13px;
+    padding: 2px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    line-height: 1.4;
+  }
+  .log-entry:last-child { border: none; }
+  .log-player { color: var(--blue-light); }
+  .log-enemy { color: #e08080; }
+  .log-system { color: var(--gold); font-style: italic; }
+  .log-reward { color: #a0d080; }
+  .log-crit { color: var(--gold-light); font-weight: 600; }
+
+  /* ── UPGRADES ── */
+  .upgrades-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .wisdom-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 6px;
+    margin-bottom: 6px;
+  }
+  .wisdom-icon { font-size: 18px; }
+  .wisdom-amount {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold-light);
+  }
+  .wisdom-label { font-size: 11px; color: var(--text-dim); letter-spacing: 1px; }
+
+  .upgrade-item {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    background: linear-gradient(160deg, var(--marble2), var(--marble3));
+    transition: all 0.15s;
+  }
+  .upgrade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+  }
+  .upgrade-name {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    color: var(--gold-light);
+    font-weight: 600;
+  }
+  .upgrade-level {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'Cinzel', serif;
+  }
+  .upgrade-desc { font-size: 12px; color: var(--text-dim); margin-bottom: 6px; font-style: italic; }
+  .upgrade-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .upgrade-cost {
+    font-size: 11px;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .upgrade-btn {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--gold);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+  .upgrade-btn:hover { background: rgba(201,168,76,0.15); border-color: var(--gold-light); }
+  .upgrade-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .upgrade-effect { font-size: 11px; color: #80b080; }
+
+  /* prestige */
+  .prestige-panel {
+    padding: 12px;
+    background: linear-gradient(135deg, rgba(128,96,176,0.1), rgba(96,80,160,0.05));
+    border: 1px solid rgba(160,128,208,0.3);
+    border-radius: 6px;
+    margin-top: 4px;
+    text-align: center;
+  }
+  .prestige-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--purple-light);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+  .prestige-desc { font-size: 12px; color: var(--text-dim); font-style: italic; margin-bottom: 8px; }
+  .btn-prestige {
+    background: linear-gradient(135deg, rgba(128,96,176,0.3), rgba(96,80,160,0.15));
+    border-color: var(--purple-light);
+    color: var(--purple-light);
+  }
+  .btn-prestige:hover { background: linear-gradient(135deg, rgba(128,96,176,0.5), rgba(96,80,160,0.3)); }
+
+  /* ── BOTTOM ── */
+  .bottom-bar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg, var(--marble2), var(--marble3));
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .stat-chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: rgba(0,0,0,0.2);
+  }
+  .stat-chip-icon { font-size: 12px; }
+  .stat-chip-val {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold-light);
+  }
+  .stat-chip-label { font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+
+  /* ── OVERLAY ── */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,8,6,0.85);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .overlay.show { display: flex; }
+  .overlay-box {
+    background: linear-gradient(160deg, var(--marble2), var(--marble3));
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    padding: 32px 40px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 0 60px rgba(0,0,0,0.8);
+    animation: pop-in 0.3s ease-out;
+  }
+  @keyframes pop-in {
+    from { transform: scale(0.85) translateY(20px); opacity: 0; }
+    to   { transform: scale(1) translateY(0); opacity: 1; }
+  }
+  .overlay-icon { font-size: 48px; margin-bottom: 12px; }
+  .overlay-title {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .overlay-body { font-size: 14px; color: var(--text-dim); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+  .overlay-rewards { margin-bottom: 20px; }
+  .reward-line {
+    font-family: 'Cinzel', serif;
+    font-size: 15px;
+    color: var(--gold-light);
+    padding: 4px 0;
+  }
+
+  /* SCROLLBAR global */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  @media (max-width: 768px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .arena { grid-column: 1; }
+    .skills-row { grid-template-columns: repeat(2, 1fr); }
+    .combatants { grid-template-columns: 1fr 40px 1fr; }
+    header { flex-direction: column; gap: 12px; }
+    .header-stats { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <header>
+    <div>
+      <div class="game-title">ΟΔΟ ΣΟΚΡΑΤΗΣ</div>
+      <div class="game-subtitle">Il Cammino della Sapienza</div>
+    </div>
+    <div class="header-stats">
+      <div class="hstat">
+        <div class="hstat-val" id="h-floor">1</div>
+        <div class="hstat-label">Livello</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-val" id="h-prestige">0</div>
+        <div class="hstat-label">Reincarnazioni</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-val" id="h-kills">0</div>
+        <div class="hstat-label">Sofisti Sconfitti</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <div class="main-grid">
+
+    <!-- ARENA -->
+    <div class="panel arena">
+      <div class="arena-floor">Stoa · <span id="floor-num">1</span> · <span id="enemy-type-label">Sofista</span></div>
+
+      <div class="combatants">
+        <!-- PLAYER -->
+        <div class="combatant player-side" id="player-card">
+          <div class="combatant-name">Socrate</div>
+          <div class="combatant-title" id="player-title">Il Filosofo</div>
+          <div class="hp-bar-wrap">
+            <div class="hp-label"><span>HP</span><span id="p-hp-txt">100 / 100</span></div>
+            <div class="bar-track"><div class="bar-fill hp-fill" id="p-hp-bar" style="width:100%"></div></div>
+          </div>
+          <div class="hp-bar-wrap">
+            <div class="hp-label"><span>Logos</span><span id="p-mp-txt">60 / 60</span></div>
+            <div class="bar-track"><div class="bar-fill mp-fill" id="p-mp-bar" style="width:100%"></div></div>
+          </div>
+          <div class="combatant-status" id="player-statuses"></div>
+        </div>
+
+        <!-- VS -->
+        <div class="vs-center">
+          <div class="vs-text">VS</div>
+        </div>
+
+        <!-- ENEMY -->
+        <div class="combatant enemy-side" id="enemy-card">
+          <div class="combatant-name" id="enemy-name">Gorgia</div>
+          <div class="combatant-title" id="enemy-title">Sofista dell'Inganno</div>
+          <div class="hp-bar-wrap">
+            <div class="hp-label"><span>HP</span><span id="e-hp-txt">80 / 80</span></div>
+            <div class="bar-track"><div class="bar-fill enemy-hp-fill" id="e-hp-bar" style="width:100%"></div></div>
+          </div>
+          <div class="combatant-status" id="enemy-statuses"></div>
+        </div>
+      </div>
+
+      <!-- SKILLS -->
+      <div class="skills-row" id="skills-row">
+        <button class="skill-btn" id="skill-0" onclick="useSkill(0)">
+          <span class="skill-icon">🔍</span>
+          <span class="skill-name">ELENCHOS</span>
+          <span class="skill-desc">Attacco base dialettico</span>
+          <span class="skill-cost">0 Logos</span>
+        </button>
+        <button class="skill-btn" id="skill-1" onclick="useSkill(1)">
+          <span class="skill-icon">🫧</span>
+          <span class="skill-name">MAIEUTICA</span>
+          <span class="skill-desc">Cura + danno futuro</span>
+          <span class="skill-cost">20 Logos</span>
+        </button>
+        <button class="skill-btn" id="skill-2" onclick="useSkill(2)">
+          <span class="skill-icon">😏</span>
+          <span class="skill-name">EIRONEIA</span>
+          <span class="skill-desc">Indebolisce il nemico</span>
+          <span class="skill-cost">25 Logos</span>
+        </button>
+        <button class="skill-btn" id="skill-3" onclick="useSkill(3)">
+          <span class="skill-icon">⚡</span>
+          <span class="skill-name">APORIA</span>
+          <span class="skill-desc">Danno devastante</span>
+          <span class="skill-cost">40 Logos</span>
+        </button>
+      </div>
+
+      <div class="combat-controls">
+        <button class="btn primary" id="btn-attack" onclick="attack()">⚔ Attacca</button>
+        <button class="btn" id="btn-auto" onclick="toggleAuto()">◎ Auto OFF</button>
+        <button class="btn" id="btn-next" onclick="nextBattle()" style="display:none">→ Prossimo</button>
+      </div>
+
+      <div class="log-panel" id="combat-log">
+        <div class="log-entry log-system">✦ Il giorno nasce sull'Agorà di Atene…</div>
+        <div class="log-entry log-system">Socrate è pronto a interrogare l'ignoranza.</div>
+      </div>
+    </div>
+
+    <!-- UPGRADES -->
+    <div class="panel upgrades-panel">
+      <div class="panel-title">Σοφία · Potenziamenti</div>
+
+      <div class="wisdom-display">
+        <span class="wisdom-icon">🏛</span>
+        <div>
+          <div class="wisdom-amount" id="wisdom-count">0</div>
+          <div class="wisdom-label">SAGGEZZA</div>
+        </div>
+      </div>
+
+      <div id="upgrades-list"></div>
+
+      <div class="prestige-panel" id="prestige-panel" style="display:none">
+        <div class="prestige-title">⚗ Reincarnazione</div>
+        <div class="prestige-desc" id="prestige-desc">Reincarnati come anima più saggia. Perdi tutto ma ottieni un bonus permanente.</div>
+        <button class="btn btn-prestige" onclick="prestige()">Ψυχή · Reincarnarsi</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM -->
+  <div class="bottom-bar">
+    <div class="stat-chip">
+      <span class="stat-chip-icon">⚔</span>
+      <span class="stat-chip-val" id="stat-atk">10</span>
+      <span class="stat-chip-label">DANNO</span>
+    </div>
+    <div class="stat-chip">
+      <span class="stat-chip-icon">🛡</span>
+      <span class="stat-chip-val" id="stat-def">0</span>
+      <span class="stat-chip-label">DIFESA</span>
+    </div>
+    <div class="stat-chip">
+      <span class="stat-chip-icon">❤</span>
+      <span class="stat-chip-val" id="stat-maxhp">100</span>
+      <span class="stat-chip-label">HP MAX</span>
+    </div>
+    <div class="stat-chip">
+      <span class="stat-chip-icon">🔮</span>
+      <span class="stat-chip-val" id="stat-crit">5</span>
+      <span class="stat-chip-label">CRITICO%</span>
+    </div>
+    <div class="stat-chip">
+      <span class="stat-chip-icon">⚡</span>
+      <span class="stat-chip-val" id="stat-logos">60</span>
+      <span class="stat-chip-label">LOGOS MAX</span>
+    </div>
+    <div style="margin-left:auto; font-style:italic; font-size:13px; color: var(--text-dim);" id="quote-bar">
+      "So di non sapere nulla." — Socrate
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="overlay-box" id="overlay-box">
+    <div class="overlay-icon" id="ov-icon">⚔</div>
+    <div class="overlay-title" id="ov-title">Vittoria!</div>
+    <div class="overlay-body" id="ov-body"></div>
+    <div class="overlay-rewards" id="ov-rewards"></div>
+    <button class="btn primary" onclick="closeOverlay()">Continua</button>
+  </div>
+</div>
+
+<script>
+const QUOTES = [
+  '"So di non sapere nulla." — Socrate',
+  '"La vita non esaminata non vale la pena di essere vissuta." — Socrate',
+  '"Conosci te stesso." — Iscrizione di Delfi',
+  '"La virtù è sapere." — Socrate',
+  '"Un uomo ricco di virtù non è mai povero." — Socrate',
+  '"Bisogna fare ciò che è giusto, non ciò che è facile." — Socrate',
+  '"Il corpo è la prigione dell\'anima." — Platone',
+  '"La filosofia è preparazione alla morte." — Socrate',
+];
+
+const ENEMIES = [
+  { name: "Malloc", title: "The big M", icon: "🎭" },
+  { name: "Francesco Bego", title: "Larper", icon: "🌀" },
+  { name: "Lo Scheletro", title: "Portatore di invezioni", icon: "💀" },
+  { name: "Barchi gay", title: "Apostolo delle j", icon: "👑" },
+  { name: "Daniel", title: "Italian Master", icon: "⚖" },
+  { name: "Zanotti", title: "Aura Farmer", icon: "🗡" },
+  { name: "Redi", title: "Negative aura holder", icon: "🦁" },
+  { name: "Il Trapezzoide", title: "I love trapezzoidi", icon: "🌑" },
+  { name: "Basquiat", title: "IShowSpeed dei poveri", icon: "⛓" },
+  { name: "Giatti", title: "Re dell'aura", icon: "🕳" },
+  { name: "Denis Penis", title: "Fortnite Player", icon: "👁" },
+  { name: "Il Bocchins", title: "Fa i bocchins", icon: "🔱" },
+];
+
+const UPGRADES_DEF = [
+  {
+    id: 'dialectics',
+    name: 'Dialettica',
+    desc: 'Potenzia l\'argomentazione di Socrate. +3 danno per livello.',
+    baseCost: 15,
+    effect: g => { g.player.atk += 3; },
+    getEffect: lv => `+${lv*3} Danno`,
+    costScale: 1.5,
+  },
+  {
+    id: 'virtue',
+    name: 'Virtù',
+    desc: 'L\'anima virtuosa regge più colpi. +20 HP per livello.',
+    baseCost: 20,
+    effect: g => { g.player.maxHp += 20; g.player.hp = Math.min(g.player.hp + 20, g.player.maxHp); },
+    getEffect: lv => `+${lv*20} HP Max`,
+    costScale: 1.6,
+  },
+  {
+    id: 'temperance',
+    name: 'Temperanza',
+    desc: 'La moderazione riduce i danni subiti. +2 difesa per livello.',
+    baseCost: 25,
+    effect: g => { g.player.def += 2; },
+    getEffect: lv => `+${lv*2} Difesa`,
+    costScale: 1.55,
+  },
+  {
+    id: 'logos',
+    name: 'Logos',
+    desc: 'Espande la mente. +10 Logos max e regen per livello.',
+    baseCost: 18,
+    effect: g => { g.player.maxMp += 10; g.player.mpRegen += 1; },
+    getEffect: lv => `+${lv*10} Logos, +${lv} Regen`,
+    costScale: 1.45,
+  },
+  {
+    id: 'insight',
+    name: 'Intuizione',
+    desc: 'La perspicacia aumenta i colpi critici. +3% critico per livello.',
+    baseCost: 30,
+    effect: g => { g.player.critChance += 3; },
+    getEffect: lv => `+${lv*3}% Critico`,
+    costScale: 1.6,
+  },
+  {
+    id: 'wisdom_gain',
+    name: 'Accumulare Saggezza',
+    desc: 'Guadagni più Saggezza dalle battaglie. +20% per livello.',
+    baseCost: 40,
+    effect: g => { g.wisdomMult += 0.2; },
+    getEffect: lv => `+${Math.round(lv*20)}% Saggezza`,
+    costScale: 1.8,
+  },
+];
+
+// ── GAME STATE ──
+let G = {
+  floor: 1,
+  wisdom: 0,
+  totalKills: 0,
+  prestige: 0,
+  prestigeBonus: 1,
+  autoMode: false,
+  autoTimer: null,
+  inBattle: true,
+  battleOver: false,
+  playerTurn: true,
+  wisdomMult: 1,
+  upgradeLevels: { dialectics:0, virtue:0, temperance:0, logos:0, insight:0, wisdom_gain:0 },
+  player: {
+    hp: 100, maxHp: 100,
+    mp: 60, maxMp: 60, mpRegen: 3,
+    atk: 10, def: 0, critChance: 5,
+  },
+  enemy: { hp: 80, maxHp: 80, atk: 8, def: 0 },
+  cooldowns: [0, 0, 0, 0],
+  playerStatuses: [],
+  enemyStatuses: [],
+  enemyDef: 0,
+};
+
+const SKILLS = [
+  {
+    name: 'Elenchos', cost: 0,
+    use(g) {
+      let base = g.player.atk * (1 + (g.floor * 0.05));
+      let crit = Math.random() * 100 < g.player.critChance;
+      if (crit) base *= 2.2;
+      let dmg = Math.max(1, Math.round(base - g.enemy.def));
+      dealDamageToEnemy(dmg, crit);
+      if (crit) addLog(`Socrate usa <b>Elenchos</b>! CRITICO! ${dmg} danni!`, 'crit');
+      else addLog(`Socrate usa <b>Elenchos</b>. ${dmg} danni all'avversario.`, 'player');
+      return true;
+    }, cd: 0
+  },
+  {
+    name: 'Maieutica', cost: 20,
+    use(g) {
+      let heal = Math.round(g.player.maxHp * 0.18 + g.player.atk);
+      g.player.hp = Math.min(g.player.hp + heal, g.player.maxHp);
+      g.playerStatuses.push({ type:'buff', name:'Saggezza+', turns: 3, atkBonus: Math.round(g.player.atk * 0.3) });
+      addLog(`Socrate usa <b>Maieutica</b>. Recupera ${heal} HP e ottiene Saggezza+.`, 'player');
+      return true;
+    }, cd: 3
+  },
+  {
+    name: 'Eironeia', cost: 25,
+    use(g) {
+      g.enemyStatuses.push({ type:'debuff', name:'Confuso', turns: 3, atkMult: 0.5 });
+      let dmg = Math.round(g.player.atk * 0.8);
+      dealDamageToEnemy(dmg, false);
+      addLog(`Socrate usa <b>Eironeia</b>! Il sofista è Confuso. ${dmg} danni.`, 'player');
+      return true;
+    }, cd: 4
+  },
+  {
+    name: 'Aporia', cost: 40,
+    use(g) {
+      let hits = 3;
+      let totalDmg = 0;
+      for (let i = 0; i < hits; i++) {
+        let dmg = Math.max(1, Math.round(g.player.atk * 1.4 - g.enemy.def));
+        totalDmg += dmg;
+        dealDamageToEnemy(dmg, false);
+      }
+      addLog(`Socrate usa <b>Aporia</b>! Triplo attacco — ${totalDmg} danni totali!`, 'crit');
+      return true;
+    }, cd: 5
+  },
+];
+
+function dealDamageToEnemy(dmg, crit) {
+  G.enemy.hp = Math.max(0, G.enemy.hp - dmg);
+  showDmgPop('enemy-card', dmg, crit ? '#ffd700' : '#e08080');
+}
+
+function dealDamageToPlayer(dmg) {
+  let reduced = Math.max(1, dmg - G.player.def);
+  G.player.hp = Math.max(0, G.player.hp - reduced);
+  showDmgPop('player-card', reduced, '#ff8080');
+  return reduced;
+}
+
+function showDmgPop(cardId, dmg, color) {
+  const card = document.getElementById(cardId);
+  const pop = document.createElement('div');
+  pop.className = 'dmg-pop';
+  pop.style.color = color;
+  pop.style.left = (20 + Math.random() * 60) + '%';
+  pop.style.top = '20%';
+  pop.textContent = '-' + dmg;
+  card.appendChild(pop);
+  setTimeout(() => pop.remove(), 1200);
+}
+
+function addLog(msg, type='system') {
+  const log = document.getElementById('combat-log');
+  const entry = document.createElement('div');
+  entry.className = `log-entry log-${type}`;
+  entry.innerHTML = msg;
+  log.appendChild(entry);
+  if (log.children.length > 60) log.children[0].remove();
+  log.scrollTop = log.scrollHeight;
+}
+
+// ── ENEMY TURN ──
+function enemyTurn() {
+  if (G.battleOver) return;
+
+  let debuff = G.enemyStatuses.find(s => s.type === 'debuff');
+  if (debuff) {
+    addLog(`${G.enemy.name} è Confuso! Attacco ridotto.`, 'enemy');
+  }
+
+  let baseAtk = Math.round(G.enemy.atk * (debuff ? debuff.atkMult : 1));
+
+  // Enemy special ability at high floors
+  if (G.floor >= 10 && Math.random() < 0.3) {
+    let dmg = dealDamageToPlayer(Math.round(baseAtk * 1.8));
+    addLog(`${G.enemy.name} usa un attacco speciale! ${dmg} danni!`, 'enemy');
+  } else {
+    let dmg = dealDamageToPlayer(baseAtk);
+    addLog(`${G.enemy.name} attacca per ${dmg} danni.`, 'enemy');
+  }
+
+  // Tick player statuses
+  G.playerStatuses = G.playerStatuses.filter(s => {
+    s.turns--;
+    return s.turns > 0;
+  });
+  G.enemyStatuses = G.enemyStatuses.filter(s => {
+    s.turns--;
+    return s.turns > 0;
+  });
+
+  // Logos regen
+  G.player.mp = Math.min(G.player.mp + G.player.mpRegen, G.player.maxMp);
+
+  // Cooldowns
+  G.cooldowns = G.cooldowns.map(cd => Math.max(0, cd - 1));
+
+  G.playerTurn = true;
+  updateUI();
+  checkBattleEnd();
+}
+
+// ── ATTACK ──
+function attack() {
+  if (!G.playerTurn || G.battleOver) return;
+  useSkill(0);
+}
+
+function useSkill(idx) {
+  if (!G.playerTurn || G.battleOver) return;
+  const skill = SKILLS[idx];
+  if (G.cooldowns[idx] > 0) { addLog(`${skill.name} in ricarica: ${G.cooldowns[idx]} turni.`, 'system'); return; }
+  if (G.player.mp < skill.cost) { addLog(`Logos insufficiente per ${skill.name}.`, 'system'); return; }
+
+  G.player.mp -= skill.cost;
+  if (skill.cd > 0) G.cooldowns[idx] = skill.cd;
+
+  const ok = skill.use(G);
+  if (!ok) return;
+
+  G.playerTurn = false;
+  updateUI();
+
+  if (checkBattleEnd()) return;
+
+  setTimeout(() => {
+    enemyTurn();
+  }, 600);
+}
+
+function checkBattleEnd() {
+  if (G.enemy.hp <= 0) {
+    G.battleOver = true;
+    G.totalKills++;
+    let baseWisdom = Math.floor(10 * Math.pow(1.15, G.floor) * G.wisdomMult);
+    let wisdomGain = Math.floor(baseWisdom * G.prestigeBonus);
+    G.wisdom += wisdomGain;
+    G.floor++;
+    updateUI();
+    showVictoryOverlay(wisdomGain);
+    return true;
+  }
+  if (G.player.hp <= 0) {
+    G.battleOver = true;
+    stopAuto();
+    addLog('Socrate è caduto! Ma la filosofia sopravvive…', 'system');
+    showDefeatOverlay();
+    return true;
+  }
+  return false;
+}
+
+function nextBattle() {
+  spawnEnemy();
+  G.battleOver = false;
+  G.playerTurn = true;
+  G.playerStatuses = [];
+  G.enemyStatuses = [];
+  G.cooldowns = [0, 0, 0, 0];
+  G.player.mp = Math.min(G.player.mp + Math.round(G.player.maxMp * 0.3), G.player.maxMp);
+  document.getElementById('btn-next').style.display = 'none';
+  document.getElementById('btn-attack').disabled = false;
+  updateUI();
+  addLog(`— Nuovo sfidante: ${G.enemy.name} —`, 'system');
+  if (G.autoMode) scheduleAuto();
+}
+
+// ── ENEMY SPAWN ──
+function spawnEnemy() {
+  const floor = G.floor;
+  const scale = Math.pow(1.18, floor);
+  const ei = Math.floor(Math.random() * ENEMIES.length);
+  const base = ENEMIES[ei];
+  G.enemy = {
+    name: base.name,
+    title: base.title,
+    hp: Math.floor(60 * scale),
+    maxHp: Math.floor(60 * scale),
+    atk: Math.floor(6 * Math.pow(1.12, floor)),
+    def: Math.floor(floor * 0.4),
+  };
+  document.getElementById('enemy-name').textContent = base.icon + ' ' + base.name;
+  document.getElementById('enemy-title').textContent = base.title;
+  document.getElementById('enemy-type-label').textContent = 'Piano ' + floor;
+}
+
+// ── UPGRADES ──
+function renderUpgrades() {
+  const list = document.getElementById('upgrades-list');
+  list.innerHTML = '';
+  UPGRADES_DEF.forEach(def => {
+    const lv = G.upgradeLevels[def.id];
+    const cost = Math.floor(def.baseCost * Math.pow(def.costScale, lv));
+    const canAfford = G.wisdom >= cost;
+
+    const div = document.createElement('div');
+    div.className = 'upgrade-item';
+    div.innerHTML = `
+      <div class="upgrade-header">
+        <div class="upgrade-name">${def.name}</div>
+        <div class="upgrade-level">Lv. ${lv}</div>
+      </div>
+      <div class="upgrade-desc">${def.desc}</div>
+      <div class="upgrade-footer">
+        <div class="upgrade-cost">🏛 ${cost}</div>
+        <div class="upgrade-effect">${lv > 0 ? def.getEffect(lv) : ''}</div>
+        <button class="upgrade-btn" onclick="buyUpgrade('${def.id}')" ${canAfford ? '' : 'disabled'}>
+          Acquista
+        </button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+
+  // Prestige (show after floor 20)
+  const prestigePanel = document.getElementById('prestige-panel');
+  if (G.floor >= 20) {
+    prestigePanel.style.display = 'block';
+    document.getElementById('prestige-desc').textContent =
+      `Reincarnarti ora ti darà +${Math.round((G.prestige+1)*30)}% Saggezza permanente, ma perderai tutti i potenziamenti. Corrente piano: ${G.floor}.`;
+  }
+}
+
+function buyUpgrade(id) {
+  const def = UPGRADES_DEF.find(d => d.id === id);
+  const lv = G.upgradeLevels[id];
+  const cost = Math.floor(def.baseCost * Math.pow(def.costScale, lv));
+  if (G.wisdom < cost) return;
+  G.wisdom -= cost;
+  G.upgradeLevels[id]++;
+  def.effect(G);
+  addLog(`Potenziamento: <b>${def.name}</b> ora è Lv. ${G.upgradeLevels[id]}.`, 'reward');
+  updateUI();
+  renderUpgrades();
+}
+
+// ── AUTO ──
+function toggleAuto() {
+  G.autoMode = !G.autoMode;
+  const btn = document.getElementById('btn-auto');
+  if (G.autoMode) {
+    btn.textContent = '◉ Auto ON';
+    btn.classList.add('auto-on');
+    scheduleAuto();
+  } else {
+    btn.textContent = '◎ Auto OFF';
+    btn.classList.remove('auto-on');
+    stopAuto();
+  }
+}
+
+function stopAuto() {
+  G.autoMode = false;
+  clearTimeout(G.autoTimer);
+  const btn = document.getElementById('btn-auto');
+  btn.textContent = '◎ Auto OFF';
+  btn.classList.remove('auto-on');
+}
+
+function scheduleAuto() {
+  if (!G.autoMode) return;
+  G.autoTimer = setTimeout(() => {
+    if (G.battleOver) {
+      if (!G.player.hp) return; // dead
+      nextBattle();
+    } else if (G.playerTurn) {
+      // Smart auto: use skill if enough logos
+      if (G.player.mp >= 40 && G.cooldowns[3] === 0) useSkill(3);
+      else if (G.player.hp < G.player.maxHp * 0.4 && G.player.mp >= 20 && G.cooldowns[1] === 0) useSkill(1);
+      else if (G.player.mp >= 25 && G.cooldowns[2] === 0) useSkill(2);
+      else attack();
+    }
+    if (G.autoMode) scheduleAuto();
+  }, 900);
+}
+
+// ── PRESTIGE ──
+function prestige() {
+  if (G.floor < 20) return;
+  G.prestige++;
+  G.prestigeBonus = 1 + G.prestige * 0.3;
+  G.floor = 1;
+  G.wisdom = 0;
+  G.wisdomMult = 1;
+  G.upgradeLevels = { dialectics:0, virtue:0, temperance:0, logos:0, insight:0, wisdom_gain:0 };
+  G.player = { hp:100, maxHp:100, mp:60, maxMp:60, mpRegen:3, atk:10 + G.prestige*5, def:0, critChance:5 + G.prestige*2 };
+  G.battleOver = false;
+  G.playerStatuses = [];
+  G.enemyStatuses = [];
+  G.cooldowns = [0,0,0,0];
+  stopAuto();
+  spawnEnemy();
+  addLog(`✦ Reincarnazione ${G.prestige}! Socrate rinasce con l'anima più saggia. +${Math.round(G.prestige*30)}% Saggezza.`, 'system');
+  document.getElementById('prestige-panel').style.display = 'none';
+  renderUpgrades();
+  updateUI();
+  rotateQuote();
+}
+
+// ── OVERLAYS ──
+function showVictoryOverlay(wisdomGain) {
+  document.getElementById('ov-icon').textContent = '🏛';
+  document.getElementById('ov-title').textContent = 'Vittoria!';
+  document.getElementById('ov-body').textContent = `"${G.enemy.name}" è stato sconfitto con la Dialettica. La saggezza trionfa sull'ignoranza.`;
+  document.getElementById('ov-rewards').innerHTML = `<div class="reward-line">+${wisdomGain} Saggezza</div><div class="reward-line">Piano ${G.floor} sbloccato</div>`;
+  document.getElementById('overlay').classList.add('show');
+}
+
+function showDefeatOverlay() {
+  document.getElementById('ov-icon').textContent = '💀';
+  document.getElementById('ov-title').textContent = 'Sconfitto…';
+  document.getElementById('ov-body').textContent = '"Solo chi conosce i propri limiti può superarli." Socrate si rialza, più saggio.';
+  document.getElementById('ov-rewards').innerHTML = '<div class="reward-line" style="color:#e08080">HP ripristinati</div>';
+  document.getElementById('overlay').classList.add('show');
+}
+
+function closeOverlay() {
+  document.getElementById('overlay').classList.remove('show');
+  if (G.player.hp <= 0) {
+    // Respawn
+    G.player.hp = Math.round(G.player.maxHp * 0.5);
+    G.floor = Math.max(1, G.floor - 2);
+    G.battleOver = false;
+    G.playerTurn = true;
+    G.playerStatuses = [];
+    G.enemyStatuses = [];
+    G.cooldowns = [0,0,0,0];
+    spawnEnemy();
+    document.getElementById('btn-attack').disabled = false;
+    updateUI();
+  } else {
+    // show next button or auto
+    document.getElementById('btn-next').style.display = 'inline-block';
+    document.getElementById('btn-attack').disabled = true;
+    renderUpgrades();
+    if (G.autoMode) {
+      setTimeout(nextBattle, 400);
+    }
+  }
+}
+
+// ── UI UPDATE ──
+function updateUI() {
+  const p = G.player, e = G.enemy;
+
+  // HP bars
+  let hpPct = p.hp / p.maxHp * 100;
+  let hpFill = document.getElementById('p-hp-bar');
+  hpFill.style.width = hpPct + '%';
+  hpFill.className = 'bar-fill hp-fill' + (hpPct < 25 ? ' critical' : hpPct < 50 ? ' low' : '');
+  document.getElementById('p-hp-txt').textContent = p.hp + ' / ' + p.maxHp;
+
+  let mpPct = p.mp / p.maxMp * 100;
+  document.getElementById('p-mp-bar').style.width = mpPct + '%';
+  document.getElementById('p-mp-txt').textContent = p.mp + ' / ' + p.maxMp;
+
+  let ePct = e.hp / e.maxHp * 100;
+  document.getElementById('e-hp-bar').style.width = ePct + '%';
+  document.getElementById('e-hp-txt').textContent = e.hp + ' / ' + e.maxHp;
+
+  // Header
+  document.getElementById('h-floor').textContent = G.floor;
+  document.getElementById('floor-num').textContent = G.floor;
+  document.getElementById('h-prestige').textContent = G.prestige;
+  document.getElementById('h-kills').textContent = G.totalKills;
+
+  // Wisdom
+  document.getElementById('wisdom-count').textContent = G.wisdom;
+
+  // Bottom stats
+  document.getElementById('stat-atk').textContent = G.player.atk;
+  document.getElementById('stat-def').textContent = G.player.def;
+  document.getElementById('stat-maxhp').textContent = G.player.maxHp;
+  document.getElementById('stat-crit').textContent = G.player.critChance;
+  document.getElementById('stat-logos').textContent = G.player.maxMp;
+
+  // Skill buttons
+  SKILLS.forEach((sk, i) => {
+    const btn = document.getElementById('skill-' + i);
+    const cd = G.cooldowns[i];
+    btn.disabled = !G.playerTurn || G.battleOver;
+
+    // remove old cd overlay
+    const oldCd = btn.querySelector('.skill-cd');
+    if (oldCd) oldCd.remove();
+
+    if (cd > 0) {
+      btn.classList.add('on-cooldown');
+      const cdDiv = document.createElement('div');
+      cdDiv.className = 'skill-cd';
+      cdDiv.textContent = cd;
+      btn.appendChild(cdDiv);
+    } else {
+      btn.classList.remove('on-cooldown');
+    }
+  });
+
+  // Turn highlight
+  document.getElementById('player-card').classList.toggle('active-turn', G.playerTurn && !G.battleOver);
+  document.getElementById('enemy-card').classList.toggle('active-turn', !G.playerTurn && !G.battleOver);
+
+  // Statuses
+  renderStatuses('player-statuses', G.playerStatuses);
+  renderStatuses('enemy-statuses', G.enemyStatuses);
+
+  // Player title based on kills
+  let title = 'Il Filosofo';
+  if (G.totalKills >= 50) title = 'Il Saggio';
+  if (G.totalKills >= 100) title = 'Il Maestro';
+  if (G.prestige >= 1) title = 'L\'Immortale';
+  if (G.prestige >= 3) title = 'L\'Eterno Socrate';
+  document.getElementById('player-title').textContent = title;
+}
+
+function renderStatuses(elId, statuses) {
+  const el = document.getElementById(elId);
+  el.innerHTML = '';
+  statuses.forEach(s => {
+    const badge = document.createElement('span');
+    badge.className = `status-badge status-${s.type}`;
+    badge.textContent = s.name + ' ' + s.turns;
+    el.appendChild(badge);
+  });
+}
+
+function rotateQuote() {
+  const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+  document.getElementById('quote-bar').textContent = q;
+}
+
+// ── INIT ──
+function init() {
+  spawnEnemy();
+  updateUI();
+  renderUpgrades();
+  rotateQuote();
+  setInterval(rotateQuote, 30000);
+  addLog('Socrate si avvicina al sofista…', 'system');
+}
+
+init();
+</script>
+</body>
+</html>
