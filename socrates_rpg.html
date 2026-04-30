@@ -6,251 +6,269 @@
 <title>ΟΔΟ ΣΟΚΡΑΤΗΣ — Il Cammino della Sapienza</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --gold: #c9a84c; --gold-light: #e8c96a; --gold-dim: #7a5f2a;
-  --marble: #1a1614; --marble2: #231f1b; --marble3: #2e2820; --marble4: #3a3028;
-  --text: #f0e8d8; --text-dim: #a09070;
-  --red: #c04040; --red-dark: #801c1c;
-  --blue: #4080b0; --blue-light: #60aadd;
-  --green: #5a9a5a; --green-light: #80cc80;
-  --purple: #8060b0; --purple-light: #a080d0;
-  --border: rgba(201,168,76,0.22); --border-strong: rgba(201,168,76,0.5);
-  /* rarity colors */
-  --common: #a09070; --uncommon: #5aaa5a; --rare: #5090d0; --legendary: #e8a030;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#c9a84c;--gold-light:#e8c96a;--gold-dim:#7a5f2a;
+  --marble:#1a1614;--marble2:#231f1b;--marble3:#2e2820;--marble4:#3a3028;
+  --text:#f0e8d8;--text-dim:#a09070;
+  --red:#c04040;--red-dark:#801c1c;
+  --blue:#4080b0;--blue-light:#60aadd;
+  --green:#5a9a5a;--green-light:#80cc80;
+  --purple:#8060b0;--purple-light:#a080d0;
+  --border:rgba(201,168,76,.22);--border-strong:rgba(201,168,76,.5);
+  --common:#a09070;--uncommon:#5aaa5a;--rare:#5090d0;--legendary:#e8a030;
+  /* stage colors */
+  --s1:#c9a84c;--s2:#5090d0;--s3:#5aaa5a;--s4:#a080d0;
 }
-body { background: var(--marble); color: var(--text); font-family: 'Crimson Text', Georgia, serif; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
-body::before {
-  content: ''; position: fixed; inset: 0;
-  background:
-    radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.04) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(96,130,180,0.04) 0%, transparent 50%),
-    repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(201,168,76,0.012) 60px, rgba(201,168,76,0.012) 61px),
-    repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(201,168,76,0.012) 60px, rgba(201,168,76,0.012) 61px);
-  pointer-events: none; z-index: 0;
-}
-#app { position: relative; z-index: 1; max-width: 1160px; margin: 0 auto; padding: 16px; display: grid; grid-template-rows: auto 1fr auto; gap: 14px; min-height: 100vh; }
+body{background:var(--marble);color:var(--text);font-family:'Crimson Text',Georgia,serif;font-size:16px;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(201,168,76,.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(96,130,180,.04) 0%,transparent 50%),repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(201,168,76,.012) 60px,rgba(201,168,76,.012) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(201,168,76,.012) 60px,rgba(201,168,76,.012) 61px);pointer-events:none;z-index:0}
+#app{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:14px;display:grid;grid-template-rows:auto 1fr auto;gap:12px;min-height:100vh}
 
 /* HEADER */
-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 20px; border: 1px solid var(--border-strong);
-  background: linear-gradient(135deg, var(--marble2), var(--marble3));
-  border-radius: 8px; position: relative; overflow: hidden;
-}
-header::after {
-  content: 'Ω Φ Σ Λ Π'; position: absolute; right: 200px; top: 50%; transform: translateY(-50%);
-  font-family: 'Cinzel', serif; font-size: 26px; color: rgba(201,168,76,0.07); letter-spacing: 14px; pointer-events: none;
-}
-.game-title { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: var(--gold-light); letter-spacing: 3px; text-shadow: 0 0 30px rgba(201,168,76,0.3); }
-.game-subtitle { font-size: 11px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
-.header-stats { display: flex; gap: 20px; font-family: 'Cinzel', serif; }
-.hstat { display: flex; flex-direction: column; align-items: center; gap: 1px; }
-.hstat-val { font-size: 17px; font-weight: 600; color: var(--gold-light); }
-.hstat-label { font-size: 9px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border:1px solid var(--border-strong);background:linear-gradient(135deg,var(--marble2),var(--marble3));border-radius:8px;position:relative;overflow:hidden}
+header::after{content:'Ω Φ Σ Λ Π';position:absolute;right:220px;top:50%;transform:translateY(-50%);font-family:'Cinzel',serif;font-size:24px;color:rgba(201,168,76,.06);letter-spacing:14px;pointer-events:none}
+.game-title{font-family:'Cinzel',serif;font-size:20px;font-weight:700;color:var(--gold-light);letter-spacing:3px;text-shadow:0 0 30px rgba(201,168,76,.3)}
+.game-subtitle{font-size:11px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+.header-stats{display:flex;gap:18px;font-family:'Cinzel',serif}
+.hstat{display:flex;flex-direction:column;align-items:center;gap:1px}
+.hstat-val{font-size:16px;font-weight:600;color:var(--gold-light)}
+.hstat-label{font-size:9px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase}
 
-/* MAIN GRID */
-.main-grid { display: grid; grid-template-columns: 1fr 1fr 300px; gap: 14px; align-items: start; }
-
-/* PANEL */
-.panel { background: linear-gradient(160deg, var(--marble2), var(--marble3)); border: 1px solid var(--border); border-radius: 8px; padding: 14px; position: relative; }
-.panel-title { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 12px; padding-bottom: 7px; border-bottom: 1px solid var(--border); }
+/* MAIN */
+.main-grid{display:grid;grid-template-columns:1fr 1fr 310px;gap:12px;align-items:start}
+.panel{background:linear-gradient(160deg,var(--marble2),var(--marble3));border:1px solid var(--border);border-radius:8px;padding:13px;position:relative}
+.panel-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:11px;padding-bottom:7px;border-bottom:1px solid var(--border)}
 
 /* ARENA */
-.arena { grid-column: 1 / 3; }
-.arena-floor { text-align: center; font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 3px; color: var(--text-dim); margin-bottom: 12px; text-transform: uppercase; }
-.arena-floor span { color: var(--gold-light); font-size: 15px; font-weight: 600; }
-.combatants { display: grid; grid-template-columns: 1fr 70px 1fr; gap: 8px; align-items: center; margin-bottom: 14px; }
-.combatant { padding: 12px; border-radius: 6px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); position: relative; transition: border-color 0.3s; }
-.combatant.active-turn { border-color: var(--gold-light); box-shadow: inset 0 0 20px rgba(201,168,76,0.05); }
-.combatant.player-side { border-left: 3px solid var(--blue); }
-.combatant.enemy-side { border-left: 3px solid var(--red); }
-.combatant-name-row { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
-.combatant-name { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600; }
-.name-edit-btn { background: none; border: none; cursor: pointer; color: var(--text-dim); font-size: 11px; padding: 1px 3px; border-radius: 3px; transition: color 0.15s; line-height: 1; }
-.name-edit-btn:hover { color: var(--gold); }
-.name-input { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600; background: rgba(201,168,76,0.1); border: 1px solid var(--gold); color: var(--gold-light); border-radius: 4px; padding: 1px 6px; width: 140px; outline: none; }
-.combatant-title { font-size: 11px; color: var(--text-dim); font-style: italic; margin-bottom: 8px; }
-.hp-bar-wrap { margin-bottom: 5px; }
-.hp-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim); margin-bottom: 2px; }
-.bar-track { height: 7px; background: rgba(0,0,0,0.4); border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04); }
-.bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
-.hp-fill { background: linear-gradient(90deg, #5a9a5a, #80cc80); }
-.mp-fill { background: linear-gradient(90deg, #4060a0, #6090d0); }
-.hp-fill.low { background: linear-gradient(90deg, var(--red-dark), var(--red)); }
-.hp-fill.critical { background: linear-gradient(90deg, #8b0000, #cc2020); animation: pulse-red 0.6s infinite alternate; }
-@keyframes pulse-red { to { opacity: 0.7; } }
-.enemy-hp-fill { background: linear-gradient(90deg, #8b2020, #cc4040); }
-.combatant-status { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
-.status-badge { font-size: 9px; padding: 1px 5px; border-radius: 3px; font-family: 'Cinzel', serif; letter-spacing: 0.5px; }
-.status-buff { background: rgba(90,154,90,0.3); color: #a0e0a0; border: 1px solid rgba(90,154,90,0.4); }
-.status-debuff { background: rgba(180,60,60,0.3); color: #e0a0a0; border: 1px solid rgba(180,60,60,0.4); }
-.vs-center { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.vs-text { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 700; color: var(--border-strong); }
+.arena{grid-column:1/3}
+.arena-floor{text-align:center;font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:var(--text-dim);margin-bottom:11px;text-transform:uppercase}
+.arena-floor span{color:var(--gold-light);font-size:14px;font-weight:600}
+.stage-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;font-family:'Cinzel',serif;letter-spacing:1px;margin-left:8px;vertical-align:middle}
+
+.combatants{display:grid;grid-template-columns:1fr 68px 1fr;gap:8px;align-items:center;margin-bottom:12px}
+.combatant{padding:11px;border-radius:6px;border:1px solid var(--border);background:rgba(0,0,0,.2);position:relative;transition:border-color .3s}
+.combatant.active-turn{border-color:var(--gold-light);box-shadow:inset 0 0 20px rgba(201,168,76,.05)}
+.combatant.player-side{border-left:3px solid var(--blue)}
+.combatant.enemy-side{border-left:3px solid var(--red)}
+.combatant-name-row{display:flex;align-items:center;gap:5px;margin-bottom:2px}
+.combatant-name{font-family:'Cinzel',serif;font-size:13px;font-weight:600}
+.name-edit-btn{background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:11px;padding:1px 3px;border-radius:3px;transition:color .15s;line-height:1}
+.name-edit-btn:hover{color:var(--gold)}
+.name-input{font-family:'Cinzel',serif;font-size:13px;font-weight:600;background:rgba(201,168,76,.1);border:1px solid var(--gold);color:var(--gold-light);border-radius:4px;padding:1px 6px;width:130px;outline:none}
+.combatant-title{font-size:11px;color:var(--text-dim);font-style:italic;margin-bottom:7px}
+.hp-bar-wrap{margin-bottom:4px}
+.hp-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text-dim);margin-bottom:2px}
+.bar-track{height:7px;background:rgba(0,0,0,.4);border-radius:4px;overflow:hidden;border:1px solid rgba(255,255,255,.04)}
+.bar-fill{height:100%;border-radius:4px;transition:width .4s ease}
+.hp-fill{background:linear-gradient(90deg,#5a9a5a,#80cc80)}
+.mp-fill{background:linear-gradient(90deg,#4060a0,#6090d0)}
+.hp-fill.low{background:linear-gradient(90deg,var(--red-dark),var(--red))}
+.hp-fill.critical{background:linear-gradient(90deg,#8b0000,#cc2020);animation:pulse-red .6s infinite alternate}
+@keyframes pulse-red{to{opacity:.7}}
+.enemy-hp-fill{background:linear-gradient(90deg,#8b2020,#cc4040)}
+.combatant-status{display:flex;gap:3px;margin-top:5px;flex-wrap:wrap}
+.status-badge{font-size:9px;padding:1px 5px;border-radius:3px;font-family:'Cinzel',serif;letter-spacing:.5px}
+.status-buff{background:rgba(90,154,90,.3);color:#a0e0a0;border:1px solid rgba(90,154,90,.4)}
+.status-debuff{background:rgba(180,60,60,.3);color:#e0a0a0;border:1px solid rgba(180,60,60,.4)}
+.vs-center{display:flex;flex-direction:column;align-items:center;gap:5px}
+.vs-text{font-family:'Cinzel',serif;font-size:20px;font-weight:700;color:var(--border-strong)}
 
 /* damage pop */
-.dmg-pop { position: absolute; font-family: 'Cinzel', serif; font-weight: 700; font-size: 20px; pointer-events: none; animation: dmg-rise 1.2s ease-out forwards; z-index: 100; }
-@keyframes dmg-rise { 0%{opacity:1;transform:translateY(0) scale(1)} 60%{opacity:1;transform:translateY(-36px) scale(1.2)} 100%{opacity:0;transform:translateY(-65px) scale(0.8)} }
-.heal-pop { color: #80ee80 !important; }
+.dmg-pop{position:absolute;font-family:'Cinzel',serif;font-weight:700;font-size:19px;pointer-events:none;animation:dmg-rise 1.2s ease-out forwards;z-index:100}
+@keyframes dmg-rise{0%{opacity:1;transform:translateY(0) scale(1)}60%{opacity:1;transform:translateY(-34px) scale(1.2)}100%{opacity:0;transform:translateY(-62px) scale(.8)}}
+.heal-pop{color:#80ee80!important}
 
 /* SKILLS */
-.skills-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
-.skill-btn { background: linear-gradient(160deg, var(--marble3), var(--marble4)); border: 1px solid var(--border); border-radius: 6px; padding: 8px 4px; cursor: pointer; transition: all 0.15s; text-align: center; position: relative; overflow: hidden; }
-.skill-btn:hover:not(:disabled) { border-color: var(--gold); background: linear-gradient(160deg, var(--marble4), rgba(201,168,76,0.08)); transform: translateY(-1px); }
-.skill-btn:active:not(:disabled) { transform: translateY(0); }
-.skill-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.skill-btn.on-cooldown { border-color: rgba(100,80,40,0.4); }
-.skill-icon { font-size: 18px; display: block; margin-bottom: 3px; }
-.skill-name { font-family: 'Cinzel', serif; font-size: 9px; color: var(--gold); letter-spacing: 1px; display: block; }
-.skill-desc { font-size: 9px; color: var(--text-dim); display: block; margin-top: 1px; }
-.skill-cd { position: absolute; inset: 0; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: var(--gold-light); border-radius: 6px; }
-.skill-cost { font-size: 8px; color: var(--blue-light); display: block; margin-top: 1px; }
+.skills-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:9px}
+.skill-btn{background:linear-gradient(160deg,var(--marble3),var(--marble4));border:1px solid var(--border);border-radius:6px;padding:7px 4px;cursor:pointer;transition:all .15s;text-align:center;position:relative;overflow:hidden}
+.skill-btn:hover:not(:disabled){border-color:var(--gold);background:linear-gradient(160deg,var(--marble4),rgba(201,168,76,.08));transform:translateY(-1px)}
+.skill-btn:active:not(:disabled){transform:translateY(0)}
+.skill-btn:disabled{opacity:.4;cursor:not-allowed}
+.skill-btn.on-cooldown{border-color:rgba(100,80,40,.4)}
+.skill-btn.boosted{border-color:var(--legendary);box-shadow:0 0 8px rgba(232,160,48,.3)}
+.skill-icon{font-size:17px;display:block;margin-bottom:2px}
+.skill-name{font-family:'Cinzel',serif;font-size:9px;color:var(--gold);letter-spacing:1px;display:block}
+.skill-desc{font-size:9px;color:var(--text-dim);display:block;margin-top:1px}
+.skill-cd{position:absolute;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:17px;font-weight:700;color:var(--gold-light);border-radius:6px}
+.skill-cost{font-size:8px;color:var(--blue-light);display:block;margin-top:1px}
 
-/* COMBAT CONTROLS */
-.combat-controls { display: flex; gap: 6px; align-items: center; justify-content: center; }
-.btn { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1.5px; padding: 7px 16px; border: 1px solid var(--border-strong); background: linear-gradient(160deg, var(--marble3), var(--marble4)); color: var(--gold-light); border-radius: 5px; cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
-.btn:hover { background: linear-gradient(160deg, var(--marble4), rgba(201,168,76,0.12)); border-color: var(--gold); }
-.btn:active { transform: scale(0.97); }
-.btn.primary { background: linear-gradient(160deg, rgba(201,168,76,0.2), rgba(201,168,76,0.1)); border-color: var(--gold); }
-.btn.auto-on { background: linear-gradient(160deg, rgba(90,154,90,0.25), rgba(90,154,90,0.1)); border-color: var(--green); color: #a0e0a0; }
-.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.combat-controls{display:flex;gap:6px;align-items:center;justify-content:center}
+.btn{font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;padding:7px 15px;border:1px solid var(--border-strong);background:linear-gradient(160deg,var(--marble3),var(--marble4));color:var(--gold-light);border-radius:5px;cursor:pointer;transition:all .15s;text-transform:uppercase}
+.btn:hover{background:linear-gradient(160deg,var(--marble4),rgba(201,168,76,.12));border-color:var(--gold)}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(160deg,rgba(201,168,76,.2),rgba(201,168,76,.1));border-color:var(--gold)}
+.btn.auto-on{background:linear-gradient(160deg,rgba(90,154,90,.25),rgba(90,154,90,.1));border-color:var(--green);color:#a0e0a0}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.danger{border-color:var(--red);color:#e08080}
+.btn.danger:hover{background:rgba(192,64,64,.15)}
 
 /* LOG */
-.log-panel { border: 1px solid var(--border); background: rgba(0,0,0,0.25); border-radius: 6px; padding: 8px 10px; height: 120px; overflow-y: auto; margin-top: 10px; scroll-behavior: smooth; }
-.log-panel::-webkit-scrollbar { width: 3px; }
-.log-panel::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
-.log-entry { font-size: 12px; padding: 1px 0; border-bottom: 1px solid rgba(255,255,255,0.03); line-height: 1.4; }
-.log-entry:last-child { border: none; }
-.log-player { color: var(--blue-light); }
-.log-enemy { color: #e08080; }
-.log-system { color: var(--gold); font-style: italic; }
-.log-reward { color: #a0d080; }
-.log-crit { color: var(--gold-light); font-weight: 600; }
-.log-item { color: var(--legendary); }
+.log-panel{border:1px solid var(--border);background:rgba(0,0,0,.25);border-radius:6px;padding:7px 10px;height:118px;overflow-y:auto;margin-top:9px;scroll-behavior:smooth}
+.log-panel::-webkit-scrollbar{width:3px}
+.log-panel::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:2px}
+.log-entry{font-size:12px;padding:1px 0;border-bottom:1px solid rgba(255,255,255,.03);line-height:1.4}
+.log-entry:last-child{border:none}
+.log-player{color:var(--blue-light)}
+.log-enemy{color:#e08080}
+.log-system{color:var(--gold);font-style:italic}
+.log-reward{color:#a0d080}
+.log-crit{color:var(--gold-light);font-weight:600}
+.log-item{color:var(--legendary)}
+.log-sell{color:#e0a060}
+.log-set{color:var(--purple-light)}
 
-/* RIGHT PANEL — TABS */
-.right-panel { display: flex; flex-direction: column; gap: 10px; }
-.tabs-bar { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 0; }
-.tab-btn { flex: 1; padding: 7px 4px; font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; background: transparent; border: none; color: var(--text-dim); cursor: pointer; transition: all 0.15s; border-right: 1px solid var(--border); }
-.tab-btn:last-child { border-right: none; }
-.tab-btn.active { background: rgba(201,168,76,0.12); color: var(--gold-light); }
-.tab-btn:hover:not(.active) { background: rgba(201,168,76,0.05); color: var(--text); }
-.tab-content { display: none; }
-.tab-content.active { display: block; }
+/* RIGHT PANEL */
+.right-panel{display:flex;flex-direction:column;gap:10px}
+.tabs-bar{display:flex;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.tab-btn{flex:1;padding:7px 3px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;background:transparent;border:none;color:var(--text-dim);cursor:pointer;transition:all .15s;border-right:1px solid var(--border)}
+.tab-btn:last-child{border-right:none}
+.tab-btn.active{background:rgba(201,168,76,.12);color:var(--gold-light)}
+.tab-btn:hover:not(.active){background:rgba(201,168,76,.05);color:var(--text)}
+.tab-content{display:none}
+.tab-content.active{display:block}
 
 /* UPGRADES */
-.wisdom-display { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.2); border-radius: 6px; margin-bottom: 8px; }
-.wisdom-icon { font-size: 16px; }
-.wisdom-amount { font-family: 'Cinzel', serif; font-size: 17px; font-weight: 700; color: var(--gold-light); }
-.wisdom-label { font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
-.upgrade-item { border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; background: linear-gradient(160deg, var(--marble2), var(--marble3)); margin-bottom: 6px; }
-.upgrade-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3px; }
-.upgrade-name { font-family: 'Cinzel', serif; font-size: 11px; color: var(--gold-light); font-weight: 600; }
-.upgrade-level { font-size: 9px; color: var(--text-dim); font-family: 'Cinzel', serif; }
-.upgrade-desc { font-size: 11px; color: var(--text-dim); margin-bottom: 5px; font-style: italic; }
-.upgrade-footer { display: flex; justify-content: space-between; align-items: center; }
-.upgrade-cost { font-size: 10px; color: var(--gold); font-family: 'Cinzel', serif; }
-.upgrade-effect { font-size: 10px; color: #80b080; }
-.upgrade-btn { font-family: 'Cinzel', serif; font-size: 8px; letter-spacing: 1.5px; padding: 3px 8px; border: 1px solid var(--border-strong); background: transparent; color: var(--gold); border-radius: 4px; cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
-.upgrade-btn:hover { background: rgba(201,168,76,0.15); border-color: var(--gold-light); }
-.upgrade-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.wisdom-display{display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:6px;margin-bottom:8px}
+.wisdom-icon{font-size:15px}
+.wisdom-amount{font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:var(--gold-light)}
+.wisdom-label{font-size:10px;color:var(--text-dim);letter-spacing:1px}
+.upgrade-item{border:1px solid var(--border);border-radius:6px;padding:7px 9px;background:linear-gradient(160deg,var(--marble2),var(--marble3));margin-bottom:5px}
+.upgrade-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px}
+.upgrade-name{font-family:'Cinzel',serif;font-size:11px;color:var(--gold-light);font-weight:600}
+.upgrade-level{font-size:9px;color:var(--text-dim);font-family:'Cinzel',serif}
+.upgrade-desc{font-size:11px;color:var(--text-dim);margin-bottom:5px;font-style:italic}
+.upgrade-footer{display:flex;justify-content:space-between;align-items:center}
+.upgrade-cost{font-size:10px;color:var(--gold);font-family:'Cinzel',serif}
+.upgrade-effect{font-size:10px;color:#80b080}
+.upgrade-btn{font-family:'Cinzel',serif;font-size:8px;letter-spacing:1px;padding:3px 7px;border:1px solid var(--border-strong);background:transparent;color:var(--gold);border-radius:4px;cursor:pointer;transition:all .15s;text-transform:uppercase}
+.upgrade-btn:hover{background:rgba(201,168,76,.15)}
+.upgrade-btn:disabled{opacity:.35;cursor:not-allowed}
+.prestige-panel{padding:10px;background:linear-gradient(135deg,rgba(128,96,176,.1),rgba(96,80,160,.05));border:1px solid rgba(160,128,208,.3);border-radius:6px;text-align:center;margin-top:4px}
+.prestige-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--purple-light);margin-bottom:3px;text-transform:uppercase}
+.prestige-desc{font-size:11px;color:var(--text-dim);font-style:italic;margin-bottom:7px}
+.btn-prestige{background:linear-gradient(135deg,rgba(128,96,176,.3),rgba(96,80,160,.15));border-color:var(--purple-light);color:var(--purple-light)}
+.btn-prestige:hover{background:linear-gradient(135deg,rgba(128,96,176,.5),rgba(96,80,160,.3))}
 
-/* PRESTIGE */
-.prestige-panel { padding: 10px; background: linear-gradient(135deg, rgba(128,96,176,0.1), rgba(96,80,160,0.05)); border: 1px solid rgba(160,128,208,0.3); border-radius: 6px; text-align: center; margin-top: 4px; }
-.prestige-title { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2px; color: var(--purple-light); margin-bottom: 3px; text-transform: uppercase; }
-.prestige-desc { font-size: 11px; color: var(--text-dim); font-style: italic; margin-bottom: 7px; }
-.btn-prestige { background: linear-gradient(135deg, rgba(128,96,176,0.3), rgba(96,80,160,0.15)); border-color: var(--purple-light); color: var(--purple-light); }
-.btn-prestige:hover { background: linear-gradient(135deg, rgba(128,96,176,0.5), rgba(96,80,160,0.3)); }
+/* EQUIP */
+.equip-slots{display:flex;flex-direction:column;gap:5px;margin-bottom:9px}
+.equip-slot{display:flex;align-items:center;gap:7px;padding:6px 9px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.2);min-height:46px}
+.equip-slot.has-item{border-color:rgba(201,168,76,.35)}
+.slot-icon{font-size:17px;width:22px;text-align:center;flex-shrink:0}
+.slot-info{flex:1;min-width:0}
+.slot-type{font-family:'Cinzel',serif;font-size:9px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase}
+.slot-item-name{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slot-item-stats{font-size:10px;color:var(--text-dim);margin-top:1px}
+.slot-set-tag{font-size:9px;padding:1px 4px;border-radius:3px;margin-top:2px;display:inline-block;font-family:'Cinzel',serif}
+.slot-empty{font-size:11px;color:rgba(160,144,112,.45);font-style:italic}
+.slot-unequip{font-size:9px;color:var(--red);padding:2px 5px;border:1px solid rgba(192,64,64,.4);border-radius:3px;cursor:pointer;flex-shrink:0;font-family:'Cinzel',serif;background:transparent}
+.slot-unequip:hover{background:rgba(192,64,64,.15)}
 
-/* EQUIPMENT PANEL */
-.equip-slots { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
-.equip-slot { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; background: rgba(0,0,0,0.2); cursor: pointer; transition: all 0.15s; min-height: 48px; }
-.equip-slot:hover { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.04); }
-.equip-slot.has-item { border-color: rgba(201,168,76,0.35); }
-.slot-icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
-.slot-info { flex: 1; min-width: 0; }
-.slot-type { font-family: 'Cinzel', serif; font-size: 9px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
-.slot-item-name { font-size: 11px; color: var(--text); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.slot-item-stats { font-size: 10px; color: var(--text-dim); margin-top: 1px; }
-.slot-empty { font-size: 11px; color: rgba(160,144,112,0.5); font-style: italic; }
-.slot-unequip { font-size: 9px; color: var(--red); padding: 2px 6px; border: 1px solid rgba(192,64,64,0.4); border-radius: 3px; cursor: pointer; flex-shrink: 0; font-family: 'Cinzel', serif; background: transparent; }
-.slot-unequip:hover { background: rgba(192,64,64,0.15); }
+/* set bonus display */
+.set-bonuses-section{margin-top:6px}
+.set-bonus-row{padding:6px 8px;border-radius:5px;border:1px solid var(--border);margin-bottom:4px;background:rgba(0,0,0,.15)}
+.set-bonus-name{font-family:'Cinzel',serif;font-size:10px;font-weight:600;margin-bottom:3px}
+.set-bonus-line{font-size:10px;margin-bottom:1px}
+.set-bonus-line.active{color:#90d090}
+.set-bonus-line.inactive{color:rgba(160,144,112,.5)}
 
-/* rarity colors for slot */
-.rarity-common .slot-item-name { color: var(--common); }
-.rarity-uncommon .slot-item-name { color: var(--uncommon); }
-.rarity-rare .slot-item-name { color: var(--rare); }
-.rarity-legendary .slot-item-name { color: var(--legendary); }
+/* rarity */
+.rarity-common .slot-item-name{color:var(--common)}
+.rarity-uncommon .slot-item-name{color:var(--uncommon)}
+.rarity-rare .slot-item-name{color:var(--rare)}
+.rarity-legendary .slot-item-name{color:var(--legendary)}
+.rarity-pill{font-size:8px;padding:1px 5px;border-radius:10px;font-family:'Cinzel',serif;letter-spacing:.5px;flex-shrink:0}
+.rp-common{background:rgba(160,144,112,.2);color:var(--common);border:1px solid rgba(160,144,112,.3)}
+.rp-uncommon{background:rgba(90,170,90,.2);color:var(--uncommon);border:1px solid rgba(90,170,90,.3)}
+.rp-rare{background:rgba(80,144,208,.2);color:var(--rare);border:1px solid rgba(80,144,208,.3)}
+.rp-legendary{background:rgba(232,160,48,.2);color:var(--legendary);border:1px solid rgba(232,160,48,.35)}
 
 /* INVENTORY */
-.inventory-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.inv-count { font-size: 10px; color: var(--text-dim); font-family: 'Cinzel', serif; }
-.inventory-grid { display: flex; flex-direction: column; gap: 4px; max-height: 340px; overflow-y: auto; padding-right: 4px; }
-.inventory-grid::-webkit-scrollbar { width: 3px; }
-.inventory-grid::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
-.inv-item { display: flex; align-items: center; gap: 7px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 5px; background: rgba(0,0,0,0.15); cursor: pointer; transition: all 0.12s; }
-.inv-item:hover { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.05); }
-.inv-item.equipped { border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.06); }
-.inv-item-icon { font-size: 16px; flex-shrink: 0; }
-.inv-item-info { flex: 1; min-width: 0; }
-.inv-item-name { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.inv-item-sub { font-size: 10px; color: var(--text-dim); }
-.inv-item-equip { font-size: 9px; padding: 2px 6px; border: 1px solid var(--border-strong); border-radius: 3px; cursor: pointer; font-family: 'Cinzel', serif; background: transparent; color: var(--gold); flex-shrink: 0; }
-.inv-item-equip:hover { background: rgba(201,168,76,0.15); }
-.inv-item-equip.equipped-btn { border-color: rgba(90,154,90,0.5); color: #80c080; }
-.inv-empty { font-size: 12px; color: var(--text-dim); text-align: center; padding: 20px; font-style: italic; }
+.inventory-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.inv-count{font-size:10px;color:var(--text-dim);font-family:'Cinzel',serif}
+.inv-filter{display:flex;gap:3px;margin-bottom:7px;flex-wrap:wrap}
+.inv-filter-btn{font-size:9px;padding:2px 7px;border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--text-dim);cursor:pointer;font-family:'Cinzel',serif;transition:all .12s}
+.inv-filter-btn.active{border-color:var(--gold);color:var(--gold-light);background:rgba(201,168,76,.1)}
+.inventory-grid{display:flex;flex-direction:column;gap:3px;max-height:320px;overflow-y:auto;padding-right:3px}
+.inventory-grid::-webkit-scrollbar{width:3px}
+.inventory-grid::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:2px}
+.inv-item{display:flex;align-items:center;gap:6px;padding:5px 7px;border:1px solid var(--border);border-radius:5px;background:rgba(0,0,0,.15);transition:all .12s}
+.inv-item:hover{border-color:rgba(201,168,76,.35);background:rgba(201,168,76,.04)}
+.inv-item.equipped{border-color:rgba(201,168,76,.45);background:rgba(201,168,76,.06)}
+.inv-item-icon{font-size:15px;flex-shrink:0}
+.inv-item-info{flex:1;min-width:0}
+.inv-item-name{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inv-item-sub{font-size:10px;color:var(--text-dim)}
+.inv-item-set{font-size:9px;color:var(--text-dim);font-style:italic}
+.inv-actions{display:flex;gap:3px;flex-shrink:0}
+.inv-btn{font-size:8px;padding:2px 5px;border:1px solid var(--border-strong);border-radius:3px;cursor:pointer;font-family:'Cinzel',serif;background:transparent;transition:all .12s;white-space:nowrap}
+.inv-btn-equip{color:var(--gold);border-color:rgba(201,168,76,.4)}
+.inv-btn-equip:hover{background:rgba(201,168,76,.15)}
+.inv-btn-equip.equipped-btn{color:#80c080;border-color:rgba(90,154,90,.4)}
+.inv-btn-sell{color:#e08080;border-color:rgba(192,64,64,.35)}
+.inv-btn-sell:hover{background:rgba(192,64,64,.15)}
+.inv-btn-sell:disabled{opacity:.3;cursor:not-allowed}
+.inv-empty{font-size:12px;color:var(--text-dim);text-align:center;padding:18px;font-style:italic}
 
-/* rarity pill */
-.rarity-pill { font-size: 8px; padding: 1px 5px; border-radius: 10px; font-family: 'Cinzel', serif; letter-spacing: 0.5px; flex-shrink: 0; }
-.rp-common { background: rgba(160,144,112,0.2); color: var(--common); border: 1px solid rgba(160,144,112,0.3); }
-.rp-uncommon { background: rgba(90,170,90,0.2); color: var(--uncommon); border: 1px solid rgba(90,170,90,0.3); }
-.rp-rare { background: rgba(80,144,208,0.2); color: var(--rare); border: 1px solid rgba(80,144,208,0.3); }
-.rp-legendary { background: rgba(232,160,48,0.2); color: var(--legendary); border: 1px solid rgba(232,160,48,0.35); }
+/* STAGES */
+.stage-card{border:1px solid var(--border);border-radius:7px;padding:10px 12px;margin-bottom:7px;background:rgba(0,0,0,.15);transition:all .2s;cursor:pointer;position:relative;overflow:hidden}
+.stage-card:hover{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.04)}
+.stage-card.active-stage{border-width:2px}
+.stage-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.stage-name{font-family:'Cinzel',serif;font-size:12px;font-weight:600}
+.stage-cost{font-size:10px;color:var(--gold);font-family:'Cinzel',serif}
+.stage-desc{font-size:11px;color:var(--text-dim);font-style:italic;margin-bottom:6px}
+.stage-sets{display:flex;gap:5px;flex-wrap:wrap}
+.set-chip{font-size:9px;padding:2px 7px;border-radius:4px;font-family:'Cinzel',serif;display:flex;align-items:center;gap:3px}
+.stage-active-badge{position:absolute;top:6px;right:8px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;padding:2px 6px;border-radius:3px;text-transform:uppercase}
+
+/* info panel */
+.set-info-panel{border:1px solid var(--border);border-radius:7px;padding:10px;margin-top:5px;background:rgba(0,0,0,.1)}
+.set-info-title{font-family:'Cinzel',serif;font-size:11px;color:var(--gold-light);font-weight:600;margin-bottom:4px}
+.set-info-bonus{font-size:10px;margin-bottom:2px}
+.set-info-bonus span{color:#90d090}
 
 /* BOTTOM */
-.bottom-bar { display: flex; gap: 10px; align-items: center; padding: 7px 14px; border: 1px solid var(--border); background: linear-gradient(135deg, var(--marble2), var(--marble3)); border-radius: 8px; font-size: 12px; color: var(--text-dim); flex-wrap: wrap; }
-.stat-chip { display: flex; align-items: center; gap: 4px; padding: 3px 9px; border: 1px solid var(--border); border-radius: 4px; background: rgba(0,0,0,0.2); }
-.stat-chip-icon { font-size: 11px; }
-.stat-chip-val { font-family: 'Cinzel', serif; font-size: 12px; font-weight: 600; color: var(--gold-light); }
-.stat-chip-label { font-size: 9px; color: var(--text-dim); letter-spacing: 1px; }
+.bottom-bar{display:flex;gap:9px;align-items:center;padding:7px 14px;border:1px solid var(--border);background:linear-gradient(135deg,var(--marble2),var(--marble3));border-radius:8px;font-size:12px;color:var(--text-dim);flex-wrap:wrap}
+.stat-chip{display:flex;align-items:center;gap:4px;padding:3px 8px;border:1px solid var(--border);border-radius:4px;background:rgba(0,0,0,.2)}
+.stat-chip-icon{font-size:11px}
+.stat-chip-val{font-family:'Cinzel',serif;font-size:12px;font-weight:600;color:var(--gold-light)}
+.stat-chip-label{font-size:9px;color:var(--text-dim);letter-spacing:1px}
 
 /* OVERLAY */
-.overlay { display: none; position: fixed; inset: 0; background: rgba(10,8,6,0.88); z-index: 200; align-items: center; justify-content: center; }
-.overlay.show { display: flex; }
-.overlay-box { background: linear-gradient(160deg, var(--marble2), var(--marble3)); border: 1px solid var(--border-strong); border-radius: 12px; padding: 28px 36px; text-align: center; max-width: 440px; width: 92%; box-shadow: 0 0 60px rgba(0,0,0,0.9); animation: pop-in 0.3s ease-out; }
-@keyframes pop-in { from{transform:scale(0.85) translateY(20px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
-.overlay-icon { font-size: 44px; margin-bottom: 10px; }
-.overlay-title { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: var(--gold-light); letter-spacing: 2px; margin-bottom: 6px; }
-.overlay-body { font-size: 13px; color: var(--text-dim); line-height: 1.7; margin-bottom: 14px; font-style: italic; }
-.overlay-rewards { margin-bottom: 14px; }
-.reward-line { font-family: 'Cinzel', serif; font-size: 14px; color: var(--gold-light); padding: 3px 0; }
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,8,6,.88);z-index:200;align-items:center;justify-content:center}
+.overlay.show{display:flex}
+.overlay-box{background:linear-gradient(160deg,var(--marble2),var(--marble3));border:1px solid var(--border-strong);border-radius:12px;padding:26px 34px;text-align:center;max-width:440px;width:92%;box-shadow:0 0 60px rgba(0,0,0,.9);animation:pop-in .3s ease-out}
+@keyframes pop-in{from{transform:scale(.85) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.overlay-icon{font-size:42px;margin-bottom:9px}
+.overlay-title{font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--gold-light);letter-spacing:2px;margin-bottom:6px}
+.overlay-body{font-size:13px;color:var(--text-dim);line-height:1.7;margin-bottom:13px;font-style:italic}
+.overlay-rewards{margin-bottom:12px}
+.reward-line{font-family:'Cinzel',serif;font-size:13px;color:var(--gold-light);padding:2px 0}
+.item-drop-box{margin:10px 0;padding:11px 14px;border-radius:8px;border:1px solid var(--border-strong);background:rgba(0,0,0,.3);text-align:left}
+.item-drop-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:5px}
+.item-drop-row{display:flex;align-items:center;gap:9px}
+.item-drop-icon{font-size:24px}
+.item-drop-info{flex:1}
+.item-drop-name{font-family:'Cinzel',serif;font-size:13px;font-weight:600;margin-bottom:1px}
+.item-drop-sub{font-size:11px;color:var(--text-dim)}
+.item-drop-stats{font-size:11px;margin-top:3px;color:#90d090}
+.item-drop-set{font-size:10px;margin-top:2px;font-style:italic}
 
-/* ITEM DROP in overlay */
-.item-drop-box { margin: 10px 0; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-strong); background: rgba(0,0,0,0.3); text-align: left; }
-.item-drop-label { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; }
-.item-drop-row { display: flex; align-items: center; gap: 10px; }
-.item-drop-icon { font-size: 26px; }
-.item-drop-info { flex: 1; }
-.item-drop-name { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 600; margin-bottom: 2px; }
-.item-drop-sub { font-size: 11px; color: var(--text-dim); }
-.item-drop-stats { font-size: 11px; margin-top: 4px; color: #90d090; }
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-@media (max-width: 820px) {
-  .main-grid { grid-template-columns: 1fr; }
-  .arena { grid-column: 1; }
-  .skills-row { grid-template-columns: repeat(2, 1fr); }
-  .combatants { grid-template-columns: 1fr 40px 1fr; }
-  header { flex-direction: column; gap: 10px; }
+@media(max-width:820px){
+  .main-grid{grid-template-columns:1fr}
+  .arena{grid-column:1}
+  .skills-row{grid-template-columns:repeat(2,1fr)}
+  .combatants{grid-template-columns:1fr 40px 1fr}
+  header{flex-direction:column;gap:10px}
 }
 </style>
 </head>
 <body>
 <div id="app">
 
-<!-- HEADER -->
 <header>
   <div>
     <div class="game-title">ΟΔΟ ΣΟΚΡΑΤΗΣ</div>
@@ -258,20 +276,17 @@ header::after {
   </div>
   <div class="header-stats">
     <div class="hstat"><div class="hstat-val" id="h-floor">1</div><div class="hstat-label">Livello</div></div>
-    <div class="hstat"><div class="hstat-val" id="h-prestige">0</div><div class="hstat-label">Reincarnazioni</div></div>
+    <div class="hstat"><div class="hstat-val" id="h-prestige">0</div><div class="hstat-label">Reinc.</div></div>
     <div class="hstat"><div class="hstat-val" id="h-kills">0</div><div class="hstat-label">Sconfitti</div></div>
-    <div class="hstat"><div class="hstat-val" id="h-items">0</div><div class="hstat-label">Oggetti</div></div>
+    <div class="hstat"><div class="hstat-val" id="h-wisdom">0</div><div class="hstat-label">Saggezza</div></div>
   </div>
 </header>
 
-<!-- MAIN -->
 <div class="main-grid">
-
   <!-- ARENA -->
   <div class="panel arena">
-    <div class="arena-floor">Stoa · <span id="floor-num">1</span> · <span id="enemy-type-label">Sofista</span></div>
+    <div class="arena-floor">Stoa · <span id="floor-num">1</span> · <span id="enemy-type-label">Sofista</span> <span id="stage-badge-arena" class="stage-badge" style="display:none"></span></div>
     <div class="combatants">
-      <!-- PLAYER -->
       <div class="combatant player-side" id="player-card">
         <div class="combatant-name-row">
           <div class="combatant-name" id="player-name-display">Socrate</div>
@@ -279,30 +294,27 @@ header::after {
         </div>
         <div class="combatant-title" id="player-title">Il Filosofo</div>
         <div class="hp-bar-wrap">
-          <div class="hp-label"><span>HP</span><span id="p-hp-txt">100 / 100</span></div>
+          <div class="hp-label"><span>HP</span><span id="p-hp-txt">100/100</span></div>
           <div class="bar-track"><div class="bar-fill hp-fill" id="p-hp-bar" style="width:100%"></div></div>
         </div>
         <div class="hp-bar-wrap">
-          <div class="hp-label"><span>Logos</span><span id="p-mp-txt">60 / 60</span></div>
+          <div class="hp-label"><span>Logos</span><span id="p-mp-txt">60/60</span></div>
           <div class="bar-track"><div class="bar-fill mp-fill" id="p-mp-bar" style="width:100%"></div></div>
         </div>
         <div class="combatant-status" id="player-statuses"></div>
       </div>
-      <!-- VS -->
       <div class="vs-center"><div class="vs-text">VS</div></div>
-      <!-- ENEMY -->
       <div class="combatant enemy-side" id="enemy-card">
         <div class="combatant-name-row"><div class="combatant-name" id="enemy-name">Malloc</div></div>
         <div class="combatant-title" id="enemy-title">The big M</div>
         <div class="hp-bar-wrap">
-          <div class="hp-label"><span>HP</span><span id="e-hp-txt">80 / 80</span></div>
+          <div class="hp-label"><span>HP</span><span id="e-hp-txt">80/80</span></div>
           <div class="bar-track"><div class="bar-fill enemy-hp-fill" id="e-hp-bar" style="width:100%"></div></div>
         </div>
         <div class="combatant-status" id="enemy-statuses"></div>
       </div>
     </div>
 
-    <!-- SKILLS -->
     <div class="skills-row">
       <button class="skill-btn" id="skill-0" onclick="useSkill(0)">
         <span class="skill-icon">🔍</span><span class="skill-name">ELENCHOS</span>
@@ -334,15 +346,16 @@ header::after {
     </div>
   </div>
 
-  <!-- RIGHT PANEL -->
+  <!-- RIGHT -->
   <div class="right-panel">
     <div class="tabs-bar">
       <button class="tab-btn active" onclick="switchTab('upgrades')">Σοφία</button>
       <button class="tab-btn" onclick="switchTab('equip')">Equip</button>
       <button class="tab-btn" onclick="switchTab('inventory')">Zaino</button>
+      <button class="tab-btn" onclick="switchTab('stages')">Stage</button>
     </div>
 
-    <!-- TAB: UPGRADES -->
+    <!-- UPGRADES -->
     <div class="panel tab-content active" id="tab-upgrades" style="padding:12px">
       <div class="wisdom-display">
         <span class="wisdom-icon">🏛</span>
@@ -356,38 +369,57 @@ header::after {
       </div>
     </div>
 
-    <!-- TAB: EQUIPMENT -->
+    <!-- EQUIP -->
     <div class="panel tab-content" id="tab-equip" style="padding:12px">
       <div class="panel-title">Equipaggiamento</div>
       <div class="equip-slots" id="equip-slots"></div>
-      <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;margin-bottom:6px;margin-top:4px;">Bonus Totali</div>
-      <div id="equip-bonus-summary" style="font-size:11px;color:#90d090;line-height:1.8;"></div>
+      <div class="set-bonuses-section">
+        <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:5px">Bonus Set Attivi</div>
+        <div id="set-bonus-display"></div>
+      </div>
     </div>
 
-    <!-- TAB: INVENTORY -->
+    <!-- INVENTORY -->
     <div class="panel tab-content" id="tab-inventory" style="padding:12px">
       <div class="inventory-header">
         <div class="panel-title" style="margin:0;border:none;padding:0">Zaino</div>
-        <div class="inv-count" id="inv-count">0 / 20</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="inv-count" id="inv-count">0/30</div>
+          <button class="btn danger" style="font-size:8px;padding:3px 7px" onclick="sellAll()">Vendi Spazzatura</button>
+        </div>
+      </div>
+      <div class="inv-filter" id="inv-filter">
+        <button class="inv-filter-btn active" onclick="setFilter('all')">Tutti</button>
+        <button class="inv-filter-btn" onclick="setFilter('weapon')">⚔</button>
+        <button class="inv-filter-btn" onclick="setFilter('armor')">🛡</button>
+        <button class="inv-filter-btn" onclick="setFilter('ring')">💍</button>
+        <button class="inv-filter-btn" onclick="setFilter('amulet')">📿</button>
+        <button class="inv-filter-btn" onclick="setFilter('boots')">👟</button>
       </div>
       <div class="inventory-grid" id="inventory-grid"></div>
     </div>
 
+    <!-- STAGES -->
+    <div class="panel tab-content" id="tab-stages" style="padding:12px">
+      <div class="panel-title">Stage di Farming</div>
+      <div style="font-size:11px;color:var(--text-dim);font-style:italic;margin-bottom:9px">Entra in uno stage per fare farming di set specifici. Ogni stage ha 2 set esclusivi.</div>
+      <div id="stages-list"></div>
+      <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin:8px 0 5px">Info Set</div>
+      <div id="set-info-display"></div>
+    </div>
   </div>
 </div>
 
-<!-- BOTTOM -->
 <div class="bottom-bar">
   <div class="stat-chip"><span class="stat-chip-icon">⚔</span><span class="stat-chip-val" id="stat-atk">10</span><span class="stat-chip-label">DANNO</span></div>
   <div class="stat-chip"><span class="stat-chip-icon">🛡</span><span class="stat-chip-val" id="stat-def">0</span><span class="stat-chip-label">DIFESA</span></div>
   <div class="stat-chip"><span class="stat-chip-icon">❤</span><span class="stat-chip-val" id="stat-maxhp">100</span><span class="stat-chip-label">HP MAX</span></div>
-  <div class="stat-chip"><span class="stat-chip-icon">🎯</span><span class="stat-chip-val" id="stat-crit">5</span><span class="stat-chip-label">CRITICO%</span></div>
+  <div class="stat-chip"><span class="stat-chip-icon">🎯</span><span class="stat-chip-val" id="stat-crit">5</span><span class="stat-chip-label">CRIT%</span></div>
   <div class="stat-chip"><span class="stat-chip-icon">🔮</span><span class="stat-chip-val" id="stat-logos">60</span><span class="stat-chip-label">LOGOS</span></div>
-  <div style="margin-left:auto;font-style:italic;font-size:12px;color:var(--text-dim);" id="quote-bar">"So di non sapere nulla." — Socrate</div>
+  <div style="margin-left:auto;font-style:italic;font-size:11px;color:var(--text-dim)" id="quote-bar">"So di non sapere nulla." — Socrate</div>
 </div>
 </div>
 
-<!-- OVERLAY -->
 <div class="overlay" id="overlay">
   <div class="overlay-box">
     <div class="overlay-icon" id="ov-icon">⚔</div>
@@ -400,421 +432,743 @@ header::after {
 </div>
 
 <script>
-// ══════════════════════════════════════════════
-//  DATA
-// ══════════════════════════════════════════════
-const QUOTES = [
-  '"So di non sapere nulla." — Socrate',
-  '"La vita non esaminata non vale la pena di essere vissuta." — Socrate',
-  '"Conosci te stesso." — Iscrizione di Delfi',
-  '"La virtù è sapere." — Socrate',
-  '"Il corpo è la prigione dell\'anima." — Platone',
-  '"La filosofia è preparazione alla morte." — Socrate',
-  '"Solo chi conosce i propri limiti può superarli." — Socrate',
-  '"L\'ignoranza è la radice di ogni male." — Platone',
+// ══════════════════════════════════════════
+//  CONSTANTS & DATA
+// ══════════════════════════════════════════
+const QUOTES=['"So di non sapere nulla." — Socrate','"La vita non esaminata non vale la pena di essere vissuta." — Socrate','"Conosci te stesso." — Iscrizione di Delfi','"La virtù è sapere." — Socrate','"Il corpo è la prigione dell\'anima." — Platone','"La filosofia è preparazione alla morte." — Socrate','"Solo chi conosce i propri limiti può superarli." — Socrate','"L\'ignoranza è la radice di ogni male." — Platone'];
+
+const ENEMIES=[
+  {name:"Malloc",title:"The big M",icon:"🎭"},
+  {name:"Francesco Bego",title:"Larper",icon:"🌀"},
+  {name:"Lo Scheletro",title:"Portatore di invezioni",icon:"💀"},
+  {name:"Barchi gay",title:"Apostolo delle j",icon:"👑"},
+  {name:"Daniel",title:"Italian Master",icon:"⚖"},
+  {name:"Zanotti",title:"Aura Farmer",icon:"🗡"},
+  {name:"Redi",title:"Negative aura holder",icon:"🦁"},
+  {name:"Il Trapezzoide",title:"I love trapezzoidi",icon:"🌑"},
+  {name:"Basquiat",title:"IShowSpeed dei poveri",icon:"⛓"},
+  {name:"Giatti",title:"Re dell'aura",icon:"🕳"},
+  {name:"Denis Penis",title:"Fortnite Player",icon:"👁"},
+  {name:"Il Bocchins",title:"Fa i bocchins",icon:"🔱"},
 ];
 
-const ENEMIES = [
-  { name: "Malloc", title: "The big M", icon: "🎭" },
-  { name: "Francesco Bego", title: "Larper", icon: "🌀" },
-  { name: "Lo Scheletro", title: "Portatore di invezioni", icon: "💀" },
-  { name: "Barchi Gay", title: "Apostolo delle j", icon: "👑" },
-  { name: "Daniel", title: "Italian Master", icon: "⚖" },
-  { name: "Zanotti", title: "Aura Farmer", icon: "🗡" },
-  { name: "Redi", title: "Negative Aura Holder", icon: "🦁" },
-  { name: "Il Trapezzoide", title: "I love trapezzoidi", icon: "🌑" },
-  { name: "Basquiat", title: "IShowSpeed dei poveri", icon: "⛓" },
-  { name: "Giatti", title: "Re dell'aura", icon: "🕳" },
-  { name: "Denis Penis", title: "Fortnite Player", icon: "👁" },
-  { name: "Il Bocchins", title: "Fa i bocchins", icon: "🔱" },
-];
-
-// ── ITEMS DATABASE ──
-// Slot: weapon, armor, ring, amulet, boots
-// Stats: atk, def, maxHp, critChance, maxMp, mpRegen
-const ITEMS_DB = {
-  weapon: [
-    { name:"Rotolo della Dialettica",   icon:"📜", rarity:"common",    stats:{atk:4} },
-    { name:"Bastone del Logos",         icon:"🪄", rarity:"common",    stats:{atk:5, critChance:2} },
-    { name:"Lira di Platone",           icon:"🎵", rarity:"uncommon",  stats:{atk:8, maxMp:10} },
-    { name:"Spada di Temistocle",       icon:"⚔",  rarity:"uncommon",  stats:{atk:10, def:2} },
-    { name:"Scettro della Verità",      icon:"🔱", rarity:"rare",      stats:{atk:16, critChance:5} },
-    { name:"Fiamma di Prometeo",        icon:"🔥", rarity:"legendary", stats:{atk:28, critChance:10, maxMp:20} },
-  ],
-  armor: [
-    { name:"Mantello del Filosofo",     icon:"🧥", rarity:"common",    stats:{def:3, maxHp:20} },
-    { name:"Toga dell'Agorà",           icon:"👘", rarity:"common",    stats:{def:4} },
-    { name:"Veste di Aristotele",       icon:"🎓", rarity:"uncommon",  stats:{def:7, maxHp:35} },
-    { name:"Corazza Stoica",            icon:"🛡", rarity:"uncommon",  stats:{def:9, maxHp:20} },
-    { name:"Armatura dell'Olimpo",      icon:"⚡", rarity:"rare",      stats:{def:14, maxHp:60} },
-    { name:"Egida di Atena",            icon:"🦉", rarity:"legendary", stats:{def:22, maxHp:100, critChance:5} },
-  ],
-  ring: [
-    { name:"Anello della Virtù",        icon:"💍", rarity:"common",    stats:{critChance:3} },
-    { name:"Sigillo del Logos",         icon:"🔮", rarity:"common",    stats:{maxMp:15} },
-    { name:"Gemma dell'Intuizione",     icon:"💎", rarity:"uncommon",  stats:{critChance:6, atk:4} },
-    { name:"Anello di Socrate",         icon:"🌀", rarity:"rare",      stats:{critChance:10, atk:8} },
-    { name:"Sigillo dell'Eternità",     icon:"♾",  rarity:"legendary", stats:{critChance:15, atk:12, maxMp:25} },
-  ],
-  amulet: [
-    { name:"Amuleto di Demetra",        icon:"🌾", rarity:"common",    stats:{maxHp:25, mpRegen:1} },
-    { name:"Medaglione dell'Olimpo",    icon:"🏺", rarity:"common",    stats:{maxMp:20} },
-    { name:"Ciondolo della Saggezza",   icon:"📿", rarity:"uncommon",  stats:{maxHp:40, maxMp:20} },
-    { name:"Collana di Afrodite",       icon:"🌹", rarity:"rare",      stats:{maxHp:70, mpRegen:3, atk:5} },
-    { name:"Amuleto dell'Anima",        icon:"✨", rarity:"legendary", stats:{maxHp:100, maxMp:40, mpRegen:5} },
-  ],
-  boots: [
-    { name:"Sandali del Viandante",     icon:"👡", rarity:"common",    stats:{def:2, maxHp:15} },
-    { name:"Calzari dell'Agorà",        icon:"👟", rarity:"common",    stats:{def:3} },
-    { name:"Sandali di Ermete",         icon:"🦶", rarity:"uncommon",  stats:{def:5, critChance:3} },
-    { name:"Stivali della Stoa",        icon:"🥾", rarity:"rare",      stats:{def:9, maxHp:40, critChance:4} },
-    { name:"Calzari degli Dei",         icon:"⚡", rarity:"legendary", stats:{def:15, maxHp:60, critChance:8} },
-  ],
-};
-
-const SLOT_ICONS = { weapon:"⚔", armor:"🛡", ring:"💍", amulet:"📿", boots:"👟" };
-const SLOT_NAMES = { weapon:"Arma", armor:"Armatura", ring:"Anello", amulet:"Amuleto", boots:"Sandali" };
-const RARITY_ORDER = { common:0, uncommon:1, rare:2, legendary:3 };
-const RARITY_NAMES = { common:"Comune", uncommon:"Non Comune", rare:"Raro", legendary:"Leggendario" };
-
-// ── UPGRADES ──
-const UPGRADES_DEF = [
-  { id:'dialectics', name:'Dialettica',          desc:'Potenzia l\'argomentazione. +3 danno/lv.', baseCost:15, effect:g=>{g.player.baseAtk+=3}, getEffect:lv=>`+${lv*3} Danno`, costScale:1.5 },
-  { id:'virtue',     name:'Virtù',               desc:'L\'anima regge più colpi. +20 HP/lv.',    baseCost:20, effect:g=>{g.player.baseMaxHp+=20}, getEffect:lv=>`+${lv*20} HP Max`, costScale:1.6 },
-  { id:'temperance', name:'Temperanza',           desc:'Moderazione riduce danni. +2 def/lv.',   baseCost:25, effect:g=>{g.player.baseDef+=2}, getEffect:lv=>`+${lv*2} Difesa`, costScale:1.55 },
-  { id:'logos',      name:'Logos',                desc:'Espande la mente. +10 Logos/lv.',        baseCost:18, effect:g=>{g.player.baseMaxMp+=10;g.player.baseMpRegen+=1}, getEffect:lv=>`+${lv*10} Logos`, costScale:1.45 },
-  { id:'insight',    name:'Intuizione',           desc:'Perspicacia critica. +3% crit/lv.',      baseCost:30, effect:g=>{g.player.baseCritChance+=3}, getEffect:lv=>`+${lv*3}% Crit`, costScale:1.6 },
-  { id:'wisdom_gain',name:'Accumulare Saggezza',  desc:'Più Saggezza dalle battaglie. +20%/lv.', baseCost:40, effect:g=>{g.wisdomMult+=0.2}, getEffect:lv=>`+${Math.round(lv*20)}% Sagge.`, costScale:1.8 },
-];
-
-// ══════════════════════════════════════════════
-//  GAME STATE
-// ══════════════════════════════════════════════
-let G = {
-  floor: 1, wisdom: 0, totalKills: 0, prestige: 0, prestigeBonus: 1,
-  autoMode: false, autoTimer: null, battleOver: false, playerTurn: true,
-  wisdomMult: 1,
-  upgradeLevels: { dialectics:0, virtue:0, temperance:0, logos:0, insight:0, wisdom_gain:0 },
-  playerName: 'Socrate',
-  player: {
-    hp:100, baseMaxHp:100, mp:60, baseMaxMp:60, baseMpRegen:3,
-    baseAtk:10, baseDef:0, baseCritChance:5,
+// ── 8 SETS (2 per stage) ──────────────────────────────
+// bonus2 / bonus4 = stat objects (pct suffix = percentage multiplier)
+// bonus4special = string key for special combat effects
+const SETS={
+  // STAGE 1 — Agorà di Atene (gold)
+  socratic_order:{
+    id:'socratic_order',name:"Ordine Socratico",stage:1,icon:"🏛",color:"var(--s1)",
+    desc2:"+15% Danno base",desc4:"Aporia infligge +80% danni",
+    bonus2:{atkPct:0.15},bonus4:{},bonus4special:'aporiaBoost',
+    sellMult:{common:1.2,uncommon:1.5,rare:2,legendary:3}
   },
-  enemy: { name:'', hp:80, maxHp:80, atk:8, def:0 },
-  cooldowns: [0,0,0,0],
-  playerStatuses: [], enemyStatuses: [],
-  // ITEMS
-  inventory: [],   // array of item objects {id, slot, name, icon, rarity, stats}
-  equipped: { weapon:null, armor:null, ring:null, amulet:null, boots:null },
-  nextItemId: 1,
+  sophist_mask:{
+    id:'sophist_mask',name:"Maschera del Sofista",stage:1,icon:"🎭",color:"var(--s1)",
+    desc2:"+22% HP Massimi",desc4:"Maieutica cura il 38% HP max invece del 18%",
+    bonus2:{maxHpPct:0.22},bonus4:{},bonus4special:'maieuticaBoost',
+    sellMult:{common:1,uncommon:1,rare:1,legendary:1}
+  },
+  // STAGE 2 — Accademia di Platone (blue)
+  academy_mind:{
+    id:'academy_mind',name:"Mente dell'Accademia",stage:2,icon:"📚",color:"var(--s2)",
+    desc2:"+25% Logos Massimo",desc4:"Eironeia dura 6 turni e riduce ATK del 70%",
+    bonus2:{maxMpPct:0.25},bonus4:{},bonus4special:'eironeiaBuff',
+    sellMult:{common:1,uncommon:1,rare:1,legendary:1}
+  },
+  ideal_form:{
+    id:'ideal_form',name:"Forma delle Idee",stage:2,icon:"💎",color:"var(--s2)",
+    desc2:"+12% Critico",desc4:"I colpi critici moltiplicano ×3.5 invece di ×2.2",
+    bonus2:{critChancePct:0.12},bonus4:{},bonus4special:'critMult',
+    sellMult:{common:1,uncommon:1,rare:1,legendary:1}
+  },
+  // STAGE 3 — Liceo di Aristotele (green)
+  nicomachean:{
+    id:'nicomachean',name:"Etica Nicomachea",stage:3,icon:"⚖",color:"var(--s3)",
+    desc2:"+15% ATK e DEF",desc4:"Vinci una battaglia → ripristino 30% HP",
+    bonus2:{atkPct:0.15,defPct:0.15},bonus4:{},bonus4special:'victoryHeal',
+    sellMult:{common:1,uncommon:1,rare:1,legendary:1}
+  },
+  pure_logic:{
+    id:'pure_logic',name:"Logica Pura",stage:3,icon:"🔬",color:"var(--s3)",
+    desc2:"+22% Difesa",desc4:"Ogni turno nemico rigenera 3% HP Max",
+    bonus2:{defPct:0.22},bonus4:{},bonus4special:'turnRegen',
+    sellMult:{common:1,uncommon:1,rare:1,legendary:1}
+  },
+  // STAGE 4 — Olimpo degli Dei (purple)
+  prometheus_fire:{
+    id:'prometheus_fire',name:"Fuoco di Prometeo",stage:4,icon:"🔥",color:"var(--s4)",
+    desc2:"+20% Critico",desc4:"Elenchos colpisce 2 volte per attacco",
+    bonus2:{critChancePct:0.20},bonus4:{},bonus4special:'elenchosDouble',
+    sellMult:{common:1,uncommon:1,rare:1,legendary:1}
+  },
+  divine_wisdom:{
+    id:'divine_wisdom',name:"Saggezza degli Dei",stage:4,icon:"✨",color:"var(--s4)",
+    desc2:"+35% Saggezza guadagnata",desc4:"Logos si rigenera anche dopo ogni tuo attacco (+5)",
+    bonus2:{wisdomPct:0.35},bonus4:{},bonus4special:'logosAttackRegen',
+    sellMult:{common:1,uncommon:1,rare:1,legendary:1}
+  },
 };
 
-// Compute effective player stats (base + equip bonuses)
-function computeStats() {
-  const p = G.player;
-  let bonus = { atk:0, def:0, maxHp:0, critChance:0, maxMp:0, mpRegen:0 };
-  Object.values(G.equipped).forEach(item => {
-    if (!item) return;
-    Object.entries(item.stats).forEach(([k,v]) => { bonus[k] = (bonus[k]||0) + v; });
+// STAGES config
+const STAGES=[
+  {id:1,name:"Agorà di Atene",icon:"🏛",color:"var(--s1)",bgColor:"rgba(201,168,76,.08)",cost:0,sets:['socratic_order','sophist_mask'],
+   desc:"Le strade di Atene — stage iniziale, drop libero."},
+  {id:2,name:"Accademia di Platone",icon:"📚",color:"var(--s2)",bgColor:"rgba(80,144,208,.08)",cost:80,sets:['academy_mind','ideal_form'],
+   desc:"I giardini dell'Accademia — set della mente e delle forme."},
+  {id:3,name:"Liceo di Aristotele",icon:"⚖",color:"var(--s3)",bgColor:"rgba(90,170,90,.08)",cost:200,sets:['nicomachean','pure_logic'],
+   desc:"Il Liceo peripatetico — set dell'etica e della logica."},
+  {id:4,name:"Olimpo degli Dei",icon:"🔥",color:"var(--s4)",bgColor:"rgba(160,128,208,.08)",cost:500,sets:['prometheus_fire','divine_wisdom'],
+   desc:"Le vette divine — set leggendari degli Olimpici."},
+];
+
+// ITEMS DATABASE — ogni item ha un setId
+// template: {name, icon, rarity, stats, setId}
+// 5 slots per set × 8 set = 40 item templates
+const ITEMS_TEMPLATES={
+  weapon:[
+    // Ordine Socratico
+    {name:"Rotolo della Dialettica",icon:"📜",rarity:"common",stats:{atk:5},setId:"socratic_order"},
+    {name:"Scettro del Logos",icon:"🔱",rarity:"uncommon",stats:{atk:9,critChance:2},setId:"socratic_order"},
+    {name:"Spada della Verità",icon:"⚔",rarity:"rare",stats:{atk:16,critChance:5},setId:"socratic_order"},
+    {name:"Lama dell'Elenchos",icon:"🗡",rarity:"legendary",stats:{atk:28,critChance:10},setId:"socratic_order"},
+    // Maschera del Sofista
+    {name:"Bastone Sofistico",icon:"🪄",rarity:"common",stats:{atk:4,maxHp:15},setId:"sophist_mask"},
+    {name:"Lira dell'Inganno",icon:"🎵",rarity:"uncommon",stats:{atk:7,maxHp:30},setId:"sophist_mask"},
+    {name:"Asta del Retore",icon:"📏",rarity:"rare",stats:{atk:12,maxHp:55},setId:"sophist_mask"},
+    {name:"Fiamma Sofistica",icon:"🔥",rarity:"legendary",stats:{atk:20,maxHp:90},setId:"sophist_mask"},
+    // Mente dell'Accademia
+    {name:"Penna dell'Accademia",icon:"✒",rarity:"common",stats:{atk:4,maxMp:12},setId:"academy_mind"},
+    {name:"Calamo Platonico",icon:"🖊",rarity:"uncommon",stats:{atk:7,maxMp:22},setId:"academy_mind"},
+    {name:"Libro delle Forme",icon:"📖",rarity:"rare",stats:{atk:11,maxMp:38},setId:"academy_mind"},
+    {name:"Dialogo Infinito",icon:"💬",rarity:"legendary",stats:{atk:18,maxMp:60},setId:"academy_mind"},
+    // Forma delle Idee
+    {name:"Cristallo dell'Idea",icon:"💎",rarity:"common",stats:{atk:4,critChance:4},setId:"ideal_form"},
+    {name:"Lama di Cristallo",icon:"🔮",rarity:"uncommon",stats:{atk:8,critChance:7},setId:"ideal_form"},
+    {name:"Spada dell'Eterno",icon:"⚡",rarity:"rare",stats:{atk:14,critChance:11},setId:"ideal_form"},
+    {name:"Forma Assoluta",icon:"🌟",rarity:"legendary",stats:{atk:24,critChance:18},setId:"ideal_form"},
+    // Etica Nicomachea
+    {name:"Spadino Etico",icon:"🗡",rarity:"common",stats:{atk:5,def:3},setId:"nicomachean"},
+    {name:"Ascia della Virtù",icon:"🪓",rarity:"uncommon",stats:{atk:9,def:5},setId:"nicomachean"},
+    {name:"Spada dell'Etica",icon:"⚔",rarity:"rare",stats:{atk:15,def:8},setId:"nicomachean"},
+    {name:"Lama Nicomachea",icon:"🔱",rarity:"legendary",stats:{atk:26,def:13},setId:"nicomachean"},
+    // Logica Pura
+    {name:"Compasso Logico",icon:"📐",rarity:"common",stats:{atk:3,def:5},setId:"pure_logic"},
+    {name:"Righello della Ragione",icon:"📏",rarity:"uncommon",stats:{atk:6,def:8},setId:"pure_logic"},
+    {name:"Assioma Affilato",icon:"🔬",rarity:"rare",stats:{atk:10,def:13},setId:"pure_logic"},
+    {name:"Teorema Assoluto",icon:"∞",rarity:"legendary",stats:{atk:16,def:22},setId:"pure_logic"},
+    // Fuoco di Prometeo
+    {name:"Tizzone di Prometeo",icon:"🕯",rarity:"common",stats:{atk:5,critChance:5},setId:"prometheus_fire"},
+    {name:"Torcia Olimpica",icon:"🔦",rarity:"uncommon",stats:{atk:9,critChance:9},setId:"prometheus_fire"},
+    {name:"Fiamma Divina",icon:"🔥",rarity:"rare",stats:{atk:16,critChance:14},setId:"prometheus_fire"},
+    {name:"Braciere degli Dei",icon:"☄",rarity:"legendary",stats:{atk:27,critChance:22},setId:"prometheus_fire"},
+    // Saggezza degli Dei
+    {name:"Pergamena Divina",icon:"📜",rarity:"common",stats:{atk:4,maxMp:15},setId:"divine_wisdom"},
+    {name:"Sigillo di Zeus",icon:"⚡",rarity:"uncommon",stats:{atk:7,maxMp:25,mpRegen:1},setId:"divine_wisdom"},
+    {name:"Scettro dell'Olimpo",icon:"🌩",rarity:"rare",stats:{atk:13,maxMp:40,mpRegen:2},setId:"divine_wisdom"},
+    {name:"Fulmine di Zeus",icon:"⚡",rarity:"legendary",stats:{atk:22,maxMp:65,mpRegen:4},setId:"divine_wisdom"},
+  ],
+  armor:[
+    {name:"Mantello Socratico",icon:"🧥",rarity:"common",stats:{def:3,maxHp:20},setId:"socratic_order"},
+    {name:"Toga della Dialettica",icon:"👘",rarity:"uncommon",stats:{def:6,maxHp:40},setId:"socratic_order"},
+    {name:"Veste dell'Elenchos",icon:"🎓",rarity:"rare",stats:{def:11,maxHp:70},setId:"socratic_order"},
+    {name:"Armatura del Logos",icon:"🛡",rarity:"legendary",stats:{def:18,maxHp:110},setId:"socratic_order"},
+    {name:"Mantello Sofistico",icon:"🎭",rarity:"common",stats:{def:2,maxHp:30},setId:"sophist_mask"},
+    {name:"Veste del Retore",icon:"👗",rarity:"uncommon",stats:{def:4,maxHp:60},setId:"sophist_mask"},
+    {name:"Abito dell'Oratoria",icon:"🎩",rarity:"rare",stats:{def:8,maxHp:100},setId:"sophist_mask"},
+    {name:"Corona del Sofista",icon:"👑",rarity:"legendary",stats:{def:12,maxHp:160},setId:"sophist_mask"},
+    {name:"Toga Accademica",icon:"🎓",rarity:"common",stats:{def:3,maxMp:14},setId:"academy_mind"},
+    {name:"Veste di Platone",icon:"🧥",rarity:"uncommon",stats:{def:6,maxMp:25},setId:"academy_mind"},
+    {name:"Armatura Mentale",icon:"🛡",rarity:"rare",stats:{def:10,maxMp:42},setId:"academy_mind"},
+    {name:"Corazza dell'Intelletto",icon:"🧠",rarity:"legendary",stats:{def:16,maxMp:68},setId:"academy_mind"},
+    {name:"Tunica dell'Idea",icon:"👘",rarity:"common",stats:{def:3,critChance:3},setId:"ideal_form"},
+    {name:"Veste dell'Eterno",icon:"🌌",rarity:"uncommon",stats:{def:5,critChance:6},setId:"ideal_form"},
+    {name:"Armatura di Cristallo",icon:"💎",rarity:"rare",stats:{def:9,critChance:10},setId:"ideal_form"},
+    {name:"Forma Perfetta",icon:"🌟",rarity:"legendary",stats:{def:15,critChance:16},setId:"ideal_form"},
+    {name:"Cintura Etica",icon:"🎗",rarity:"common",stats:{def:4,atk:3},setId:"nicomachean"},
+    {name:"Cotta di Maglia Virtuosa",icon:"⛓",rarity:"uncommon",stats:{def:7,atk:6},setId:"nicomachean"},
+    {name:"Armatura Nicomachea",icon:"🛡",rarity:"rare",stats:{def:13,atk:10},setId:"nicomachean"},
+    {name:"Egida dell'Etica",icon:"⚖",rarity:"legendary",stats:{def:21,atk:16},setId:"nicomachean"},
+    {name:"Corazza Logica",icon:"🔬",rarity:"common",stats:{def:5,maxHp:15},setId:"pure_logic"},
+    {name:"Veste dell'Assioma",icon:"📐",rarity:"uncommon",stats:{def:9,maxHp:30},setId:"pure_logic"},
+    {name:"Armatura del Teorema",icon:"🔭",rarity:"rare",stats:{def:15,maxHp:55},setId:"pure_logic"},
+    {name:"Corazza Assoluta",icon:"🛡",rarity:"legendary",stats:{def:24,maxHp:90},setId:"pure_logic"},
+    {name:"Mantello di Fiamma",icon:"🧥",rarity:"common",stats:{def:3,critChance:5},setId:"prometheus_fire"},
+    {name:"Corazza Ardente",icon:"🔥",rarity:"uncommon",stats:{def:6,critChance:9},setId:"prometheus_fire"},
+    {name:"Armatura di Prometeo",icon:"⚡",rarity:"rare",stats:{def:11,critChance:14},setId:"prometheus_fire"},
+    {name:"Fiamma Eterna",icon:"☄",rarity:"legendary",stats:{def:18,critChance:22},setId:"prometheus_fire"},
+    {name:"Veste degli Dei",icon:"☁",rarity:"common",stats:{def:3,mpRegen:2},setId:"divine_wisdom"},
+    {name:"Armatura Celeste",icon:"🌤",rarity:"uncommon",stats:{def:6,maxMp:20,mpRegen:2},setId:"divine_wisdom"},
+    {name:"Toga dell'Olimpo",icon:"⛅",rarity:"rare",stats:{def:10,maxMp:35,mpRegen:3},setId:"divine_wisdom"},
+    {name:"Veste dell'Eterno",icon:"🌟",rarity:"legendary",stats:{def:16,maxMp:55,mpRegen:6},setId:"divine_wisdom"},
+  ],
+  ring:[
+    {name:"Anello della Dialettica",icon:"💍",rarity:"common",stats:{critChance:3,atk:2},setId:"socratic_order"},
+    {name:"Sigillo del Filosofo",icon:"🔮",rarity:"uncommon",stats:{critChance:5,atk:4},setId:"socratic_order"},
+    {name:"Anello dell'Elenchos",icon:"🌀",rarity:"rare",stats:{critChance:9,atk:8},setId:"socratic_order"},
+    {name:"Sigillo di Socrate",icon:"♾",rarity:"legendary",stats:{critChance:15,atk:14},setId:"socratic_order"},
+    {name:"Anello Sofistico",icon:"💍",rarity:"common",stats:{maxHp:25},setId:"sophist_mask"},
+    {name:"Gemma del Retore",icon:"💎",rarity:"uncommon",stats:{maxHp:50,def:2},setId:"sophist_mask"},
+    {name:"Anello dell'Inganno",icon:"🌀",rarity:"rare",stats:{maxHp:85,def:4},setId:"sophist_mask"},
+    {name:"Corona del Mistero",icon:"👑",rarity:"legendary",stats:{maxHp:140,def:7},setId:"sophist_mask"},
+    {name:"Anello dell'Accademia",icon:"📚",rarity:"common",stats:{maxMp:18,mpRegen:1},setId:"academy_mind"},
+    {name:"Sigillo di Platone",icon:"🔮",rarity:"uncommon",stats:{maxMp:32,mpRegen:2},setId:"academy_mind"},
+    {name:"Anello della Mente",icon:"🧠",rarity:"rare",stats:{maxMp:52,mpRegen:3},setId:"academy_mind"},
+    {name:"Sigillo Ideale",icon:"💫",rarity:"legendary",stats:{maxMp:80,mpRegen:5},setId:"academy_mind"},
+    {name:"Cristallo Anulare",icon:"💍",rarity:"common",stats:{critChance:5},setId:"ideal_form"},
+    {name:"Anello delle Forme",icon:"💎",rarity:"uncommon",stats:{critChance:9},setId:"ideal_form"},
+    {name:"Sigillo dell'Eterno",icon:"♾",rarity:"rare",stats:{critChance:14,atk:5},setId:"ideal_form"},
+    {name:"Occhio dell'Idea",icon:"👁",rarity:"legendary",stats:{critChance:22,atk:10},setId:"ideal_form"},
+    {name:"Anello Etico",icon:"⚖",rarity:"common",stats:{atk:3,def:3},setId:"nicomachean"},
+    {name:"Sigillo della Virtù",icon:"🌿",rarity:"uncommon",stats:{atk:6,def:5},setId:"nicomachean"},
+    {name:"Anello Nicomacheo",icon:"📜",rarity:"rare",stats:{atk:10,def:9},setId:"nicomachean"},
+    {name:"Sigillo Aristotelico",icon:"🏺",rarity:"legendary",stats:{atk:17,def:15},setId:"nicomachean"},
+    {name:"Anello Logico",icon:"🔬",rarity:"common",stats:{def:4,maxHp:20},setId:"pure_logic"},
+    {name:"Sigillo dell'Assioma",icon:"📐",rarity:"uncommon",stats:{def:7,maxHp:40},setId:"pure_logic"},
+    {name:"Anello del Teorema",icon:"∞",rarity:"rare",stats:{def:12,maxHp:70},setId:"pure_logic"},
+    {name:"Sigillo Assoluto",icon:"🔭",rarity:"legendary",stats:{def:20,maxHp:110},setId:"pure_logic"},
+    {name:"Anello di Fuoco",icon:"🔥",rarity:"common",stats:{critChance:6,atk:3},setId:"prometheus_fire"},
+    {name:"Sigillo della Fiamma",icon:"💫",rarity:"uncommon",stats:{critChance:11,atk:6},setId:"prometheus_fire"},
+    {name:"Anello Olimpico",icon:"🌟",rarity:"rare",stats:{critChance:17,atk:10},setId:"prometheus_fire"},
+    {name:"Fuoco Eterno",icon:"☄",rarity:"legendary",stats:{critChance:26,atk:16},setId:"prometheus_fire"},
+    {name:"Anello Celeste",icon:"⚡",rarity:"common",stats:{maxMp:20,mpRegen:1},setId:"divine_wisdom"},
+    {name:"Sigillo di Ermes",icon:"☁",rarity:"uncommon",stats:{maxMp:35,mpRegen:2},setId:"divine_wisdom"},
+    {name:"Anello dell'Olimpo",icon:"🌩",rarity:"rare",stats:{maxMp:55,mpRegen:3},setId:"divine_wisdom"},
+    {name:"Sigillo degli Dei",icon:"✨",rarity:"legendary",stats:{maxMp:88,mpRegen:5,atk:8},setId:"divine_wisdom"},
+  ],
+  amulet:[
+    {name:"Amuleto Socratico",icon:"📿",rarity:"common",stats:{maxHp:22,atk:2},setId:"socratic_order"},
+    {name:"Medaglione del Filosofo",icon:"🏺",rarity:"uncommon",stats:{maxHp:45,atk:5},setId:"socratic_order"},
+    {name:"Ciondolo dell'Elenchos",icon:"🌀",rarity:"rare",stats:{maxHp:78,atk:9},setId:"socratic_order"},
+    {name:"Amuleto del Logos",icon:"✨",rarity:"legendary",stats:{maxHp:125,atk:15},setId:"socratic_order"},
+    {name:"Amuleto Sofistico",icon:"🎭",rarity:"common",stats:{maxHp:35},setId:"sophist_mask"},
+    {name:"Collana del Retore",icon:"📿",rarity:"uncommon",stats:{maxHp:70,mpRegen:1},setId:"sophist_mask"},
+    {name:"Amuleto dell'Illusione",icon:"🌫",rarity:"rare",stats:{maxHp:115,mpRegen:2},setId:"sophist_mask"},
+    {name:"Cuore del Sofista",icon:"🖤",rarity:"legendary",stats:{maxHp:185,mpRegen:4},setId:"sophist_mask"},
+    {name:"Amuleto Accademico",icon:"📚",rarity:"common",stats:{maxMp:22,maxHp:18},setId:"academy_mind"},
+    {name:"Ciondolo di Platone",icon:"💫",rarity:"uncommon",stats:{maxMp:38,maxHp:35},setId:"academy_mind"},
+    {name:"Amuleto della Mente",icon:"🧠",rarity:"rare",stats:{maxMp:60,maxHp:60},setId:"academy_mind"},
+    {name:"Cuore dell'Accademia",icon:"💙",rarity:"legendary",stats:{maxMp:95,maxHp:95},setId:"academy_mind"},
+    {name:"Amuleto del Cristallo",icon:"💎",rarity:"common",stats:{critChance:4,maxHp:20},setId:"ideal_form"},
+    {name:"Ciondolo Eterno",icon:"♾",rarity:"uncommon",stats:{critChance:7,maxHp:40},setId:"ideal_form"},
+    {name:"Amuleto dell'Idea",icon:"🌟",rarity:"rare",stats:{critChance:12,maxHp:68},setId:"ideal_form"},
+    {name:"Cuore dell'Eterno",icon:"💛",rarity:"legendary",stats:{critChance:20,maxHp:110},setId:"ideal_form"},
+    {name:"Amuleto Etico",icon:"⚖",rarity:"common",stats:{atk:4,def:4},setId:"nicomachean"},
+    {name:"Ciondolo Aristotelico",icon:"🏺",rarity:"uncommon",stats:{atk:7,def:7},setId:"nicomachean"},
+    {name:"Amuleto Nicomacheo",icon:"📜",rarity:"rare",stats:{atk:12,def:12},setId:"nicomachean"},
+    {name:"Cuore della Virtù",icon:"💚",rarity:"legendary",stats:{atk:20,def:20},setId:"nicomachean"},
+    {name:"Amuleto Logico",icon:"🔬",rarity:"common",stats:{def:6,mpRegen:1},setId:"pure_logic"},
+    {name:"Ciondolo dell'Assioma",icon:"📐",rarity:"uncommon",stats:{def:10,mpRegen:2,maxHp:25},setId:"pure_logic"},
+    {name:"Amuleto del Teorema",icon:"∞",rarity:"rare",stats:{def:17,mpRegen:3,maxHp:50},setId:"pure_logic"},
+    {name:"Cuore Logico",icon:"🤍",rarity:"legendary",stats:{def:28,mpRegen:5,maxHp:80},setId:"pure_logic"},
+    {name:"Amuleto di Prometeo",icon:"🔥",rarity:"common",stats:{critChance:7,atk:3},setId:"prometheus_fire"},
+    {name:"Torcia dell'Olimpo",icon:"🕯",rarity:"uncommon",stats:{critChance:12,atk:6},setId:"prometheus_fire"},
+    {name:"Fiamma del Titano",icon:"🌋",rarity:"rare",stats:{critChance:18,atk:10},setId:"prometheus_fire"},
+    {name:"Cuore di Fuoco",icon:"❤‍🔥",rarity:"legendary",stats:{critChance:28,atk:17},setId:"prometheus_fire"},
+    {name:"Amuleto Celeste",icon:"⭐",rarity:"common",stats:{maxMp:25,maxHp:20},setId:"divine_wisdom"},
+    {name:"Ciondolo di Apollo",icon:"🌞",rarity:"uncommon",stats:{maxMp:42,maxHp:40,mpRegen:1},setId:"divine_wisdom"},
+    {name:"Amuleto dell'Olimpo",icon:"🌟",rarity:"rare",stats:{maxMp:68,maxHp:65,mpRegen:2},setId:"divine_wisdom"},
+    {name:"Cuore degli Dei",icon:"💜",rarity:"legendary",stats:{maxMp:108,maxHp:105,mpRegen:4},setId:"divine_wisdom"},
+  ],
+  boots:[
+    {name:"Sandali Socratici",icon:"👡",rarity:"common",stats:{def:2,critChance:2},setId:"socratic_order"},
+    {name:"Calzari del Filosofo",icon:"👟",rarity:"uncommon",stats:{def:4,critChance:4},setId:"socratic_order"},
+    {name:"Sandali dell'Elenchos",icon:"🥿",rarity:"rare",stats:{def:7,critChance:7,atk:4},setId:"socratic_order"},
+    {name:"Stivali del Logos",icon:"🥾",rarity:"legendary",stats:{def:12,critChance:12,atk:7},setId:"socratic_order"},
+    {name:"Sandali Sofistici",icon:"👡",rarity:"common",stats:{def:2,maxHp:22},setId:"sophist_mask"},
+    {name:"Calzari del Retore",icon:"👟",rarity:"uncommon",stats:{def:4,maxHp:44},setId:"sophist_mask"},
+    {name:"Stivali dell'Illusione",icon:"🥿",rarity:"rare",stats:{def:7,maxHp:75},setId:"sophist_mask"},
+    {name:"Sandali del Mistero",icon:"🌫",rarity:"legendary",stats:{def:11,maxHp:120},setId:"sophist_mask"},
+    {name:"Sandali Accademici",icon:"🎓",rarity:"common",stats:{def:2,maxMp:16},setId:"academy_mind"},
+    {name:"Calzari di Platone",icon:"👟",rarity:"uncommon",stats:{def:4,maxMp:28},setId:"academy_mind"},
+    {name:"Sandali della Mente",icon:"🧠",rarity:"rare",stats:{def:7,maxMp:46,mpRegen:1},setId:"academy_mind"},
+    {name:"Stivali dell'Intelletto",icon:"💙",rarity:"legendary",stats:{def:11,maxMp:72,mpRegen:3},setId:"academy_mind"},
+    {name:"Sandali dell'Idea",icon:"💎",rarity:"common",stats:{def:2,critChance:4},setId:"ideal_form"},
+    {name:"Calzari Eterni",icon:"♾",rarity:"uncommon",stats:{def:4,critChance:7},setId:"ideal_form"},
+    {name:"Sandali di Cristallo",icon:"💎",rarity:"rare",stats:{def:7,critChance:11,atk:3},setId:"ideal_form"},
+    {name:"Stivali della Forma",icon:"🌟",rarity:"legendary",stats:{def:11,critChance:18,atk:6},setId:"ideal_form"},
+    {name:"Sandali Etici",icon:"⚖",rarity:"common",stats:{atk:3,def:3},setId:"nicomachean"},
+    {name:"Calzari della Virtù",icon:"🌿",rarity:"uncommon",stats:{atk:5,def:5,maxHp:20},setId:"nicomachean"},
+    {name:"Stivali Nicomachei",icon:"📜",rarity:"rare",stats:{atk:9,def:9,maxHp:40},setId:"nicomachean"},
+    {name:"Sandali Aristotelici",icon:"🏺",rarity:"legendary",stats:{atk:15,def:15,maxHp:65},setId:"nicomachean"},
+    {name:"Sandali Logici",icon:"🔬",rarity:"common",stats:{def:5,maxHp:18},setId:"pure_logic"},
+    {name:"Calzari dell'Assioma",icon:"📐",rarity:"uncommon",stats:{def:9,maxHp:36},setId:"pure_logic"},
+    {name:"Stivali del Teorema",icon:"∞",rarity:"rare",stats:{def:15,maxHp:60,mpRegen:1},setId:"pure_logic"},
+    {name:"Sandali Assoluti",icon:"🔭",rarity:"legendary",stats:{def:24,maxHp:100,mpRegen:3},setId:"pure_logic"},
+    {name:"Sandali di Prometeo",icon:"🔥",rarity:"common",stats:{critChance:6,def:2},setId:"prometheus_fire"},
+    {name:"Calzari della Fiamma",icon:"🕯",rarity:"uncommon",stats:{critChance:10,def:4},setId:"prometheus_fire"},
+    {name:"Stivali Olimpici",icon:"⚡",rarity:"rare",stats:{critChance:16,def:7,atk:5},setId:"prometheus_fire"},
+    {name:"Sandali del Fuoco Eterno",icon:"☄",rarity:"legendary",stats:{critChance:25,def:11,atk:9},setId:"prometheus_fire"},
+    {name:"Sandali Celesti",icon:"☁",rarity:"common",stats:{maxMp:18,def:2},setId:"divine_wisdom"},
+    {name:"Calzari di Ermes",icon:"⚡",rarity:"uncommon",stats:{maxMp:30,def:4,mpRegen:1},setId:"divine_wisdom"},
+    {name:"Stivali dell'Olimpo",icon:"🌩",rarity:"rare",stats:{maxMp:50,def:7,mpRegen:2},setId:"divine_wisdom"},
+    {name:"Sandali degli Dei",icon:"✨",rarity:"legendary",stats:{maxMp:80,def:11,mpRegen:4},setId:"divine_wisdom"},
+  ],
+};
+
+const SLOT_ICONS={weapon:"⚔",armor:"🛡",ring:"💍",amulet:"📿",boots:"👟"};
+const SLOT_NAMES={weapon:"Arma",armor:"Armatura",ring:"Anello",amulet:"Amuleto",boots:"Sandali"};
+const RARITY_ORDER={common:0,uncommon:1,rare:2,legendary:3};
+const RARITY_NAMES={common:"Comune",uncommon:"Non Comune",rare:"Raro",legendary:"Leggendario"};
+const SELL_PRICES={common:3,uncommon:9,rare:25,legendary:60};
+
+const UPGRADES_DEF=[
+  {id:'dialectics',name:'Dialettica',desc:'Potenzia l\'argomentazione. +3 danno/lv.',baseCost:15,effect:g=>{g.player.baseAtk+=3},getEffect:lv=>`+${lv*3} ATK`,costScale:1.5},
+  {id:'virtue',name:'Virtù',desc:'L\'anima regge più colpi. +20 HP/lv.',baseCost:20,effect:g=>{g.player.baseMaxHp+=20},getEffect:lv=>`+${lv*20} HP`,costScale:1.6},
+  {id:'temperance',name:'Temperanza',desc:'Riduce i danni subiti. +2 def/lv.',baseCost:25,effect:g=>{g.player.baseDef+=2},getEffect:lv=>`+${lv*2} DEF`,costScale:1.55},
+  {id:'logos',name:'Logos',desc:'Espande la mente. +10 Logos/lv.',baseCost:18,effect:g=>{g.player.baseMaxMp+=10;g.player.baseMpRegen+=1},getEffect:lv=>`+${lv*10} Logos`,costScale:1.45},
+  {id:'insight',name:'Intuizione',desc:'Perspicacia critica. +3% crit/lv.',baseCost:30,effect:g=>{g.player.baseCritChance+=3},getEffect:lv=>`+${lv*3}% Crit`,costScale:1.6},
+  {id:'wisdom_gain',name:'Sapienza',desc:'Più Saggezza dalle battaglie. +20%/lv.',baseCost:40,effect:g=>{g.wisdomMult+=0.2},getEffect:lv=>`+${Math.round(lv*20)}% Sag.`,costScale:1.8},
+];
+
+// ══════════════════════════════════════════
+//  GAME STATE
+// ══════════════════════════════════════════
+let G={
+  floor:1,wisdom:0,totalKills:0,prestige:0,prestigeBonus:1,
+  autoMode:false,autoTimer:null,battleOver:false,playerTurn:true,wisdomMult:1,
+  upgradeLevels:{dialectics:0,virtue:0,temperance:0,logos:0,insight:0,wisdom_gain:0},
+  playerName:'Socrate',
+  currentStage:0,  // 0 = normal (no stage), 1-4 = farming that stage
+  player:{hp:100,baseMaxHp:100,mp:60,baseMaxMp:60,baseMpRegen:3,baseAtk:10,baseDef:0,baseCritChance:5},
+  enemy:{name:'',hp:80,maxHp:80,atk:8,def:0},
+  cooldowns:[0,0,0,0],
+  playerStatuses:[],enemyStatuses:[],
+  inventory:[],
+  equipped:{weapon:null,armor:null,ring:null,amulet:null,boots:null},
+  nextItemId:1,
+  invFilter:'all',
+};
+
+// ── SET BONUS CALC ──────────────────────────────────────
+function getSetCounts(){
+  const counts={};
+  Object.values(G.equipped).forEach(item=>{
+    if(!item||!item.setId)return;
+    counts[item.setId]=(counts[item.setId]||0)+1;
   });
-  return {
-    atk: p.baseAtk + (bonus.atk||0),
-    def: p.baseDef + (bonus.def||0),
-    maxHp: p.baseMaxHp + (bonus.maxHp||0),
-    critChance: p.baseCritChance + (bonus.critChance||0),
-    maxMp: p.baseMaxMp + (bonus.maxMp||0),
-    mpRegen: p.baseMpRegen + (bonus.mpRegen||0),
-  };
+  return counts;
+}
+function getActiveBonus4Specials(){
+  const counts=getSetCounts();
+  const specials=new Set();
+  Object.entries(counts).forEach(([sid,cnt])=>{
+    if(cnt>=4&&SETS[sid].bonus4special) specials.add(SETS[sid].bonus4special);
+  });
+  return specials;
 }
 
-// ══════════════════════════════════════════════
-//  ITEM SYSTEM
-// ══════════════════════════════════════════════
-function rollItemDrop() {
-  // 70% chance of a drop
-  if (Math.random() > 0.70) return null;
-  // pick rarity
-  const r = Math.random();
+// ── EFFECTIVE STATS ──────────────────────────────────────
+function computeStats(){
+  const p=G.player;
+  // base
+  let atk=p.baseAtk,def=p.baseDef,maxHp=p.baseMaxHp,critChance=p.baseCritChance,maxMp=p.baseMaxMp,mpRegen=p.baseMpRegen;
+  // flat item bonuses
+  Object.values(G.equipped).forEach(item=>{
+    if(!item)return;
+    if(item.stats.atk) atk+=item.stats.atk;
+    if(item.stats.def) def+=item.stats.def;
+    if(item.stats.maxHp) maxHp+=item.stats.maxHp;
+    if(item.stats.critChance) critChance+=item.stats.critChance;
+    if(item.stats.maxMp) maxMp+=item.stats.maxMp;
+    if(item.stats.mpRegen) mpRegen+=item.stats.mpRegen;
+  });
+  // 2-piece set bonuses (percentage on base+flat)
+  const counts=getSetCounts();
+  Object.entries(counts).forEach(([sid,cnt])=>{
+    if(cnt<2)return;
+    const b=SETS[sid].bonus2;
+    if(b.atkPct) atk=Math.round(atk*(1+b.atkPct));
+    if(b.defPct) def=Math.round(def*(1+b.defPct)||1);
+    if(b.maxHpPct) maxHp=Math.round(maxHp*(1+b.maxHpPct));
+    if(b.critChancePct) critChance=Math.round(critChance*(1+b.critChancePct));
+    if(b.maxMpPct) maxMp=Math.round(maxMp*(1+b.maxMpPct));
+    if(b.wisdomPct){ /* handled separately in wisdom calc */ }
+  });
+  return {atk,def,maxHp,critChance,maxMp,mpRegen};
+}
+
+function getWisdomBonus(){
+  const counts=getSetCounts();
+  let mult=1;
+  Object.entries(counts).forEach(([sid,cnt])=>{
+    if(cnt>=2&&SETS[sid].bonus2.wisdomPct) mult+=(SETS[sid].bonus2.wisdomPct*(cnt>=4?2:1));
+  });
+  return mult;
+}
+
+// ══════════════════════════════════════════
+//  ITEM DROPS
+// ══════════════════════════════════════════
+function rollItemDrop(){
+  if(Math.random()>0.72)return null;
+  const r=Math.random();
   let rarity;
-  if (r < 0.03) rarity = 'legendary';
-  else if (r < 0.13) rarity = 'rare';
-  else if (r < 0.38) rarity = 'uncommon';
-  else rarity = 'common';
+  if(r<0.03)rarity='legendary';
+  else if(r<0.13)rarity='rare';
+  else if(r<0.38)rarity='uncommon';
+  else rarity='common';
 
-  // pick slot
-  const slots = Object.keys(ITEMS_DB);
-  const slot = slots[Math.floor(Math.random() * slots.length)];
+  const slots=Object.keys(SLOT_ICONS);
+  const slot=slots[Math.floor(Math.random()*slots.length)];
 
-  // pick item of that rarity from slot (or nearest)
-  const pool = ITEMS_DB[slot].filter(i => i.rarity === rarity);
-  const base = pool.length ? pool[Math.floor(Math.random() * pool.length)]
-                           : ITEMS_DB[slot][Math.floor(Math.random() * ITEMS_DB[slot].length)];
+  let pool;
+  if(G.currentStage>0){
+    // filter to current stage's sets
+    const stageSets=STAGES[G.currentStage-1].sets;
+    pool=ITEMS_TEMPLATES[slot].filter(t=>stageSets.includes(t.setId)&&t.rarity===rarity);
+    if(!pool.length) pool=ITEMS_TEMPLATES[slot].filter(t=>stageSets.includes(t.setId));
+  } else {
+    pool=ITEMS_TEMPLATES[slot].filter(t=>t.rarity===rarity);
+    if(!pool.length) pool=ITEMS_TEMPLATES[slot];
+  }
 
-  // scale stats with floor
-  const scale = 1 + (G.floor - 1) * 0.06;
-  const scaledStats = {};
-  Object.entries(base.stats).forEach(([k,v]) => {
-    scaledStats[k] = Math.round(v * scale);
-  });
-
-  return {
-    id: G.nextItemId++,
-    slot, name: base.name, icon: base.icon,
-    rarity: base.rarity, stats: scaledStats,
-    equipped: false,
-  };
+  const base=pool[Math.floor(Math.random()*pool.length)];
+  const scale=1+Math.max(0,G.floor-1)*0.055;
+  const scaledStats={};
+  Object.entries(base.stats).forEach(([k,v])=>{scaledStats[k]=Math.round(v*scale);});
+  return{id:G.nextItemId++,slot,name:base.name,icon:base.icon,rarity:base.rarity,stats:scaledStats,setId:base.setId,equipped:false};
 }
 
-function addToInventory(item) {
-  if (G.inventory.length >= 20) {
-    // drop oldest non-equipped
-    const idx = G.inventory.findIndex(i => !i.equipped);
-    if (idx >= 0) G.inventory.splice(idx, 1);
+function addToInventory(item){
+  if(G.inventory.length>=30){
+    const idx=G.inventory.findIndex(i=>!i.equipped);
+    if(idx>=0)G.inventory.splice(idx,1);
+    else return; // all equipped, can't add
   }
   G.inventory.push(item);
 }
 
-function equipItem(itemId) {
-  const item = G.inventory.find(i => i.id === itemId);
-  if (!item) return;
-  // unequip current in that slot
-  if (G.equipped[item.slot]) {
-    G.equipped[item.slot].equipped = false;
-    G.equipped[item.slot] = null;
-  }
-  // equip new
-  item.equipped = true;
-  G.equipped[item.slot] = item;
-  // recalculate hp cap
-  const st = computeStats();
-  G.player.mp = Math.min(G.player.mp, st.maxMp);
-  G.player.hp = Math.min(G.player.hp, st.maxHp);
-  addLog(`Equipaggiato: <b>${item.name}</b> (${RARITY_NAMES[item.rarity]})`, 'item');
-  renderEquip(); renderInventory(); updateUI();
+function equipItem(itemId){
+  const item=G.inventory.find(i=>i.id===itemId);
+  if(!item)return;
+  if(G.equipped[item.slot]){G.equipped[item.slot].equipped=false;}
+  item.equipped=true;
+  G.equipped[item.slot]=item;
+  const st=computeStats();
+  G.player.hp=Math.min(G.player.hp,st.maxHp);
+  G.player.mp=Math.min(G.player.mp,st.maxMp);
+  addLog(`Equipaggiato: <b>${item.name}</b> [${SETS[item.setId].name}]`,'item');
+  checkSetMessages();
+  renderEquip();renderInventory();updateUI();
 }
 
-function unequipItem(slot) {
-  if (!G.equipped[slot]) return;
-  G.equipped[slot].equipped = false;
-  G.equipped[slot] = null;
-  renderEquip(); renderInventory(); updateUI();
+function unequipItem(slot){
+  if(!G.equipped[slot])return;
+  G.equipped[slot].equipped=false;
+  G.equipped[slot]=null;
+  addLog(`Rimosso equipaggiamento da ${SLOT_NAMES[slot]}.`,'system');
+  renderEquip();renderInventory();updateUI();
 }
 
-function statsText(stats) {
-  return Object.entries(stats).map(([k,v]) => {
-    const labels = {atk:'ATK',def:'DEF',maxHp:'HP',critChance:'CRIT%',maxMp:'Logos',mpRegen:'Regen'};
-    return `+${v} ${labels[k]||k}`;
-  }).join('  ');
+function sellItem(itemId){
+  const item=G.inventory.find(i=>i.id===itemId);
+  if(!item||item.equipped)return;
+  const price=SELL_PRICES[item.rarity];
+  G.wisdom+=price;
+  G.inventory=G.inventory.filter(i=>i.id!==itemId);
+  addLog(`Venduto: <b>${item.name}</b> per ${price} Saggezza.`,'sell');
+  updateUI();renderInventory();renderUpgrades();
 }
 
-function rarityClass(r) { return 'rarity-'+r; }
-function rarityPill(r) { return `<span class="rarity-pill rp-${r}">${RARITY_NAMES[r]}</span>`; }
+function sellAll(){
+  // sell all non-equipped common/uncommon
+  const toSell=G.inventory.filter(i=>!i.equipped&&(i.rarity==='common'||i.rarity==='uncommon'));
+  if(!toSell.length){addLog('Niente da vendere (si vendono solo Comuni e Non Comuni).','system');return;}
+  let total=0;
+  toSell.forEach(i=>{total+=SELL_PRICES[i.rarity];});
+  G.inventory=G.inventory.filter(i=>i.equipped||(i.rarity!=='common'&&i.rarity!=='uncommon'));
+  G.wisdom+=total;
+  addLog(`Venduti ${toSell.length} oggetti per ${total} Saggezza totale.`,'sell');
+  updateUI();renderInventory();renderUpgrades();
+}
 
-// ══════════════════════════════════════════════
+function setFilter(f){
+  G.invFilter=f;
+  document.querySelectorAll('.inv-filter-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderInventory();
+}
+
+function checkSetMessages(){
+  const counts=getSetCounts();
+  Object.entries(counts).forEach(([sid,cnt])=>{
+    const s=SETS[sid];
+    if(cnt===2) addLog(`✦ Set 2pc attivo: <b>${s.name}</b> — ${s.desc2}`,'set');
+    if(cnt===4) addLog(`⚡ Set 4pc ATTIVO: <b>${s.name}</b> — ${s.desc4}`,'set');
+  });
+}
+
+// ══════════════════════════════════════════
 //  COMBAT
-// ══════════════════════════════════════════════
-const SKILLS = [
-  { name:'Elenchos', cost:0, cd:0,
-    use(g){
-      const st = computeStats();
-      let base = st.atk * (1 + g.floor * 0.05);
-      let crit = Math.random()*100 < st.critChance;
-      if(crit) base *= 2.2;
-      let dmg = Math.max(1, Math.round(base - g.enemy.def));
-      dealDamageToEnemy(dmg, crit);
-      let pn = g.playerName;
-      if(crit) addLog(`${pn} usa <b>Elenchos</b>! CRITICO! ${dmg} danni!`, 'crit');
-      else addLog(`${pn} usa <b>Elenchos</b>. ${dmg} danni.`, 'player');
-      return true;
-    }},
-  { name:'Maieutica', cost:20, cd:3,
-    use(g){
-      const st = computeStats();
-      let heal = Math.round(st.maxHp * 0.18 + st.atk);
-      g.player.hp = Math.min(g.player.hp + heal, st.maxHp);
-      showHealPop('player-card', heal);
-      g.playerStatuses.push({type:'buff', name:'Saggezza+', turns:3});
-      addLog(`${g.playerName} usa <b>Maieutica</b>. +${heal} HP, buff Saggezza+.`, 'player');
-      return true;
-    }},
-  { name:'Eironeia', cost:25, cd:4,
-    use(g){
-      g.enemyStatuses.push({type:'debuff', name:'Confuso', turns:3, atkMult:0.5});
-      const st = computeStats();
-      let dmg = Math.round(st.atk * 0.8);
-      dealDamageToEnemy(dmg, false);
-      addLog(`${g.playerName} usa <b>Eironeia</b>! Confuso × 3 turni. ${dmg} danni.`, 'player');
-      return true;
-    }},
-  { name:'Aporia', cost:40, cd:5,
-    use(g){
-      const st = computeStats();
-      let total = 0;
-      for(let i=0;i<3;i++){
-        let dmg = Math.max(1, Math.round(st.atk * 1.4 - g.enemy.def));
-        total += dmg; dealDamageToEnemy(dmg, false);
-      }
-      addLog(`${g.playerName} usa <b>Aporia</b>! Triplo colpo — ${total} danni!`, 'crit');
-      return true;
-    }},
+// ══════════════════════════════════════════
+const SKILLS=[
+  {name:'Elenchos',cost:0,cd:0,
+   use(g){
+     const st=computeStats(),sp=getActiveBonus4Specials();
+     const hits=sp.has('elenchosDouble')?2:1;
+     let totalDmg=0;
+     for(let h=0;h<hits;h++){
+       let base=st.atk*(1+g.floor*0.05);
+       let crit=Math.random()*100<st.critChance;
+       const critMult=sp.has('critMult')?3.5:2.2;
+       if(crit)base*=critMult;
+       let dmg=Math.max(1,Math.round(base-g.enemy.def));
+       totalDmg+=dmg;dealDamageToEnemy(dmg,crit);
+     }
+     const doubled=sp.has('elenchosDouble');
+     if(doubled)addLog(`${g.playerName} usa <b>Elenchos ×2</b> [Fuoco di Prometeo 4pc]! ${totalDmg} danni!`,'crit');
+     else addLog(`${g.playerName} usa <b>Elenchos</b>. ${totalDmg} danni.`,'player');
+     // logosAttackRegen 4pc
+     if(sp.has('logosAttackRegen')){
+       const mst=computeStats();
+       g.player.mp=Math.min(g.player.mp+5,mst.maxMp);
+       addLog('Logos rigenerato +5 [Saggezza degli Dei 4pc]','set');
+     }
+     return true;
+   }},
+  {name:'Maieutica',cost:20,cd:3,
+   use(g){
+     const st=computeStats(),sp=getActiveBonus4Specials();
+     const pct=sp.has('maieuticaBoost')?0.38:0.18;
+     let heal=Math.round(st.maxHp*pct+st.atk*0.5);
+     g.player.hp=Math.min(g.player.hp+heal,st.maxHp);
+     showHealPop('player-card',heal);
+     g.playerStatuses.push({type:'buff',name:'Saggezza+',turns:3});
+     const boosted=sp.has('maieuticaBoost');
+     addLog(`${g.playerName} usa <b>Maieutica</b>${boosted?' [Sofista 4pc 38%]':''}. +${heal} HP.`,'player');
+     if(sp.has('logosAttackRegen')){const mst=computeStats();g.player.mp=Math.min(g.player.mp+5,mst.maxMp);}
+     return true;
+   }},
+  {name:'Eironeia',cost:25,cd:4,
+   use(g){
+     const st=computeStats(),sp=getActiveBonus4Specials();
+     const turns=sp.has('eironeiaBuff')?6:3;
+     const atkMult=sp.has('eironeiaBuff')?0.3:0.5;
+     g.enemyStatuses.push({type:'debuff',name:'Confuso',turns,atkMult});
+     let dmg=Math.round(st.atk*0.8);
+     dealDamageToEnemy(dmg,false);
+     addLog(`${g.playerName} usa <b>Eironeia</b>${sp.has('eironeiaBuff')?' [Accademia 4pc: 6T -70%]':''}! ${dmg} danni.`,'player');
+     if(sp.has('logosAttackRegen')){const mst=computeStats();g.player.mp=Math.min(g.player.mp+5,mst.maxMp);}
+     return true;
+   }},
+  {name:'Aporia',cost:40,cd:5,
+   use(g){
+     const st=computeStats(),sp=getActiveBonus4Specials();
+     const aporiaBoost=sp.has('aporiaBoost')?1.8:1;
+     let total=0;
+     for(let i=0;i<3;i++){
+       let dmg=Math.max(1,Math.round(st.atk*1.4*aporiaBoost-g.enemy.def));
+       total+=dmg;dealDamageToEnemy(dmg,false);
+     }
+     addLog(`${g.playerName} usa <b>Aporia</b>${sp.has('aporiaBoost')?' [Ordine Socratico 4pc +80%]':''}! ${total} danni!`,'crit');
+     if(sp.has('logosAttackRegen')){const mst=computeStats();g.player.mp=Math.min(g.player.mp+5,mst.maxMp);}
+     return true;
+   }},
 ];
 
-function dealDamageToEnemy(dmg, crit) {
-  G.enemy.hp = Math.max(0, G.enemy.hp - dmg);
-  showDmgPop('enemy-card', dmg, crit ? '#ffd700' : '#e08080');
-}
-function dealDamageToPlayer(dmg) {
-  const st = computeStats();
-  let reduced = Math.max(1, dmg - st.def);
-  G.player.hp = Math.max(0, G.player.hp - reduced);
-  showDmgPop('player-card', reduced, '#ff8080');
-  return reduced;
-}
-function showDmgPop(cardId, dmg, color) {
-  const card = document.getElementById(cardId);
-  const pop = document.createElement('div');
-  pop.className = 'dmg-pop'; pop.style.color = color;
-  pop.style.left = (15+Math.random()*55)+'%'; pop.style.top = '15%';
-  pop.textContent = '-'+dmg; card.appendChild(pop);
-  setTimeout(()=>pop.remove(), 1200);
-}
-function showHealPop(cardId, val) {
-  const card = document.getElementById(cardId);
-  const pop = document.createElement('div');
-  pop.className = 'dmg-pop heal-pop';
-  pop.style.left = (15+Math.random()*55)+'%'; pop.style.top = '15%';
-  pop.textContent = '+'+val; card.appendChild(pop);
-  setTimeout(()=>pop.remove(), 1200);
-}
-function addLog(msg, type='system') {
-  const log = document.getElementById('combat-log');
-  const entry = document.createElement('div');
-  entry.className = `log-entry log-${type}`; entry.innerHTML = msg;
+function dealDamageToEnemy(dmg,crit){G.enemy.hp=Math.max(0,G.enemy.hp-dmg);showDmgPop('enemy-card',dmg,crit?'#ffd700':'#e08080');}
+function dealDamageToPlayer(dmg){const st=computeStats();let r=Math.max(1,dmg-st.def);G.player.hp=Math.max(0,G.player.hp-r);showDmgPop('player-card',r,'#ff8080');return r;}
+function showDmgPop(cardId,dmg,color){const card=document.getElementById(cardId);const pop=document.createElement('div');pop.className='dmg-pop';pop.style.color=color;pop.style.left=(15+Math.random()*55)+'%';pop.style.top='15%';pop.textContent='-'+dmg;card.appendChild(pop);setTimeout(()=>pop.remove(),1200);}
+function showHealPop(cardId,val){const card=document.getElementById(cardId);const pop=document.createElement('div');pop.className='dmg-pop heal-pop';pop.style.left=(15+Math.random()*55)+'%';pop.style.top='15%';pop.textContent='+'+val;card.appendChild(pop);setTimeout(()=>pop.remove(),1200);}
+
+function addLog(msg,type='system'){
+  const log=document.getElementById('combat-log');
+  const entry=document.createElement('div');
+  entry.className=`log-entry log-${type}`;entry.innerHTML=msg;
   log.appendChild(entry);
-  if(log.children.length > 70) log.children[0].remove();
-  log.scrollTop = log.scrollHeight;
+  if(log.children.length>80)log.children[0].remove();
+  log.scrollTop=log.scrollHeight;
 }
 
-function attack() { if(!G.playerTurn||G.battleOver) return; useSkill(0); }
-function useSkill(idx) {
-  if(!G.playerTurn||G.battleOver) return;
-  const skill = SKILLS[idx];
-  const st = computeStats();
-  if(G.cooldowns[idx]>0){addLog(`${skill.name} in ricarica: ${G.cooldowns[idx]} turni.`,'system');return;}
-  if(G.player.mp<skill.cost){addLog(`Logos insufficiente per ${skill.name}.`,'system');return;}
-  G.player.mp -= skill.cost;
-  if(skill.cd>0) G.cooldowns[idx]=skill.cd;
-  const ok=skill.use(G);
-  if(!ok) return;
-  G.playerTurn=false; updateUI();
-  if(checkBattleEnd()) return;
-  setTimeout(enemyTurn, 650);
+function attack(){if(!G.playerTurn||G.battleOver)return;useSkill(0);}
+function useSkill(idx){
+  if(!G.playerTurn||G.battleOver)return;
+  const skill=SKILLS[idx];
+  if(G.cooldowns[idx]>0){addLog(`${skill.name} in ricarica: ${G.cooldowns[idx]} turni.`);return;}
+  if(G.player.mp<skill.cost){addLog(`Logos insufficiente per ${skill.name}.`);return;}
+  G.player.mp-=skill.cost;
+  if(skill.cd>0)G.cooldowns[idx]=skill.cd;
+  if(!skill.use(G))return;
+  G.playerTurn=false;updateUI();
+  if(checkBattleEnd())return;
+  setTimeout(enemyTurn,650);
 }
 
-function enemyTurn() {
-  if(G.battleOver) return;
-  const debuff = G.enemyStatuses.find(s=>s.type==='debuff');
-  if(debuff) addLog(`${G.enemy.name} è Confuso! ATK ridotto.`,'enemy');
-  let baseAtk = Math.round(G.enemy.atk * (debuff ? debuff.atkMult : 1));
-  if(G.floor>=10 && Math.random()<0.28){
-    let dmg = dealDamageToPlayer(Math.round(baseAtk*1.8));
-    addLog(`${G.enemy.name} usa attacco speciale! ${dmg} danni!`,'enemy');
-  } else {
-    let dmg = dealDamageToPlayer(baseAtk);
+function enemyTurn(){
+  if(G.battleOver)return;
+  const sp=getActiveBonus4Specials();
+  // turnRegen 4pc (Logica Pura)
+  if(sp.has('turnRegen')){
+    const st=computeStats();
+    const reg=Math.round(st.maxHp*0.03);
+    G.player.hp=Math.min(G.player.hp+reg,st.maxHp);
+    if(reg>0)showHealPop('player-card',reg);
+  }
+  const debuff=G.enemyStatuses.find(s=>s.type==='debuff');
+  if(debuff)addLog(`${G.enemy.name} è Confuso! ATK ridotto.`,'enemy');
+  let baseAtk=Math.round(G.enemy.atk*(debuff?debuff.atkMult:1));
+  if(G.floor>=10&&Math.random()<0.28){
+    let dmg=dealDamageToPlayer(Math.round(baseAtk*1.8));
+    addLog(`${G.enemy.name} usa un attacco speciale! ${dmg} danni!`,'enemy');
+  }else{
+    let dmg=dealDamageToPlayer(baseAtk);
     addLog(`${G.enemy.name} attacca per ${dmg} danni.`,'enemy');
   }
-  // tick statuses
   G.playerStatuses=G.playerStatuses.filter(s=>{s.turns--;return s.turns>0;});
   G.enemyStatuses=G.enemyStatuses.filter(s=>{s.turns--;return s.turns>0;});
-  // logos regen
   const st=computeStats();
-  G.player.mp=Math.min(G.player.mp+st.mpRegen, st.maxMp);
+  G.player.mp=Math.min(G.player.mp+st.mpRegen,st.maxMp);
   G.cooldowns=G.cooldowns.map(cd=>Math.max(0,cd-1));
-  G.playerTurn=true; updateUI(); checkBattleEnd();
+  G.playerTurn=true;updateUI();checkBattleEnd();
 }
 
-function checkBattleEnd() {
+function checkBattleEnd(){
   if(G.enemy.hp<=0){
-    G.battleOver=true; G.totalKills++;
-    let baseW=Math.floor(10*Math.pow(1.15,G.floor)*G.wisdomMult);
+    G.battleOver=true;G.totalKills++;
+    const wisdomMult=G.wisdomMult*getWisdomBonus();
+    let baseW=Math.floor(10*Math.pow(1.15,G.floor)*wisdomMult);
     let wGain=Math.floor(baseW*G.prestigeBonus);
-    G.wisdom+=wGain; G.floor++;
-    // item drop
-    let droppedItem = rollItemDrop();
-    if(droppedItem){ addToInventory(droppedItem); }
-    updateUI(); renderInventory();
-    showVictoryOverlay(wGain, droppedItem);
+    G.wisdom+=wGain;G.floor++;
+    const droppedItem=rollItemDrop();
+    if(droppedItem)addToInventory(droppedItem);
+    const sp=getActiveBonus4Specials();
+    // victoryHeal 4pc (Etica Nicomachea)
+    if(sp.has('victoryHeal')){
+      const st=computeStats();
+      const h=Math.round(st.maxHp*0.30);
+      G.player.hp=Math.min(G.player.hp+h,st.maxHp);
+      addLog(`Vittoria curata [Etica 4pc]: +${h} HP.`,'set');
+    }
+    updateUI();renderInventory();
+    showVictoryOverlay(wGain,droppedItem);
     return true;
   }
   if(G.player.hp<=0){
-    G.battleOver=true; stopAuto();
-    addLog(`${G.playerName} è caduto! Ma la filosofia sopravvive…`,'system');
-    showDefeatOverlay(); return true;
+    G.battleOver=true;stopAuto();
+    addLog(`${G.playerName} è caduto! La filosofia sopravvive…`,'system');
+    showDefeatOverlay();return true;
   }
   return false;
 }
 
-function nextBattle() {
+function nextBattle(){
   spawnEnemy();
-  G.battleOver=false; G.playerTurn=true;
-  G.playerStatuses=[]; G.enemyStatuses=[]; G.cooldowns=[0,0,0,0];
+  G.battleOver=false;G.playerTurn=true;
+  G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0];
   const st=computeStats();
-  G.player.mp=Math.min(G.player.mp+Math.round(st.maxMp*0.3), st.maxMp);
+  G.player.mp=Math.min(G.player.mp+Math.round(st.maxMp*0.3),st.maxMp);
   document.getElementById('btn-next').style.display='none';
   document.getElementById('btn-attack').disabled=false;
   updateUI();
-  addLog(`— Nuovo sfidante: ${G.enemy.name} —`, 'system');
-  if(G.autoMode) scheduleAuto();
+  addLog(`— Nuovo sfidante: ${G.enemy.name} —`,'system');
+  if(G.autoMode)scheduleAuto();
 }
 
-function spawnEnemy() {
-  const floor=G.floor;
-  const scale=Math.pow(1.18,floor);
+function spawnEnemy(){
+  const floor=G.floor,scale=Math.pow(1.18,floor);
   const base=ENEMIES[Math.floor(Math.random()*ENEMIES.length)];
-  G.enemy={
-    name:base.name, title:base.title,
-    hp:Math.floor(60*scale), maxHp:Math.floor(60*scale),
-    atk:Math.floor(6*Math.pow(1.12,floor)), def:Math.floor(floor*0.4),
-  };
+  G.enemy={name:base.name,title:base.title,hp:Math.floor(60*scale),maxHp:Math.floor(60*scale),atk:Math.floor(6*Math.pow(1.12,floor)),def:Math.floor(floor*0.4)};
   document.getElementById('enemy-name').textContent=base.icon+' '+base.name;
   document.getElementById('enemy-title').textContent=base.title;
   document.getElementById('enemy-type-label').textContent='Piano '+floor;
+  // stage badge
+  const badge=document.getElementById('stage-badge-arena');
+  if(G.currentStage>0){
+    const stg=STAGES[G.currentStage-1];
+    badge.style.display='inline-block';
+    badge.textContent=stg.icon+' '+stg.name;
+    badge.style.background=stg.bgColor;
+    badge.style.color=stg.color;
+    badge.style.border='1px solid '+stg.color;
+  }else{badge.style.display='none';}
 }
 
-// ══════════════════════════════════════════════
-//  NAME EDIT
-// ══════════════════════════════════════════════
-function startEditName() {
-  const display=document.getElementById('player-name-display');
-  const current=G.playerName;
-  display.style.display='none';
-  const input=document.createElement('input');
-  input.className='name-input'; input.value=current; input.maxLength=16;
-  input.id='name-input-field';
-  display.parentNode.insertBefore(input, display);
-  input.focus(); input.select();
-  const confirm=()=>{
-    const val=input.value.trim()||'Socrate';
-    G.playerName=val;
-    display.textContent=val; display.style.display='';
-    input.remove();
-    addLog(`✦ Il filosofo si chiama ora: <b>${val}</b>.`,'system');
-  };
-  input.addEventListener('blur', confirm);
-  input.addEventListener('keydown', e=>{ if(e.key==='Enter') confirm(); if(e.key==='Escape'){G.playerName=current;display.style.display='';input.remove();} });
+// ══════════════════════════════════════════
+//  STAGES
+// ══════════════════════════════════════════
+function enterStage(stageIdx){
+  const stg=STAGES[stageIdx];
+  if(G.wisdom<stg.cost){addLog(`Saggezza insufficiente per entrare in ${stg.name}.`,'system');return;}
+  if(G.currentStage===stg.id){
+    G.currentStage=0;
+    addLog(`Uscito dallo stage: ${stg.name}. Drop normale.`,'system');
+  }else{
+    G.wisdom-=stg.cost;
+    G.currentStage=stg.id;
+    addLog(`✦ Entrato in <b>${stg.name}</b>! Drop set: ${stg.sets.map(s=>SETS[s].name).join(', ')}.`,'set');
+  }
+  updateUI();renderUpgrades();renderStages();
+  updateStageBadge();
+}
+function updateStageBadge(){
+  const badge=document.getElementById('stage-badge-arena');
+  if(G.currentStage>0){
+    const stg=STAGES[G.currentStage-1];
+    badge.style.display='inline-block';
+    badge.textContent=stg.icon+' '+stg.name;
+    badge.style.background=stg.bgColor;
+    badge.style.color=stg.color;
+    badge.style.border='1px solid '+stg.color;
+  }else badge.style.display='none';
 }
 
-// ══════════════════════════════════════════════
-//  UPGRADES
-// ══════════════════════════════════════════════
-function renderUpgrades() {
+// ══════════════════════════════════════════
+//  RENDER FUNCTIONS
+// ══════════════════════════════════════════
+function renderStages(){
+  const list=document.getElementById('stages-list');
+  list.innerHTML='';
+  STAGES.forEach((stg,i)=>{
+    const isActive=G.currentStage===stg.id;
+    const canAfford=G.wisdom>=stg.cost;
+    const div=document.createElement('div');
+    div.className='stage-card'+(isActive?' active-stage':'');
+    div.style.borderColor=isActive?stg.color:'var(--border)';
+    div.style.background=isActive?stg.bgColor:'rgba(0,0,0,.15)';
+    const setsHtml=stg.sets.map(sid=>{
+      const s=SETS[sid];
+      return`<div class="set-chip" style="background:rgba(0,0,0,.2);border:1px solid ${s.color};color:${s.color}">${s.icon} ${s.name}</div>`;
+    }).join('');
+    div.innerHTML=`
+      <div class="stage-card-header">
+        <div class="stage-name" style="color:${stg.color}">${stg.icon} ${stg.name}</div>
+        <div class="stage-cost">${stg.cost===0?'Gratuito':'🏛 '+stg.cost}</div>
+      </div>
+      <div class="stage-desc">${stg.desc}</div>
+      <div class="stage-sets">${setsHtml}</div>
+      ${isActive?`<div class="stage-active-badge" style="background:${stg.bgColor};color:${stg.color};border:1px solid ${stg.color}">● ATTIVO</div>`:''}
+    `;
+    div.onclick=()=>enterStage(i);
+    list.appendChild(div);
+  });
+  // set info
+  renderSetInfo();
+}
+
+function renderSetInfo(){
+  const div=document.getElementById('set-info-display');
+  div.innerHTML='';
+  Object.values(SETS).forEach(s=>{
+    const p=document.createElement('div');
+    p.className='set-info-panel';
+    p.innerHTML=`
+      <div class="set-info-title" style="color:${s.color}">${s.icon} ${s.name}</div>
+      <div class="set-info-bonus">2pc: <span>${s.desc2}</span></div>
+      <div class="set-info-bonus">4pc: <span>${s.desc4}</span></div>
+    `;
+    div.appendChild(p);
+  });
+}
+
+function renderUpgrades(){
   const list=document.getElementById('upgrades-list');
   list.innerHTML='';
   UPGRADES_DEF.forEach(def=>{
     const lv=G.upgradeLevels[def.id];
     const cost=Math.floor(def.baseCost*Math.pow(def.costScale,lv));
     const canAfford=G.wisdom>=cost;
-    const div=document.createElement('div'); div.className='upgrade-item';
+    const div=document.createElement('div');div.className='upgrade-item';
     div.innerHTML=`
       <div class="upgrade-header"><div class="upgrade-name">${def.name}</div><div class="upgrade-level">Lv.${lv}</div></div>
       <div class="upgrade-desc">${def.desc}</div>
@@ -828,114 +1182,115 @@ function renderUpgrades() {
   const pp=document.getElementById('prestige-panel');
   if(G.floor>=20){
     pp.style.display='block';
-    document.getElementById('prestige-desc').textContent=`Reincarnarti darà +${Math.round((G.prestige+1)*30)}% Saggezza perenne. Perdi tutto tranne gli oggetti equipaggiati. Piano: ${G.floor}.`;
+    document.getElementById('prestige-desc').textContent=`Reincarnarti darà +${Math.round((G.prestige+1)*30)}% Saggezza perenne. Gli oggetti equipaggiati vengono mantenuti. Piano: ${G.floor}.`;
   }
 }
-function buyUpgrade(id) {
+
+function buyUpgrade(id){
   const def=UPGRADES_DEF.find(d=>d.id===id);
   const lv=G.upgradeLevels[id];
   const cost=Math.floor(def.baseCost*Math.pow(def.costScale,lv));
-  if(G.wisdom<cost) return;
-  G.wisdom-=cost; G.upgradeLevels[id]++;
-  def.effect(G);
-  // Adjust hp/mp if maxes changed
-  const st=computeStats();
-  G.player.hp=Math.min(G.player.hp,st.maxHp);
-  G.player.mp=Math.min(G.player.mp,st.maxMp);
+  if(G.wisdom<cost)return;
+  G.wisdom-=cost;G.upgradeLevels[id]++;def.effect(G);
+  const st=computeStats();G.player.hp=Math.min(G.player.hp,st.maxHp);G.player.mp=Math.min(G.player.mp,st.maxMp);
   addLog(`Potenziamento: <b>${def.name}</b> → Lv.${G.upgradeLevels[id]}.`,'reward');
-  updateUI(); renderUpgrades();
+  updateUI();renderUpgrades();
 }
 
-// ══════════════════════════════════════════════
-//  EQUIP RENDER
-// ══════════════════════════════════════════════
-function renderEquip() {
+function renderEquip(){
   const slots=document.getElementById('equip-slots');
   slots.innerHTML='';
   Object.keys(SLOT_ICONS).forEach(slot=>{
     const item=G.equipped[slot];
     const div=document.createElement('div');
-    div.className='equip-slot'+(item?' has-item '+rarityClass(item.rarity):'');
+    div.className='equip-slot'+(item?' has-item rarity-'+item.rarity:'');
     if(item){
+      const set=SETS[item.setId];
       div.innerHTML=`
         <span class="slot-icon">${item.icon}</span>
         <div class="slot-info">
           <div class="slot-type">${SLOT_NAMES[slot]}</div>
           <div class="slot-item-name">${item.name}</div>
           <div class="slot-item-stats">${statsText(item.stats)}</div>
+          <div class="slot-set-tag" style="background:rgba(0,0,0,.2);color:${set.color};border:1px solid ${set.color}">${set.icon} ${set.name}</div>
         </div>
         <button class="slot-unequip" onclick="unequipItem('${slot}')">✕</button>`;
-    } else {
+    }else{
       div.innerHTML=`
-        <span class="slot-icon" style="opacity:0.3">${SLOT_ICONS[slot]}</span>
-        <div class="slot-info">
-          <div class="slot-type">${SLOT_NAMES[slot]}</div>
-          <div class="slot-empty">Nessun oggetto</div>
-        </div>`;
+        <span class="slot-icon" style="opacity:.3">${SLOT_ICONS[slot]}</span>
+        <div class="slot-info"><div class="slot-type">${SLOT_NAMES[slot]}</div><div class="slot-empty">Vuoto</div></div>`;
     }
     slots.appendChild(div);
   });
-  // bonus summary
-  const bonus=document.getElementById('equip-bonus-summary');
-  const allStats={};
-  Object.values(G.equipped).forEach(item=>{
-    if(!item) return;
-    Object.entries(item.stats).forEach(([k,v])=>{allStats[k]=(allStats[k]||0)+v;});
-  });
-  if(!Object.keys(allStats).length){ bonus.textContent='Nessun bonus attivo.'; return; }
-  bonus.innerHTML=Object.entries(allStats).map(([k,v])=>{
-    const labels={atk:'Danno',def:'Difesa',maxHp:'HP Max',critChance:'Critico%',maxMp:'Logos Max',mpRegen:'Logos Regen'};
-    return `<span>+${v} ${labels[k]||k}</span>`;
-  }).join(' &nbsp;·&nbsp; ');
+  // set bonus display
+  renderSetBonusDisplay();
 }
 
-// ══════════════════════════════════════════════
-//  INVENTORY RENDER
-// ══════════════════════════════════════════════
-function renderInventory() {
-  const grid=document.getElementById('inventory-grid');
-  const count=document.getElementById('inv-count');
-  count.textContent=`${G.inventory.length} / 20`;
-  document.getElementById('h-items').textContent=G.inventory.length;
-  grid.innerHTML='';
-  if(!G.inventory.length){
-    grid.innerHTML='<div class="inv-empty">Lo zaino è vuoto.<br>Sconfiggi i nemici per trovare oggetti!</div>';
-    return;
-  }
-  // Sort: equipped first, then by rarity desc, then slot
-  const sorted=[...G.inventory].sort((a,b)=>{
-    if(a.equipped!==b.equipped) return a.equipped?-1:1;
-    return RARITY_ORDER[b.rarity]-RARITY_ORDER[a.rarity];
+function renderSetBonusDisplay(){
+  const counts=getSetCounts();
+  const div=document.getElementById('set-bonus-display');
+  div.innerHTML='';
+  if(!Object.keys(counts).length){div.innerHTML='<div style="font-size:11px;color:var(--text-dim);font-style:italic">Nessun set attivo.</div>';return;}
+  // collect all sets that have >=1 piece
+  const allSets=new Set();
+  Object.values(G.equipped).forEach(i=>{if(i&&i.setId)allSets.add(i.setId);});
+  allSets.forEach(sid=>{
+    const cnt=counts[sid]||0;const s=SETS[sid];
+    const row=document.createElement('div');row.className='set-bonus-row';
+    row.style.borderColor=cnt>=2?s.color:'var(--border)';
+    row.innerHTML=`
+      <div class="set-bonus-name" style="color:${s.color}">${s.icon} ${s.name} (${cnt} pz)</div>
+      <div class="set-bonus-line ${cnt>=2?'active':'inactive'}">2pc: ${s.desc2}</div>
+      <div class="set-bonus-line ${cnt>=4?'active':'inactive'}">4pc: ${s.desc4}</div>`;
+    div.appendChild(row);
   });
-  sorted.forEach(item=>{
-    const isEquipped=item.equipped;
-    const div=document.createElement('div');
-    div.className='inv-item'+(isEquipped?' equipped':'');
+}
+
+function renderInventory(){
+  const grid=document.getElementById('inventory-grid');
+  const countEl=document.getElementById('inv-count');
+  countEl.textContent=`${G.inventory.length}/30`;
+  document.getElementById('h-items')&&(document.getElementById('h-items').textContent=G.inventory.length);
+  grid.innerHTML='';
+  let items=G.inventory.filter(i=>G.invFilter==='all'||i.slot===G.invFilter);
+  if(!items.length){grid.innerHTML='<div class="inv-empty">Nessun oggetto'+(G.invFilter!=='all'?' in questo slot':'')+'.<br>Sconfiggi i nemici per trovare oggetti!</div>';return;}
+  items.sort((a,b)=>{if(a.equipped!==b.equipped)return a.equipped?-1:1;return RARITY_ORDER[b.rarity]-RARITY_ORDER[a.rarity];});
+  items.forEach(item=>{
+    const set=SETS[item.setId];
+    const isEq=item.equipped;
+    const div=document.createElement('div');div.className='inv-item'+(isEq?' equipped':'');
     div.innerHTML=`
       <span class="inv-item-icon">${item.icon}</span>
       <div class="inv-item-info">
-        <div class="inv-item-name" style="color:${rarityColor(item.rarity)}">${item.name} ${rarityPill(item.rarity)}</div>
+        <div class="inv-item-name" style="color:${rarityColor(item.rarity)}">${item.name} <span class="rarity-pill rp-${item.rarity}">${RARITY_NAMES[item.rarity]}</span></div>
         <div class="inv-item-sub">${SLOT_NAMES[item.slot]} · ${statsText(item.stats)}</div>
+        <div class="inv-item-set" style="color:${set.color}">${set.icon} ${set.name}</div>
       </div>
-      <button class="inv-item-equip${isEquipped?' equipped-btn':''}" onclick="${isEquipped?`unequipItem('${item.slot}')`:`equipItem(${item.id})`}">
-        ${isEquipped?'Rimuovi':'Equipa'}
-      </button>`;
+      <div class="inv-actions">
+        <button class="inv-btn inv-btn-equip${isEq?' equipped-btn':''}" onclick="${isEq?`unequipItem('${item.slot}')`:`equipItem(${item.id})`}">${isEq?'✕ Rimuovi':'+ Equipa'}</button>
+        <button class="inv-btn inv-btn-sell" onclick="sellItem(${item.id})" ${isEq?'disabled':''} title="Vendi per ${SELL_PRICES[item.rarity]} Saggezza">🏛 ${SELL_PRICES[item.rarity]}</button>
+      </div>`;
     grid.appendChild(div);
   });
 }
 
-function rarityColor(r){ return {common:'var(--common)',uncommon:'var(--uncommon)',rare:'var(--rare)',legendary:'var(--legendary)'}[r]||'var(--text)'; }
+function statsText(stats){
+  return Object.entries(stats).map(([k,v])=>{
+    const l={atk:'ATK',def:'DEF',maxHp:'HP',critChance:'Crit%',maxMp:'Logos',mpRegen:'Regen'};
+    return`+${v} ${l[k]||k}`;
+  }).join(' ');
+}
+function rarityColor(r){return{common:'var(--common)',uncommon:'var(--uncommon)',rare:'var(--rare)',legendary:'var(--legendary)'}[r]||'var(--text)';}
 
-// ══════════════════════════════════════════════
-//  OVERLAYS
-// ══════════════════════════════════════════════
-function showVictoryOverlay(wisdomGain, droppedItem) {
+// ── OVERLAYS ──────────────────────────────────────────────
+function showVictoryOverlay(wGain,droppedItem){
   document.getElementById('ov-icon').textContent='🏛';
   document.getElementById('ov-title').textContent='Vittoria!';
-  document.getElementById('ov-body').textContent=`"${G.enemy.name}" è stato sconfitto con la Dialettica.`;
-  document.getElementById('ov-rewards').innerHTML=`<div class="reward-line">+${wisdomGain} Saggezza</div><div class="reward-line">Piano ${G.floor} sbloccato</div>`;
+  document.getElementById('ov-body').textContent=`"${G.enemy.name}" sconfitto con la Dialettica.`;
+  document.getElementById('ov-rewards').innerHTML=`<div class="reward-line">+${wGain} Saggezza</div><div class="reward-line">Piano ${G.floor} sbloccato</div>`;
   const drop=document.getElementById('ov-item-drop');
   if(droppedItem){
+    const set=SETS[droppedItem.setId];
     drop.innerHTML=`
       <div class="item-drop-box">
         <div class="item-drop-label">⚗ Oggetto trovato!</div>
@@ -943,44 +1298,39 @@ function showVictoryOverlay(wisdomGain, droppedItem) {
           <div class="item-drop-icon">${droppedItem.icon}</div>
           <div class="item-drop-info">
             <div class="item-drop-name" style="color:${rarityColor(droppedItem.rarity)}">${droppedItem.name}</div>
-            <div class="item-drop-sub">${SLOT_NAMES[droppedItem.slot]} · ${rarityPill(droppedItem.rarity)}</div>
+            <div class="item-drop-sub">${SLOT_NAMES[droppedItem.slot]} · <span class="rarity-pill rp-${droppedItem.rarity}">${RARITY_NAMES[droppedItem.rarity]}</span></div>
             <div class="item-drop-stats">${statsText(droppedItem.stats)}</div>
+            <div class="item-drop-set" style="color:${set.color}">${set.icon} ${set.name}</div>
           </div>
         </div>
       </div>`;
-  } else { drop.innerHTML=''; }
+  }else drop.innerHTML='';
   document.getElementById('overlay').classList.add('show');
 }
-function showDefeatOverlay() {
+function showDefeatOverlay(){
   document.getElementById('ov-icon').textContent='💀';
   document.getElementById('ov-title').textContent='Sconfitto…';
-  document.getElementById('ov-body').textContent='"Solo chi conosce i propri limiti può superarli." Il filosofo si rialza, più saggio.';
+  document.getElementById('ov-body').textContent='"Solo chi conosce i propri limiti può superarli." Il filosofo si rialza.';
   document.getElementById('ov-rewards').innerHTML='<div class="reward-line" style="color:#e08080">HP ripristinati al 50%</div>';
   document.getElementById('ov-item-drop').innerHTML='';
   document.getElementById('overlay').classList.add('show');
 }
-function closeOverlay() {
+function closeOverlay(){
   document.getElementById('overlay').classList.remove('show');
   if(G.player.hp<=0){
-    const st=computeStats();
-    G.player.hp=Math.round(st.maxHp*0.5);
-    G.floor=Math.max(1,G.floor-2);
-    G.battleOver=false; G.playerTurn=true;
-    G.playerStatuses=[]; G.enemyStatuses=[]; G.cooldowns=[0,0,0,0];
-    spawnEnemy();
-    document.getElementById('btn-attack').disabled=false;
-    updateUI();
-  } else {
+    const st=computeStats();G.player.hp=Math.round(st.maxHp*0.5);
+    G.floor=Math.max(1,G.floor-2);G.battleOver=false;G.playerTurn=true;
+    G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0];
+    spawnEnemy();document.getElementById('btn-attack').disabled=false;updateUI();
+  }else{
     document.getElementById('btn-next').style.display='inline-block';
     document.getElementById('btn-attack').disabled=true;
-    renderUpgrades(); renderEquip(); renderInventory();
-    if(G.autoMode) setTimeout(nextBattle, 400);
+    renderUpgrades();renderEquip();renderInventory();
+    if(G.autoMode)setTimeout(nextBattle,400);
   }
 }
 
-// ══════════════════════════════════════════════
-//  AUTO
-// ══════════════════════════════════════════════
+// ── AUTO ──────────────────────────────────────────────────
 function toggleAuto(){
   G.autoMode=!G.autoMode;
   const btn=document.getElementById('btn-auto');
@@ -988,138 +1338,127 @@ function toggleAuto(){
   else{btn.textContent='◎ Auto OFF';btn.classList.remove('auto-on');stopAuto();}
 }
 function stopAuto(){
-  G.autoMode=false; clearTimeout(G.autoTimer);
+  G.autoMode=false;clearTimeout(G.autoTimer);
   const btn=document.getElementById('btn-auto');
-  btn.textContent='◎ Auto OFF'; btn.classList.remove('auto-on');
+  btn.textContent='◎ Auto OFF';btn.classList.remove('auto-on');
 }
 function scheduleAuto(){
-  if(!G.autoMode) return;
+  if(!G.autoMode)return;
   G.autoTimer=setTimeout(()=>{
-    if(G.battleOver){ if(!G.player.hp) return; nextBattle(); }
+    if(G.battleOver){if(!G.player.hp)return;nextBattle();}
     else if(G.playerTurn){
       const st=computeStats();
-      if(G.player.mp>=40&&G.cooldowns[3]===0) useSkill(3);
-      else if(G.player.hp<st.maxHp*0.4&&G.player.mp>=20&&G.cooldowns[1]===0) useSkill(1);
-      else if(G.player.mp>=25&&G.cooldowns[2]===0) useSkill(2);
+      if(G.player.mp>=40&&G.cooldowns[3]===0)useSkill(3);
+      else if(G.player.hp<st.maxHp*0.4&&G.player.mp>=20&&G.cooldowns[1]===0)useSkill(1);
+      else if(G.player.mp>=25&&G.cooldowns[2]===0)useSkill(2);
       else attack();
     }
-    if(G.autoMode) scheduleAuto();
-  }, 850);
+    if(G.autoMode)scheduleAuto();
+  },820);
 }
 
-// ══════════════════════════════════════════════
-//  PRESTIGE
-// ══════════════════════════════════════════════
+// ── PRESTIGE ──────────────────────────────────────────────
 function prestige(){
-  if(G.floor<20) return;
-  G.prestige++;
-  G.prestigeBonus=1+G.prestige*0.3;
-  G.floor=1; G.wisdom=0; G.wisdomMult=1;
+  if(G.floor<20)return;
+  G.prestige++;G.prestigeBonus=1+G.prestige*0.3;G.floor=1;G.wisdom=0;G.wisdomMult=1;G.currentStage=0;
   G.upgradeLevels={dialectics:0,virtue:0,temperance:0,logos:0,insight:0,wisdom_gain:0};
-  G.player={hp:100,baseMaxHp:100+G.prestige*10,mp:60,baseMaxMp:60+G.prestige*5,baseMpRegen:3+G.prestige,
-             baseAtk:10+G.prestige*5,baseDef:0,baseCritChance:5+G.prestige*2};
-  G.battleOver=false; G.playerStatuses=[]; G.enemyStatuses=[]; G.cooldowns=[0,0,0,0];
-  // keep equipped items on prestige
-  stopAuto(); spawnEnemy();
+  G.player={hp:100,baseMaxHp:100+G.prestige*10,mp:60,baseMaxMp:60+G.prestige*5,baseMpRegen:3+G.prestige,baseAtk:10+G.prestige*5,baseDef:0,baseCritChance:5+G.prestige*2};
+  G.battleOver=false;G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0];
+  stopAuto();spawnEnemy();
   addLog(`✦ Reincarnazione ${G.prestige}! ${G.playerName} rinasce. +${Math.round(G.prestige*30)}% Saggezza.`,'system');
   document.getElementById('prestige-panel').style.display='none';
-  renderUpgrades(); renderEquip(); renderInventory(); updateUI(); rotateQuote();
+  renderUpgrades();renderEquip();renderInventory();renderStages();updateUI();rotateQuote();
 }
 
-// ══════════════════════════════════════════════
-//  TABS
-// ══════════════════════════════════════════════
+// ── TABS ──────────────────────────────────────────────────
 function switchTab(name){
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
-    const names=['upgrades','equip','inventory'];
-    b.classList.toggle('active',names[i]===name);
-  });
+  const names=['upgrades','equip','inventory','stages'];
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',names[i]===name));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
-  if(name==='equip') renderEquip();
-  if(name==='inventory') renderInventory();
+  if(name==='equip')renderEquip();
+  if(name==='inventory')renderInventory();
+  if(name==='stages')renderStages();
 }
 
-// ══════════════════════════════════════════════
-//  UI UPDATE
-// ══════════════════════════════════════════════
-function updateUI(){
-  const p=G.player; const e=G.enemy; const st=computeStats();
+// ── NAME EDIT ─────────────────────────────────────────────
+function startEditName(){
+  const display=document.getElementById('player-name-display');
+  display.style.display='none';
+  const input=document.createElement('input');
+  input.className='name-input';input.value=G.playerName;input.maxLength=16;input.id='name-input-field';
+  display.parentNode.insertBefore(input,display);input.focus();input.select();
+  const confirm=()=>{
+    const val=input.value.trim()||'Socrate';G.playerName=val;
+    display.textContent=val;display.style.display='';input.remove();
+    addLog(`✦ Il filosofo si chiama ora: <b>${val}</b>.`,'system');
+  };
+  input.addEventListener('blur',confirm);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')confirm();if(e.key==='Escape'){display.style.display='';input.remove();}});
+}
 
+// ── UI UPDATE ─────────────────────────────────────────────
+function updateUI(){
+  const p=G.player,e=G.enemy,st=computeStats();
   let hpPct=p.hp/st.maxHp*100;
   const hpFill=document.getElementById('p-hp-bar');
   hpFill.style.width=hpPct+'%';
   hpFill.className='bar-fill hp-fill'+(hpPct<25?' critical':hpPct<50?' low':'');
-  document.getElementById('p-hp-txt').textContent=p.hp+' / '+st.maxHp;
+  document.getElementById('p-hp-txt').textContent=p.hp+'/'+st.maxHp;
   document.getElementById('p-mp-bar').style.width=(p.mp/st.maxMp*100)+'%';
-  document.getElementById('p-mp-txt').textContent=p.mp+' / '+st.maxMp;
-
+  document.getElementById('p-mp-txt').textContent=p.mp+'/'+st.maxMp;
   document.getElementById('e-hp-bar').style.width=(e.hp/e.maxHp*100)+'%';
-  document.getElementById('e-hp-txt').textContent=e.hp+' / '+e.maxHp;
-
+  document.getElementById('e-hp-txt').textContent=e.hp+'/'+e.maxHp;
   document.getElementById('h-floor').textContent=G.floor;
   document.getElementById('floor-num').textContent=G.floor;
   document.getElementById('h-prestige').textContent=G.prestige;
   document.getElementById('h-kills').textContent=G.totalKills;
+  document.getElementById('h-wisdom').textContent=G.wisdom;
   document.getElementById('wisdom-count').textContent=G.wisdom;
-
   document.getElementById('stat-atk').textContent=st.atk;
   document.getElementById('stat-def').textContent=st.def;
   document.getElementById('stat-maxhp').textContent=st.maxHp;
   document.getElementById('stat-crit').textContent=st.critChance;
   document.getElementById('stat-logos').textContent=st.maxMp;
-
-  // player name display (don't overwrite if editing)
-  if(!document.getElementById('name-input-field')){
-    document.getElementById('player-name-display').textContent=G.playerName;
-  }
-
-  SKILLS.forEach((sk,i)=>{
+  if(!document.getElementById('name-input-field'))document.getElementById('player-name-display').textContent=G.playerName;
+  SKILLS.forEach((_,i)=>{
     const btn=document.getElementById('skill-'+i);
     const cd=G.cooldowns[i];
     btn.disabled=!G.playerTurn||G.battleOver;
-    const oldCd=btn.querySelector('.skill-cd'); if(oldCd) oldCd.remove();
-    if(cd>0){
-      btn.classList.add('on-cooldown');
-      const cdDiv=document.createElement('div'); cdDiv.className='skill-cd'; cdDiv.textContent=cd;
-      btn.appendChild(cdDiv);
-    } else btn.classList.remove('on-cooldown');
+    const oldCd=btn.querySelector('.skill-cd');if(oldCd)oldCd.remove();
+    if(cd>0){btn.classList.add('on-cooldown');const cdDiv=document.createElement('div');cdDiv.className='skill-cd';cdDiv.textContent=cd;btn.appendChild(cdDiv);}
+    else btn.classList.remove('on-cooldown');
   });
-
+  // boost visual on skills
+  const sp=getActiveBonus4Specials();
+  const boostMap={3:'aporiaBoost',1:'maieuticaBoost',2:'eironeiaBuff',0:'elenchosDouble'};
+  Object.entries(boostMap).forEach(([i,key])=>{
+    document.getElementById('skill-'+i)?.classList.toggle('boosted',sp.has(key));
+  });
   document.getElementById('player-card').classList.toggle('active-turn',G.playerTurn&&!G.battleOver);
   document.getElementById('enemy-card').classList.toggle('active-turn',!G.playerTurn&&!G.battleOver);
   renderStatuses('player-statuses',G.playerStatuses);
   renderStatuses('enemy-statuses',G.enemyStatuses);
-
   let title='Il Filosofo';
-  if(G.totalKills>=50) title='Il Saggio';
-  if(G.totalKills>=100) title='Il Maestro';
-  if(G.prestige>=1) title='L\'Immortale';
-  if(G.prestige>=3) title='L\'Eterno';
+  if(G.totalKills>=50)title='Il Saggio';
+  if(G.totalKills>=100)title='Il Maestro';
+  if(G.prestige>=1)title='L\'Immortale';
+  if(G.prestige>=3)title='L\'Eterno';
   document.getElementById('player-title').textContent=title;
 }
 
 function renderStatuses(elId,statuses){
-  const el=document.getElementById(elId); el.innerHTML='';
-  statuses.forEach(s=>{
-    const badge=document.createElement('span');
-    badge.className=`status-badge status-${s.type}`;
-    badge.textContent=s.name+' '+s.turns; el.appendChild(badge);
-  });
+  const el=document.getElementById(elId);el.innerHTML='';
+  statuses.forEach(s=>{const badge=document.createElement('span');badge.className=`status-badge status-${s.type}`;badge.textContent=s.name+' '+s.turns;el.appendChild(badge);});
 }
+function rotateQuote(){document.getElementById('quote-bar').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];}
 
-function rotateQuote(){
-  document.getElementById('quote-bar').textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
-}
-
-// ══════════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════════
+// ── INIT ──────────────────────────────────────────────────
 function init(){
-  spawnEnemy(); updateUI(); renderUpgrades(); renderEquip(); renderInventory(); rotateQuote();
+  spawnEnemy();updateUI();renderUpgrades();renderEquip();renderInventory();renderStages();rotateQuote();
   setInterval(rotateQuote,30000);
   addLog(`${G.playerName} si avvicina al sofista…`,'system');
-  addLog('✦ Sconfiggi i nemici per trovare oggetti rari!','system');
+  addLog('✦ Sconfiggi i nemici per trovare oggetti set! Vedi la tab Stage.','system');
 }
 init();
 </script>
