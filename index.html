@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ΟΔΟ ΣΟΚΡΑΤΗΣ — Il Cammino della Sapienza</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="game.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ══ HEADER ══ -->
+  <header>
+    <div>
+      <div class="game-title">ΟΔΟ ΣΟΚΡΑΤΗΣ</div>
+      <div class="game-subtitle">Il Cammino della Sapienza</div>
+    </div>
+    <div class="header-stats">
+      <div class="hstat"><div class="hstat-val" id="h-floor">1</div><div class="hstat-label">Piano</div></div>
+      <div class="hstat"><div class="hstat-val" id="h-prestige">0</div><div class="hstat-label">Reinc.</div></div>
+      <div class="hstat"><div class="hstat-val" id="h-kills">0</div><div class="hstat-label">Sconfitti</div></div>
+      <div class="hstat"><div class="hstat-val" id="h-wisdom">0</div><div class="hstat-label">Saggezza</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="save-badge" id="save-badge">✓ Salvato</span>
+      <button class="btn-save-reset" onclick="resetSave()">Reset</button>
+    </div>
+  </header>
+
+  <!-- ══ MAIN ══ -->
+  <div class="main-grid">
+
+    <!-- ARENA -->
+    <div class="panel arena">
+
+      <div class="arena-header" id="arena-header">
+        <div class="arena-location" id="arena-location">Torre · Piano <span id="floor-num">1</span></div>
+      </div>
+
+      <!-- Domain progress bar — hidden in tower mode -->
+      <div class="domain-progress" id="domain-progress" style="display:none">
+        <div class="domain-step" id="ds0"></div>
+        <div class="domain-step" id="ds1"></div>
+        <div class="domain-step" id="ds2"></div>
+        <div class="domain-step" id="ds3"></div>
+        <div class="domain-step" id="ds4"></div>
+        <div class="domain-enemy-label" id="domain-enemy-label">Nemico 1/5</div>
+      </div>
+
+      <div class="combatants">
+        <!-- Player -->
+        <div class="combatant player-side" id="player-card">
+          <div class="combatant-name-row">
+            <div class="combatant-name" id="player-name-display">Socrate</div>
+            <button class="name-edit-btn" onclick="startEditName()" title="Modifica nome">✎</button>
+          </div>
+          <div class="combatant-title" id="player-title">Il Filosofo</div>
+          <div class="hp-bar-wrap">
+            <div class="hp-label"><span>HP</span><span id="p-hp-txt">100/100</span></div>
+            <div class="bar-track"><div class="bar-fill hp-fill" id="p-hp-bar" style="width:100%"></div></div>
+          </div>
+          <div class="hp-bar-wrap">
+            <div class="hp-label"><span>Logos</span><span id="p-mp-txt">60/60</span></div>
+            <div class="bar-track"><div class="bar-fill mp-fill" id="p-mp-bar" style="width:100%"></div></div>
+          </div>
+          <div class="combatant-status" id="player-statuses"></div>
+        </div>
+
+        <div class="vs-center"><div class="vs-text">VS</div></div>
+
+        <!-- Enemy -->
+        <div class="combatant enemy-side" id="enemy-card">
+          <div class="combatant-name-row"><div class="combatant-name" id="enemy-name">Malloc</div></div>
+          <div class="combatant-title" id="enemy-title">The big M</div>
+          <div class="hp-bar-wrap">
+            <div class="hp-label"><span>HP</span><span id="e-hp-txt">80/80</span></div>
+            <div class="bar-track"><div class="bar-fill enemy-hp-fill" id="e-hp-bar" style="width:100%"></div></div>
+          </div>
+          <div class="combatant-status" id="enemy-statuses"></div>
+        </div>
+      </div>
+
+      <!-- Skills -->
+      <div class="skills-row">
+        <button class="skill-btn" id="skill-0" onclick="useSkill(0)">
+          <span class="skill-icon">🔍</span><span class="skill-name">ELENCHOS</span>
+          <span class="skill-desc">Attacco dialettico</span><span class="skill-cost">0 Logos</span>
+        </button>
+        <button class="skill-btn" id="skill-1" onclick="useSkill(1)">
+          <span class="skill-icon">🫧</span><span class="skill-name">MAIEUTICA</span>
+          <span class="skill-desc">Cura + buff</span><span class="skill-cost">20 Logos</span>
+        </button>
+        <button class="skill-btn" id="skill-2" onclick="useSkill(2)">
+          <span class="skill-icon">😏</span><span class="skill-name">EIRONEIA</span>
+          <span class="skill-desc">Debuff nemico</span><span class="skill-cost">25 Logos</span>
+        </button>
+        <button class="skill-btn" id="skill-3" onclick="useSkill(3)">
+          <span class="skill-icon">⚡</span><span class="skill-name">APORIA</span>
+          <span class="skill-desc">Triplo attacco</span><span class="skill-cost">40 Logos</span>
+        </button>
+      </div>
+
+      <div class="combat-controls">
+        <button class="btn primary" id="btn-attack" onclick="attack()">⚔ Attacca</button>
+        <button class="btn" id="btn-auto" onclick="toggleAuto()">◎ Auto OFF</button>
+        <button class="btn" id="btn-next" onclick="nextBattle()" style="display:none">→ Avanza</button>
+        <button class="btn-exit-domain" id="btn-exit-domain" onclick="exitDomain()" style="display:none">✕ Esci dal Dominio</button>
+      </div>
+
+      <div class="log-panel" id="combat-log">
+        <div class="log-entry log-system">✦ Il giorno nasce sull'Agorà di Atene…</div>
+        <div class="log-entry log-system">Il filosofo è pronto a interrogare l'ignoranza.</div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+      <div class="tabs-bar">
+        <button class="tab-btn active" onclick="switchTab('upgrades')">Σοφία</button>
+        <button class="tab-btn" onclick="switchTab('equip')">Equip</button>
+        <button class="tab-btn" onclick="switchTab('inventory')">Zaino</button>
+        <button class="tab-btn" onclick="switchTab('domains')">Domini</button>
+      </div>
+
+      <!-- TAB: Upgrades -->
+      <div class="panel tab-content active" id="tab-upgrades" style="padding:12px">
+        <div class="wisdom-display">
+          <span class="wisdom-icon">🏛</span>
+          <div>
+            <div class="wisdom-amount" id="wisdom-count">0</div>
+            <div class="wisdom-label">SAGGEZZA</div>
+          </div>
+        </div>
+        <div id="upgrades-list"></div>
+        <div class="prestige-panel" id="prestige-panel" style="display:none">
+          <div class="prestige-title">⚗ Reincarnazione</div>
+          <div class="prestige-desc" id="prestige-desc">Reincarnati come anima più saggia.</div>
+          <button class="btn btn-prestige" onclick="prestige()">Ψυχή · Reincarnarsi</button>
+        </div>
+      </div>
+
+      <!-- TAB: Equipment -->
+      <div class="panel tab-content" id="tab-equip" style="padding:12px">
+        <div class="panel-title">Equipaggiamento</div>
+        <div class="equip-slots" id="equip-slots"></div>
+        <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:5px">Bonus Set Attivi</div>
+        <div id="set-bonus-display"></div>
+      </div>
+
+      <!-- TAB: Inventory -->
+      <div class="panel tab-content" id="tab-inventory" style="padding:12px">
+        <div class="inventory-header">
+          <div class="panel-title" style="margin:0;border:none;padding:0">Zaino</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div class="inv-count" id="inv-count">0/30</div>
+            <button class="btn danger" style="font-size:8px;padding:3px 7px" onclick="sellAll()">Vendi Spazzatura</button>
+          </div>
+        </div>
+        <div class="inv-filter">
+          <button class="inv-filter-btn active" onclick="setFilter(this,'all')">Tutti</button>
+          <button class="inv-filter-btn" onclick="setFilter(this,'weapon')">⚔</button>
+          <button class="inv-filter-btn" onclick="setFilter(this,'armor')">🛡</button>
+          <button class="inv-filter-btn" onclick="setFilter(this,'ring')">💍</button>
+          <button class="inv-filter-btn" onclick="setFilter(this,'amulet')">📿</button>
+          <button class="inv-filter-btn" onclick="setFilter(this,'boots')">👟</button>
+        </div>
+        <div class="inventory-grid" id="inventory-grid"></div>
+      </div>
+
+      <!-- TAB: Domains -->
+      <div class="panel tab-content" id="tab-domains" style="padding:12px">
+        <div class="panel-title">Domini</div>
+        <div style="font-size:11px;color:var(--text-dim);font-style:italic;margin-bottom:10px;line-height:1.5">
+          Ogni Dominio è un livello separato con <b style="color:var(--gold-light)">5 nemici</b> in sequenza.
+          Completalo per guadagnare <b style="color:var(--gold-light)">3–6 oggetti</b> set garantiti.
+          Costo: <b style="color:var(--gold-light)">200 Saggezza</b> per entrata.
+        </div>
+        <div id="domains-list"></div>
+      </div>
+    </div>
+
+  </div><!-- /main-grid -->
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar">
+    <div class="stat-chip"><span class="stat-chip-icon">⚔</span><span class="stat-chip-val" id="stat-atk">10</span><span class="stat-chip-label">DANNO</span></div>
+    <div class="stat-chip"><span class="stat-chip-icon">🛡</span><span class="stat-chip-val" id="stat-def">0</span><span class="stat-chip-label">DIFESA</span></div>
+    <div class="stat-chip"><span class="stat-chip-icon">❤</span><span class="stat-chip-val" id="stat-maxhp">100</span><span class="stat-chip-label">HP MAX</span></div>
+    <div class="stat-chip"><span class="stat-chip-icon">🎯</span><span class="stat-chip-val" id="stat-crit">5</span><span class="stat-chip-label">CRIT%</span></div>
+    <div class="stat-chip"><span class="stat-chip-icon">🔮</span><span class="stat-chip-val" id="stat-logos">60</span><span class="stat-chip-label">LOGOS</span></div>
+    <div style="margin-left:auto;font-style:italic;font-size:11px;color:var(--text-dim)" id="quote-bar">
+      "So di non sapere nulla." — Socrate
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="overlay-box" id="overlay-box">
+    <div class="overlay-icon" id="ov-icon">⚔</div>
+    <div class="overlay-title" id="ov-title">Vittoria!</div>
+    <div class="overlay-body" id="ov-body"></div>
+    <div class="overlay-rewards" id="ov-rewards"></div>
+    <div id="ov-item-drop"></div>
+    <button class="btn primary" onclick="closeOverlay()">Continua</button>
+  </div>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
