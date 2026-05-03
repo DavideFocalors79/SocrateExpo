@@ -76,8 +76,8 @@ const SETS = {
     desc2:"+12% Crit Chance, +50 Crit Damage",desc4:"Colpi critici usano Crit Damage ×1.5",
     bonus2:{critChancePct:.12,critDmgFlat:50},bonus4:{},bonus4special:'critMult'},
   nicomachean:{id:'nicomachean',name:"Etica Nicomachea",domain:3,icon:"⚖",color:"var(--s3)",
-    desc2:"+15% ATK e DEF",desc4:"Vittoria → ripristino +30% HP",
-    bonus2:{atkPct:.15,defPct:.15},bonus4:{},bonus4special:'victoryHeal'},
+    desc2:"+15% ATK e DEF",desc4:"Eironeia applica anche 'Arcana': 3 turni di danno (100% ATK + 80% DEF) per turno",
+    bonus2:{atkPct:.15,defPct:.15},bonus4:{},bonus4special:'arcanaCurse'},
   pure_logic:{id:'pure_logic',name:"Logica Pura",domain:3,icon:"🔬",color:"var(--s3)",
     desc2:"+22% Difesa",desc4:"Quando colpito: rigenera 3% HP + il nemico subisce danno pari alla DEF massima",
     bonus2:{defPct:.22},bonus4:{},bonus4special:'turnRegen'},
@@ -112,12 +112,53 @@ const SELL_PRICES = {common:3,uncommon:9,rare:25,legendary:60};
 const DOMAIN_COST = 200;
 
 const UPGRADES_DEF = [
-  {id:'dialectics', name:'Dialettica',   desc:'+3 danno/lv.',        baseCost:15, effect:g=>{g.player.baseAtk+=3},            getEffect:lv=>`+${lv*3} ATK`,               costScale:1.5},
-  {id:'virtue',     name:'Virtù',        desc:'+20 HP/lv.',          baseCost:20, effect:g=>{g.player.baseMaxHp+=20},          getEffect:lv=>`+${lv*20} HP`,               costScale:1.6},
-  {id:'temperance', name:'Temperanza',   desc:'+2 def/lv.',          baseCost:25, effect:g=>{g.player.baseDef+=2},             getEffect:lv=>`+${lv*2} DEF`,               costScale:1.55},
-  {id:'logos',      name:'Logos',        desc:'+10 Logos/lv.',       baseCost:18, effect:g=>{g.player.baseMaxMp+=10;g.player.baseMpRegen+=1}, getEffect:lv=>`+${lv*10} Logos`, costScale:1.45},
-  {id:'insight',    name:'Intuizione',   desc:'+3% crit/lv.',        baseCost:30, effect:g=>{g.player.baseCritChance+=3},      getEffect:lv=>`+${lv*3}% Crit`,            costScale:1.6},
-  {id:'wisdom_gain',name:'Sapienza',     desc:'+20% Saggezza/lv.',   baseCost:40, effect:g=>{g.wisdomMult+=0.2},               getEffect:lv=>`+${Math.round(lv*20)}% Sag.`,costScale:1.8},
+  {
+    id:'dialectics', name:'Dialettica', desc:'+5% del Danno base per livello.',
+    baseCost:15, costScale:1.5,
+    effect: g => { g.player.baseAtk = Math.round(g.player.baseAtk * 1.05); },
+    getEffect: () => {
+      const st = computeStats();
+      return `ATK base: ${G.player.baseAtk} (+${Math.round(G.player.baseAtk*0.05)} al prossimo)`;
+    },
+  },
+  {
+    id:'virtue', name:'Virtù', desc:'+15% degli HP Massimi per livello.',
+    baseCost:20, costScale:1.6,
+    effect: g => { g.player.baseMaxHp = Math.round(g.player.baseMaxHp * 1.15); },
+    getEffect: () => {
+      return `HP base: ${G.player.baseMaxHp} (+${Math.round(G.player.baseMaxHp*0.15)} al prossimo)`;
+    },
+  },
+  {
+    id:'temperance', name:'Temperanza', desc:'+5% della Difesa base per livello (min +1).',
+    baseCost:25, costScale:1.55,
+    effect: g => { g.player.baseDef = Math.round(g.player.baseDef * 1.05) + 1; },
+    getEffect: () => {
+      return `DEF base: ${G.player.baseDef} (+${Math.round(G.player.baseDef*0.05)+1} al prossimo)`;
+    },
+  },
+  {
+    id:'logos', name:'Logos', desc:'+10% Logos Massimo e +1 Regen per livello.',
+    baseCost:18, costScale:1.45,
+    effect: g => { g.player.baseMaxMp = Math.round(g.player.baseMaxMp * 1.10); g.player.baseMpRegen += 1; },
+    getEffect: () => {
+      return `Logos base: ${G.player.baseMaxMp} (+${Math.round(G.player.baseMaxMp*0.10)} al prossimo)`;
+    },
+  },
+  {
+    id:'insight', name:'Intuizione', desc:'+8% Crit Damage per livello.',
+    baseCost:30, costScale:1.6,
+    effect: g => { g.player.baseCritDmg = (g.player.baseCritDmg || 200) + 8; },
+    getEffect: () => {
+      return `Crit DMG: ${G.player.baseCritDmg || 200}% (+8% al prossimo)`;
+    },
+  },
+  {
+    id:'wisdom_gain', name:'Sapienza', desc:'+20% Saggezza guadagnata per livello.',
+    baseCost:40, costScale:1.8,
+    effect: g => { g.wisdomMult += 0.2; },
+    getEffect: lv => `+${Math.round(lv*20)}% Saggezza`,
+  },
 ];
 
 // ── ITEMS DATABASE ───────────────────────────────────────────
@@ -308,7 +349,7 @@ function defaultState() {
     cooldowns:[0,0,0,0], playerStatuses:[], enemyStatuses:[],
     upgradeLevels:{dialectics:0,virtue:0,temperance:0,logos:0,insight:0,wisdom_gain:0},
     playerName:'Socrate',
-    player:{hp:100,baseMaxHp:100,mp:60,baseMaxMp:60,baseMpRegen:3,baseAtk:10,baseDef:0,baseCritChance:5,baseCritDmg:200},
+    player:{hp:100,baseMaxHp:100,mp:60,baseMaxMp:60,baseMpRegen:3,baseAtk:10,baseDef:2,baseCritChance:5,baseCritDmg:200},
     enemy:{name:'',hp:80,maxHp:80,atk:8,def:0},
     inventory:[],
     equipped:{weapon:null,armor:null,ring:null,amulet:null,boots:null},
@@ -696,9 +737,17 @@ const SKILLS = [
      const turns   = sp.has('eironeiaBuff') ? 6   : 3;
      const atkMult = sp.has('eironeiaBuff') ? .3  : .5;
      g.enemyStatuses.push({type:'debuff', name:'Confuso', turns, atkMult});
+     // nicomachean 4pc: also apply Arcana (DoT: 100% ATK + 80% DEF per turn, 3 turns)
+     if (sp.has('arcanaCurse')) {
+       const arcanaDmg = Math.round(st.atk * 1.0 + st.def * 0.8);
+       g.enemyStatuses.push({type:'arcana', name:'Arcana', turns:3, dmg:arcanaDmg});
+       addLog(`${g.playerName} usa <b>Eironeia</b>! Confuso + <b>Arcana</b> [3T, ${arcanaDmg} dmg/turno].`, 'crit');
+     } else {
+       addLog(`${g.playerName} usa <b>Eironeia</b>${sp.has('eironeiaBuff')?' [4pc 6T -70%]':''}!`, 'player');
+     }
      const dmg = Math.round(st.atk * .8);
      dealDamageToEnemy(dmg, false);
-     addLog(`${g.playerName} usa <b>Eironeia</b>${sp.has('eironeiaBuff')?' [4pc 6T -70%]':''}! ${dmg} danni.`, 'player');
+     addLog(`Colpo iniziale: ${dmg} danni.`, 'player');
      if (sp.has('logosAttackRegen')) { g.player.mp=Math.min(g.player.mp+5,st.maxMp); }
      return true;
    }},
@@ -794,15 +843,22 @@ function enemyTurn() {
     addLog(`${G.enemy.name} attacca per ${dmg} danni.`, 'enemy');
   }
 
-  // pure_logic 4pc: on hit → regen 3% HP + enemy takes DEF-based damage
-  if (sp.has('turnRegen')) {
+  // pure_logic 4pc: only triggers if player SURVIVED the hit (hp > 0)
+  if (sp.has('turnRegen') && G.player.hp > 0) {
     const reg = Math.round(st.maxHp * .03);
     G.player.hp = Math.min(G.player.hp + reg, st.maxHp);
     if (reg > 0) showHealPop('player-card', reg);
-    // Counter damage = current DEF stat
     const counterDmg = Math.max(1, st.def);
     dealDamageToEnemy(counterDmg, false);
     addLog(`Riflesso [Logica 4pc]: +${reg} HP, ${counterDmg} danno riflesso.`, 'set');
+  }
+
+  // Tick arcana debuff (nicomachean 4pc): deals dmg each enemy turn
+  const arcana = G.enemyStatuses.find(s => s.type === 'arcana');
+  if (arcana && G.enemy.hp > 0) {
+    const arcanaDmg = Math.max(1, arcana.dmg);
+    dealDamageToEnemy(arcanaDmg, false);
+    addLog(`Arcana brucia ${G.enemy.name} per ${arcanaDmg} danni! [${arcana.turns} turni rimasti]`, 'set');
   }
 
   G.playerStatuses = G.playerStatuses.filter(s => { s.turns--; return s.turns > 0; });
@@ -856,12 +912,6 @@ function checkBattleEnd() {
       const droppedItem = Math.random() < .70 ? makeItem(null) : null;
       if (droppedItem) addToInventory(droppedItem);
       const sp = getActiveBonus4Specials();
-      if (sp.has('victoryHeal')) {
-        const st = computeStats();
-        const h = Math.round(st.maxHp * .30);
-        G.player.hp = Math.min(G.player.hp + h, st.maxHp);
-        addLog(`Vittoria curata [4pc]: +${h} HP.`, 'set');
-      }
       updateUI(); renderInventory();
       showVictoryOverlay(wGain, droppedItem);
       scheduleSave();
@@ -1049,7 +1099,7 @@ function prestige() {
   G.floor = 1; G.wisdom = 0; G.wisdomMult = 1;
   G.upgradeLevels = {dialectics:0,virtue:0,temperance:0,logos:0,insight:0,wisdom_gain:0};
   G.player = {hp:100, baseMaxHp:100+G.prestige*10, mp:60, baseMaxMp:60+G.prestige*5,
-              baseMpRegen:3+G.prestige, baseAtk:10+G.prestige*5, baseDef:0,
+              baseMpRegen:3+G.prestige, baseAtk:10+G.prestige*5, baseDef:2,
               baseCritChance:5+G.prestige*2, baseCritDmg:200+G.prestige*10};
   G.battleOver = false; G.playerStatuses = []; G.enemyStatuses = []; G.cooldowns = [0,0,0,0];
   if (G.domainActive) {
@@ -1072,13 +1122,15 @@ function renderUpgrades() {
     const lv   = G.upgradeLevels[def.id];
     const cost = Math.floor(def.baseCost * Math.pow(def.costScale, lv));
     const ok   = G.wisdom >= cost;
+    // getEffect: some defs take lv, some take nothing
+    const effectText = lv > 0 ? (def.getEffect.length > 0 ? def.getEffect(lv) : def.getEffect()) : '';
     const div  = document.createElement('div'); div.className = 'upgrade-item';
     div.innerHTML = `
       <div class="upgrade-header"><div class="upgrade-name">${def.name}</div><div class="upgrade-level">Lv.${lv}</div></div>
       <div class="upgrade-desc">${def.desc}</div>
       <div class="upgrade-footer">
         <div class="upgrade-cost">🏛 ${cost}</div>
-        <div class="upgrade-effect">${lv>0 ? def.getEffect(lv) : ''}</div>
+        <div class="upgrade-effect">${effectText}</div>
         <button class="upgrade-btn" onclick="buyUpgrade('${def.id}')" ${ok?'':'disabled'}>Compra</button>
       </div>`;
     list.appendChild(div);
@@ -1308,7 +1360,9 @@ function renderStatuses(elId, statuses) {
   const el = document.getElementById(elId); el.innerHTML = '';
   statuses.forEach(s => {
     const b = document.createElement('span');
-    b.className = `status-badge status-${s.type}`; b.textContent = s.name + ' ' + s.turns;
+    const type = s.type === 'arcana' ? 'arcana' : s.type;
+    b.className = `status-badge status-${type}`;
+    b.textContent = s.name + ' ' + s.turns;
     el.appendChild(b);
   });
 }
