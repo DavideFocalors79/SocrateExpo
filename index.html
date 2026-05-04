@@ -6,6 +6,49 @@
 <title>ΟΔΟ ΣΟΚΡΑΤΗΣ — Il Cammino della Sapienza</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="game.css">
+<style>
+/* ── BLESSING SYSTEM STYLES ── */
+.blessing-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 10px;background:rgba(201,168,76,.06);
+  border:1px solid rgba(201,168,76,.2);border-radius:6px;margin-bottom:8px;
+}
+.blessing-token-display{display:flex;align-items:center;gap:6px}
+.blessing-token-icon{font-size:16px}
+.blessing-token-count{
+  font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--gold-light);
+}
+.blessing-token-label{font-size:10px;color:var(--text-dim);letter-spacing:1px}
+
+.blessing-slots{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.blessing-slot{
+  display:flex;align-items:center;gap:8px;padding:7px 10px;
+  border:1px solid var(--border);border-radius:6px;min-height:52px;
+  background:rgba(0,0,0,.15);transition:border-color .2s;
+}
+.blessing-slot-filled{background:rgba(0,0,0,.2)}
+.blessing-slot-empty{opacity:.5;justify-content:center;gap:8px}
+.bslot-info{flex:1;min-width:0}
+.bslot-name{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bslot-path{font-size:9px;letter-spacing:1px;font-family:'Cinzel',serif;text-transform:uppercase;margin-bottom:2px}
+.bslot-desc{font-size:10px;color:var(--text-dim);font-style:italic;line-height:1.3}
+
+.blessing-collection{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.blessing-coll-item{
+  display:flex;align-items:center;gap:8px;padding:7px 9px;
+  border:1px solid var(--border);border-radius:5px;background:rgba(0,0,0,.12);
+}
+
+/* Arcana status badge */
+.status-arcana{background:rgba(128,60,176,.3);color:#c080f0;border:1px solid rgba(128,60,176,.4)}
+
+/* blessing scroll panel */
+#blessings-panel{
+  max-height:70vh;overflow-y:auto;padding-right:2px;
+}
+#blessings-panel::-webkit-scrollbar{width:3px}
+#blessings-panel::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:2px}
+</style>
 </head>
 <body>
 <div id="app">
@@ -31,14 +74,14 @@
   <!-- ══ MAIN ══ -->
   <div class="main-grid">
 
-    <!-- ARENA -->
+    <!-- ── ARENA ── -->
     <div class="panel arena">
 
       <div class="arena-header" id="arena-header">
         <div class="arena-location" id="arena-location">Torre · Piano <span id="floor-num">1</span></div>
       </div>
 
-      <!-- Domain progress bar — hidden in tower mode -->
+      <!-- Domain progress bar (hidden in tower mode) -->
       <div class="domain-progress" id="domain-progress" style="display:none">
         <div class="domain-step" id="ds0"></div>
         <div class="domain-step" id="ds1"></div>
@@ -114,13 +157,14 @@
       </div>
     </div>
 
-    <!-- RIGHT PANEL -->
+    <!-- ── RIGHT PANEL ── -->
     <div class="right-panel">
       <div class="tabs-bar">
         <button class="tab-btn active" onclick="switchTab('upgrades')">Σοφία</button>
         <button class="tab-btn" onclick="switchTab('equip')">Equip</button>
         <button class="tab-btn" onclick="switchTab('inventory')">Zaino</button>
         <button class="tab-btn" onclick="switchTab('domains')">Domini</button>
+        <button class="tab-btn" onclick="switchTab('blessings')">✦ Bless</button>
       </div>
 
       <!-- TAB: Upgrades -->
@@ -172,23 +216,53 @@
       <div class="panel tab-content" id="tab-domains" style="padding:12px">
         <div class="panel-title">Domini</div>
         <div style="font-size:11px;color:var(--text-dim);font-style:italic;margin-bottom:10px;line-height:1.5">
-          Ogni Dominio è un livello separato con <b style="color:var(--gold-light)">5 nemici</b> in sequenza.
-          Completalo per guadagnare <b style="color:var(--gold-light)">3–6 oggetti</b> set garantiti.
-          Costo: <b style="color:var(--gold-light)">200 Saggezza</b> per entrata.
+          Ogni Dominio ha <b style="color:var(--gold-light)">5 nemici</b> in sequenza e garantisce
+          <b style="color:var(--gold-light)">3–6 oggetti</b> del set. Costo: <b style="color:var(--gold-light)">200 Saggezza</b>.
         </div>
         <div id="domains-list"></div>
       </div>
-    </div>
 
+      <!-- TAB: Blessings -->
+      <div class="panel tab-content" id="tab-blessings" style="padding:12px">
+        <div class="panel-title">✦ Blessing</div>
+        <div id="blessings-panel"></div>
+      </div>
+
+    </div>
   </div><!-- /main-grid -->
 
   <!-- BOTTOM BAR -->
   <div class="bottom-bar">
-    <div class="stat-chip"><span class="stat-chip-icon">⚔</span><span class="stat-chip-val" id="stat-atk">10</span><span class="stat-chip-label">DANNO</span></div>
-    <div class="stat-chip"><span class="stat-chip-icon">🛡</span><span class="stat-chip-val" id="stat-def">0</span><span class="stat-chip-label">DIFESA</span></div>
-    <div class="stat-chip"><span class="stat-chip-icon">❤</span><span class="stat-chip-val" id="stat-maxhp">100</span><span class="stat-chip-label">HP MAX</span></div>
-    <div class="stat-chip"><span class="stat-chip-icon">🎯</span><span class="stat-chip-val" id="stat-crit">5</span><span class="stat-chip-label">CRIT%</span></div>
-    <div class="stat-chip"><span class="stat-chip-icon">🔮</span><span class="stat-chip-val" id="stat-logos">60</span><span class="stat-chip-label">LOGOS</span></div>
+    <div class="stat-chip">
+      <span class="stat-chip-icon">⚔</span>
+      <span class="stat-chip-val" id="stat-atk">10</span>
+      <span class="stat-chip-label">DANNO</span>
+    </div>
+    <div class="stat-chip">
+      <span class="stat-chip-icon">🛡</span>
+      <span class="stat-chip-val" id="stat-def">2</span>
+      <span class="stat-chip-label">DIFESA</span>
+    </div>
+    <div class="stat-chip">
+      <span class="stat-chip-icon">❤</span>
+      <span class="stat-chip-val" id="stat-maxhp">100</span>
+      <span class="stat-chip-label">HP MAX</span>
+    </div>
+    <div class="stat-chip">
+      <span class="stat-chip-icon">🎯</span>
+      <span class="stat-chip-val" id="stat-crit">5</span>
+      <span class="stat-chip-label">CRIT%</span>
+    </div>
+    <div class="stat-chip">
+      <span class="stat-chip-icon">💥</span>
+      <span class="stat-chip-val" id="stat-critdmg">200%</span>
+      <span class="stat-chip-label">CRIT DMG</span>
+    </div>
+    <div class="stat-chip">
+      <span class="stat-chip-icon">🔮</span>
+      <span class="stat-chip-val" id="stat-logos">60</span>
+      <span class="stat-chip-label">LOGOS</span>
+    </div>
     <div style="margin-left:auto;font-style:italic;font-size:11px;color:var(--text-dim)" id="quote-bar">
       "So di non sapere nulla." — Socrate
     </div>
