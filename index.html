@@ -6,49 +6,6 @@
 <title>ΟΔΟ ΣΟΚΡΑΤΗΣ — Il Cammino della Sapienza</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="game.css">
-<style>
-/* ── BLESSING SYSTEM STYLES ── */
-.blessing-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:8px 10px;background:rgba(201,168,76,.06);
-  border:1px solid rgba(201,168,76,.2);border-radius:6px;margin-bottom:8px;
-}
-.blessing-token-display{display:flex;align-items:center;gap:6px}
-.blessing-token-icon{font-size:16px}
-.blessing-token-count{
-  font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--gold-light);
-}
-.blessing-token-label{font-size:10px;color:var(--text-dim);letter-spacing:1px}
-
-.blessing-slots{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
-.blessing-slot{
-  display:flex;align-items:center;gap:8px;padding:7px 10px;
-  border:1px solid var(--border);border-radius:6px;min-height:52px;
-  background:rgba(0,0,0,.15);transition:border-color .2s;
-}
-.blessing-slot-filled{background:rgba(0,0,0,.2)}
-.blessing-slot-empty{opacity:.5;justify-content:center;gap:8px}
-.bslot-info{flex:1;min-width:0}
-.bslot-name{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bslot-path{font-size:9px;letter-spacing:1px;font-family:'Cinzel',serif;text-transform:uppercase;margin-bottom:2px}
-.bslot-desc{font-size:10px;color:var(--text-dim);font-style:italic;line-height:1.3}
-
-.blessing-collection{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
-.blessing-coll-item{
-  display:flex;align-items:center;gap:8px;padding:7px 9px;
-  border:1px solid var(--border);border-radius:5px;background:rgba(0,0,0,.12);
-}
-
-/* Arcana status badge */
-.status-arcana{background:rgba(128,60,176,.3);color:#c080f0;border:1px solid rgba(128,60,176,.4)}
-
-/* blessing scroll panel */
-#blessings-panel{
-  max-height:70vh;overflow-y:auto;padding-right:2px;
-}
-#blessings-panel::-webkit-scrollbar{width:3px}
-#blessings-panel::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:2px}
-</style>
 </head>
 <body>
 <div id="app">
@@ -108,6 +65,14 @@
             <div class="bar-track"><div class="bar-fill mp-fill" id="p-mp-bar" style="width:100%"></div></div>
           </div>
           <div class="combatant-status" id="player-statuses"></div>
+          <!-- Punchline bar (visible only with 2+ Elation blessings) -->
+          <div class="punchline-bar-wrap" id="punchline-bar-wrap">
+            <div class="punchline-label">
+              <span>🎪 Punchline</span>
+              <span class="punchline-count" id="punchline-count-txt">0</span>
+            </div>
+            <div class="punchline-track"><div class="punchline-fill" id="punchline-fill" style="width:0%"></div></div>
+          </div>
         </div>
 
         <div class="vs-center"><div class="vs-text">VS</div></div>
@@ -142,11 +107,17 @@
           <span class="skill-icon">⚡</span><span class="skill-name">APORIA</span>
           <span class="skill-desc">Triplo attacco</span><span class="skill-cost">40 Logos</span>
         </button>
+        <button class="skill-btn" id="skill-4" onclick="useSkill(4)" style="display:none;border-color:var(--punchline)">
+          <span class="skill-icon">🎪</span><span class="skill-name">CATARSI</span>
+          <span class="skill-desc">Scarica Punchline</span>
+          <span class="skill-cost skill-pl" style="color:var(--punchline)">0✦</span>
+        </button>
       </div>
 
       <div class="combat-controls">
         <button class="btn primary" id="btn-attack" onclick="attack()">⚔ Attacca</button>
         <button class="btn" id="btn-auto" onclick="toggleAuto()">◎ Auto OFF</button>
+        <span class="auto-strategy-label" id="auto-strategy-display" style="display:none"></span>
         <button class="btn" id="btn-next" onclick="nextBattle()" style="display:none">→ Avanza</button>
         <button class="btn-exit-domain" id="btn-exit-domain" onclick="exitDomain()" style="display:none">✕ Esci dal Dominio</button>
       </div>
@@ -262,6 +233,11 @@
       <span class="stat-chip-icon">🔮</span>
       <span class="stat-chip-val" id="stat-logos">60</span>
       <span class="stat-chip-label">LOGOS</span>
+    </div>
+    <div class="stat-chip" id="stat-punchlinedmg-wrap" style="display:none;border-color:rgba(255,184,48,.35)">
+      <span class="stat-chip-icon">🎪</span>
+      <span class="stat-chip-val" id="stat-punchlinedmg" style="color:var(--punchline)">0</span>
+      <span class="stat-chip-label" style="color:var(--punchline)">PL DMG</span>
     </div>
     <div style="margin-left:auto;font-style:italic;font-size:11px;color:var(--text-dim)" id="quote-bar">
       "So di non sapere nulla." — Socrate

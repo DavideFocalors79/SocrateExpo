@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════
-   ΟΔΟ ΣΟΚΡΑΤΗΣ — Stylesheet
+   ΟΔΟ ΣΟΚΡΑΤΗΣ — Stylesheet (v6)
 ═══════════════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
@@ -14,6 +14,9 @@
   --border:rgba(201,168,76,.22);--border-strong:rgba(201,168,76,.5);
   --common:#a09070;--uncommon:#5aaa5a;--rare:#5090d0;--legendary:#e8a030;
   --s1:#c9a84c;--s2:#5090d0;--s3:#5aaa5a;--s4:#a080d0;
+  --s5:#cc3333;--s6:#ffb830;
+  --boss:#e8a030;
+  --punchline:#ffb830;
 }
 
 body{
@@ -85,7 +88,7 @@ header::after{
 
 /* ── ARENA ── */
 .arena{grid-column:1/3}
-.arena-header{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px}
+.arena-header{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
 .arena-location{
   text-align:center;font-family:'Cinzel',serif;font-size:10px;
   letter-spacing:3px;color:var(--text-dim);text-transform:uppercase;
@@ -115,12 +118,29 @@ header::after{
 .combatants{display:grid;grid-template-columns:1fr 68px 1fr;gap:8px;align-items:center;margin-bottom:12px}
 .combatant{
   padding:11px;border-radius:6px;border:1px solid var(--border);
-  background:rgba(0,0,0,.2);position:relative;transition:border-color .3s;
+  background:rgba(0,0,0,.2);position:relative;transition:border-color .3s,box-shadow .3s;
 }
 .combatant.active-turn{border-color:var(--gold-light);box-shadow:inset 0 0 20px rgba(201,168,76,.05)}
 .combatant.player-side{border-left:3px solid var(--blue)}
 .combatant.enemy-side{border-left:3px solid var(--red)}
 .combatant.domain-enemy{border-left-color:var(--legendary)}
+
+/* ── BOSS ENEMY STYLE ── */
+.combatant.boss-enemy{
+  border-left-color:var(--boss);
+  border-color:rgba(232,160,48,.5);
+  background:rgba(232,160,48,.04);
+  box-shadow:0 0 18px rgba(232,160,48,.12),inset 0 0 30px rgba(232,160,48,.04);
+  animation:boss-glow 2s ease-in-out infinite alternate;
+}
+@keyframes boss-glow{
+  from{box-shadow:0 0 12px rgba(232,160,48,.1),inset 0 0 20px rgba(232,160,48,.03)}
+  to{box-shadow:0 0 28px rgba(232,160,48,.25),inset 0 0 40px rgba(232,160,48,.07)}
+}
+.combatant.boss-enemy .enemy-hp-fill{
+  background:linear-gradient(90deg,#8b3500,#e8a030,#ffd700);
+}
+
 .combatant-name-row{display:flex;align-items:center;gap:5px;margin-bottom:2px}
 .combatant-name{font-family:'Cinzel',serif;font-size:13px;font-weight:600}
 .name-edit-btn{
@@ -206,6 +226,13 @@ header::after{
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .btn.danger{border-color:var(--red);color:#e08080}
 .btn.danger:hover{background:rgba(192,64,64,.15)}
+
+/* ── AUTO STRATEGY INDICATOR ── */
+.auto-strategy-label{
+  font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;color:var(--text-dim);
+  padding:2px 8px;border:1px solid var(--border);border-radius:10px;
+  background:rgba(0,0,0,.2);
+}
 
 /* ── COMBAT LOG ── */
 .log-panel{
@@ -301,7 +328,33 @@ header::after{
 .set-bonus-line.active{color:#90d090}
 .set-bonus-line.inactive{color:rgba(160,144,112,.45)}
 
-/* ── RARITY ── */
+/* ── PUNCHLINE BAR ── */
+.punchline-bar-wrap{margin-top:6px;display:none}
+.punchline-bar-wrap.active{display:block}
+.punchline-label{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--punchline);margin-bottom:2px;font-family:'Cinzel',serif}
+.punchline-track{height:6px;background:rgba(0,0,0,.4);border-radius:4px;overflow:hidden;border:1px solid rgba(255,184,48,.2)}
+.punchline-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#cc7700,#ffb830,#ffe080);transition:width .3s ease;box-shadow:0 0 6px rgba(255,184,48,.4)}
+.punchline-count{font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--punchline)}
+
+/* Catarsi skill button special style */
+.skill-btn.catarsi-ready{
+  border-color:var(--punchline);
+  background:linear-gradient(160deg,rgba(255,184,48,.15),rgba(255,184,48,.05));
+  box-shadow:0 0 12px rgba(255,184,48,.3);
+  animation:catarsi-pulse .9s ease-in-out infinite alternate;
+}
+@keyframes catarsi-pulse{
+  from{box-shadow:0 0 8px rgba(255,184,48,.2)}
+  to{box-shadow:0 0 20px rgba(255,184,48,.5)}
+}
+
+/* Destruction status */
+.status-destruction{background:rgba(180,40,40,.3);color:#ff8080;border:1px solid rgba(180,40,40,.5);animation:pulse-arcana 1s infinite alternate}
+
+/* Elation status */
+.status-elation{background:rgba(255,184,48,.2);color:#ffcc60;border:1px solid rgba(255,184,48,.4);}
+
+/* New domain colors */
 .rarity-common .slot-item-name{color:var(--common)}
 .rarity-uncommon .slot-item-name{color:var(--uncommon)}
 .rarity-rare .slot-item-name{color:var(--rare)}
@@ -419,6 +472,38 @@ header::after{
 .loot-item-name{font-size:12px;font-weight:600}
 .loot-item-sub{font-size:10px;color:var(--text-dim)}
 .loot-domain-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:6px;text-align:left}
+
+/* ── BLESSING SYSTEM STYLES ── */
+.blessing-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 10px;background:rgba(201,168,76,.06);
+  border:1px solid rgba(201,168,76,.2);border-radius:6px;margin-bottom:8px;
+}
+.blessing-token-display{display:flex;align-items:center;gap:6px}
+.blessing-token-icon{font-size:16px}
+.blessing-token-count{font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--gold-light)}
+.blessing-token-label{font-size:10px;color:var(--text-dim);letter-spacing:1px}
+.blessing-slots{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.blessing-slot{
+  display:flex;align-items:center;gap:8px;padding:7px 10px;
+  border:1px solid var(--border);border-radius:6px;min-height:52px;
+  background:rgba(0,0,0,.15);transition:border-color .2s;
+}
+.blessing-slot-filled{background:rgba(0,0,0,.2)}
+.blessing-slot-empty{opacity:.5;justify-content:center;gap:8px}
+.bslot-info{flex:1;min-width:0}
+.bslot-name{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bslot-path{font-size:9px;letter-spacing:1px;font-family:'Cinzel',serif;text-transform:uppercase;margin-bottom:2px}
+.bslot-desc{font-size:10px;color:var(--text-dim);font-style:italic;line-height:1.3}
+.blessing-collection{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.blessing-coll-item{
+  display:flex;align-items:center;gap:8px;padding:7px 9px;
+  border:1px solid var(--border);border-radius:5px;background:rgba(0,0,0,.12);
+}
+.status-arcana{background:rgba(128,60,176,.3);color:#c080f0;border:1px solid rgba(128,60,176,.4)}
+#blessings-panel{max-height:70vh;overflow-y:auto;padding-right:2px}
+#blessings-panel::-webkit-scrollbar{width:3px}
+#blessings-panel::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:2px}
 
 /* ── SCROLLBARS ── */
 ::-webkit-scrollbar{width:3px}

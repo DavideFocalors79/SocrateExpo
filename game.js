@@ -1,8 +1,8 @@
 // ═══════════════════════════════════════════════════════════
-//  ΟΔΟ ΣΟΚΡΑΤΗΣ — game.js  (v5)
-//  • Upgrades scale over base+items total (multipliers)
-//  • Blessing system: 5 paths × 4, 6 slots, prestige tokens
-//  • All balance fixes (crit cap, pure_logic bug, domains no floor++)
+//  ΟΔΟ ΣΟΚΡΑΤΗΣ — game.js  (v6)
+//  • No duplicate blessings in collection/equipped
+//  • Boss every 5 floors with special random debuff
+//  • Smart autoplay based on equipped set strategy
 // ═══════════════════════════════════════════════════════════
 
 // ── STATIC DATA ─────────────────────────────────────────────
@@ -30,6 +30,42 @@ const ENEMIES = [
   {name:"Giatti",title:"Re dell'aura",icon:"🕳"},
   {name:"Denis Penis",title:"Fortnite Player",icon:"👁"},
   {name:"Il Bocchins",title:"Fa i bocchins",icon:"🔱"},
+];
+
+// ── BOSS DATA ─────────────────────────────────────────────────
+const BOSSES = [
+  {name:"Il Grande Sofista",title:"Campione dell'Inganno",icon:"🔱"},
+  {name:"Thanatos Filosofico",title:"Signore del Silenzio Eterno",icon:"💀"},
+  {name:"Il Tiranno Assoluto",title:"Oppressore della Ragione",icon:"👑"},
+  {name:"L'Ombra Suprema",title:"Oscurità dell'Intelletto",icon:"🌑"},
+  {name:"Arkon il Distruttore",title:"Nemico della Dialettica",icon:"⚡"},
+  {name:"Il Vuoto Incarnato",title:"Antitesi della Saggezza",icon:"🕳"},
+  {name:"Kronos Corrotto",title:"Divoratore di Filosofi",icon:"⌛"},
+];
+
+// Boss special debuffs (random each time)
+const BOSS_DEBUFFS = [
+  {id:'weakness',name:'Debolezza',desc:'ATK dimezzato per 3 turni',apply:(g,st)=>{
+    g.playerStatuses.push({type:'debuff',name:'Debolezza',turns:3,atkMult:0.5});
+  }},
+  {id:'drain',name:'Drenaggio',desc:'Toglie 15 Logos per turno per 3 turni',apply:(g,st)=>{
+    g.playerStatuses.push({type:'drain',name:'Drenaggio',turns:3,mpDrain:15});
+  }},
+  {id:'blindness',name:'Cecità',desc:'Crit Chance azzerata per 4 turni',apply:(g,st)=>{
+    g.playerStatuses.push({type:'blind',name:'Cecità',turns:4});
+  }},
+  {id:'curse',name:'Maledizione',desc:'Cura ridotta del 60% per 3 turni',apply:(g,st)=>{
+    g.playerStatuses.push({type:'curse',name:'Maledizione',turns:3,healMult:0.4});
+  }},
+  {id:'silence',name:'Silenzio',desc:'Elenchos fa il 50% di danno per 3 turni',apply:(g,st)=>{
+    g.playerStatuses.push({type:'silence',name:'Silenzio',turns:3});
+  }},
+  {id:'corrode',name:'Corrosione',desc:'DEF ridotta a 0 per 3 turni',apply:(g,st)=>{
+    g.playerStatuses.push({type:'corrode',name:'Corrosione',turns:3});
+  }},
+  {id:'frenzy',name:'Frenesia',desc:'Il boss attacca due volte per 2 turni',apply:(g,st)=>{
+    g.bossDoubleAttack=(g.bossDoubleAttack||0)+2;
+  }},
 ];
 
 const DOMAIN_ENEMIES = {
@@ -61,6 +97,20 @@ const DOMAIN_ENEMIES = {
     {name:"Il Vuoto Assoluto",title:"Antitesi della Sapienza",icon:"🕳"},
     {name:"Kronos dell'Oblio",title:"Divoratore di Saggezza",icon:"⌛"},
   ],
+  d5:[
+    {name:"Il Carnefice",title:"Servo della Distruzione",icon:"💢"},
+    {name:"Atë la Rovina",title:"Dea della Cecità Fatale",icon:"🩸"},
+    {name:"Il Martire Corrotto",title:"Chi Abbraccia il Dolore",icon:"⛓"},
+    {name:"Thanatos il Vero",title:"Morte Incarnata",icon:"💀"},
+    {name:"Il Re Distrutto",title:"Corona Spezzata sull'Abisso",icon:"👁‍🗨"},
+  ],
+  d6:[
+    {name:"Il Buffone Supremo",title:"Maestro del Caos Gioioso",icon:"🎪"},
+    {name:"Aristofane il Beffardo",title:"Commediografo dell'Olimpo",icon:"😂"},
+    {name:"La Maschera Ridente",title:"Chi Ride nell'Oscurità",icon:"🎭"},
+    {name:"Il Saltimbanco",title:"Acrobata dell'Assurdo",icon:"🤹"},
+    {name:"Momos il Deriso",title:"Dio della Beffa Divina",icon:"🃏"},
+  ],
 };
 
 // ── SETS ────────────────────────────────────────────────────
@@ -89,6 +139,24 @@ const SETS = {
   divine_wisdom:{id:'divine_wisdom',name:"Saggezza degli Dei",domain:4,icon:"✨",color:"var(--s4)",
     desc2:"+35% Saggezza guadagnata",desc4:"Logos +5 per attacco + Aporia scala col Logos massimo",
     bonus2:{wisdomPct:.35},bonus4:{},bonus4special:'logosAttackRegen'},
+  // ── Dominio 5: Destruction ──
+  iron_will:{id:'iron_will',name:"Volontà di Ferro",domain:5,icon:"💢",color:"var(--s5)",
+    desc2:"+20% ATK totale + ogni 10% HP persi = +8% danno (max +80%)",
+    desc4:"Quando sotto il 40% HP: ogni attacco infligge +30% danno e ruba il 5% degli HP mancanti",
+    bonus2:{atkPct:.20},bonus4:{},bonus4special:'woundedFury'},
+  broken_crown:{id:'broken_crown',name:"Corona Spezzata",domain:5,icon:"👁‍🗨",color:"var(--s5)",
+    desc2:"+30% HP massimi + danni subiti caricano potere: ogni 50 danno subito = +5% ATK permanente (max +100%)",
+    desc4:"Una volta per battaglia: se ricevi danno letale rimani a 1 HP invece di morire",
+    bonus2:{maxHpPct:.30},bonus4:{},bonus4special:'lastStand'},
+  // ── Dominio 6: Elation ──
+  jester_soul:{id:'jester_soul',name:"Anima del Giullare",domain:6,icon:"🎪",color:"var(--s6)",
+    desc2:"+10 Punchline extra per ogni skill usata (richiede 2 Blessing Elation attive)",
+    desc4:"Catarsi non consuma cooldown se hai 50+ Punchline al momento dell'uso",
+    bonus2:{},bonus4:{},bonus4special:'jesterFlow'},
+  crowd_pleaser:{id:'crowd_pleaser',name:"Piacere della Folla",domain:6,icon:"🎭",color:"var(--s6)",
+    desc2:"+25% Danno Catarsi + ogni colpo critico genera +8 Punchline bonus",
+    desc4:"Catarsi può colpire critico con Crit Chance normale (danno ×Crit DMG)",
+    bonus2:{punchlineDmgPct:.25},bonus4:{},bonus4special:'crowdCrit'},
 };
 
 // ── DOMAINS ──────────────────────────────────────────────────
@@ -105,6 +173,12 @@ const DOMAINS = [
   {id:4,name:"Olimpo degli Dei",icon:"🔥",color:"var(--s4)",bg:"rgba(160,128,208,.08)",
    desc:"Titani dell'oblio e guardiani del caos.",
    sets:['prometheus_fire','divine_wisdom'],enemyKey:'d4',scaleMult:3.0},
+  {id:5,name:"Abisso della Distruzione",icon:"💢",color:"var(--s5)",bg:"rgba(180,40,40,.08)",
+   desc:"Dove il dolore diventa forza. Chi resiste vince.",
+   sets:['iron_will','broken_crown'],enemyKey:'d5',scaleMult:4.5},
+  {id:6,name:"Teatro dell'Elation",icon:"🎪",color:"var(--s6)",bg:"rgba(255,180,50,.08)",
+   desc:"Il palcoscenico dell'assurdo. Risate che uccidono.",
+   sets:['jester_soul','crowd_pleaser'],enemyKey:'d6',scaleMult:4.0},
 ];
 
 // ── BLESSINGS ────────────────────────────────────────────────
@@ -114,6 +188,8 @@ const BLESSING_PATHS = {
   Propagation:  {icon:'🔮',  color:'#60aadd'},
   Abundance:    {icon:'🌸',  color:'#80cc80'},
   Preservation: {icon:'🛡',  color:'#c9a84c'},
+  Destruction:  {icon:'💢',  color:'#cc3333'},
+  Elation:      {icon:'🎪',  color:'#ffb830'},
 };
 
 const BLESSINGS = {
@@ -181,6 +257,34 @@ const BLESSINGS = {
   preservation_4:{id:'preservation_4',path:'Preservation',name:"Forza nella Roccia",
     desc:"Ogni 5 punti di DEF aggiunge l'1% all'ATK.",
     stats:{},flags:['defToAtk']},
+
+  // ── DESTRUCTION: basate sulla perdita di HP ──────────────────
+  destruction_1:{id:'destruction_1',path:'Destruction',name:"Rabbia del Ferito",
+    desc:"Ogni 10% di HP mancanti = +10% ATK (max +90%). Scala sugli HP persi.",
+    stats:{},flags:['woundedRage']},
+  destruction_2:{id:'destruction_2',path:'Destruction',name:"Sangue e Acciaio",
+    desc:"Quando vieni colpito, il prossimo attacco infligge +50% danno.",
+    stats:{},flags:['bloodSteel']},
+  destruction_3:{id:'destruction_3',path:'Destruction',name:"Sacrificio Tattico",
+    desc:"Puoi usare Elenchos consumando il 5% HP max invece di Logos. Genera anche 3 Punchline se Elation attiva.",
+    stats:{},flags:['hpElenchos']},
+  destruction_4:{id:'destruction_4',path:'Destruction',name:"Rinascita dalla Cenere",
+    desc:"Quando scendi sotto il 20% HP, guadagni +80% ATK e +40% DEF per 3 turni (una volta per battaglia).",
+    stats:{},flags:['phoenixRage']},
+
+  // ── ELATION: generano e potenziano le Punchline ──────────────
+  elation_1:{id:'elation_1',path:'Elation',name:"Sense of Humor",
+    desc:"[Attiva sistema Punchline] Ogni attacco genera +5 Punchline. Sblocca la skill Catarsi.",
+    stats:{},flags:['elationActive']},
+  elation_2:{id:'elation_2',path:'Elation',name:"Comic Timing",
+    desc:"[Attiva sistema Punchline] Elenchos genera +8 Punchline invece di 5. I critici ne generano +5 bonus.",
+    stats:{},flags:['elationActive','comicTiming']},
+  elation_3:{id:'elation_3',path:'Elation',name:"Crowd Work",
+    desc:"Ogni turno passato sotto il 50% HP genera +10 Punchline aggiuntive.",
+    stats:{},flags:['crowdWork']},
+  elation_4:{id:'elation_4',path:'Elation',name:"Standing Ovation",
+    desc:"Dopo aver usato Catarsi con 80+ Punchline, guadagni +50% ATK per 2 turni.",
+    stats:{},flags:['standingOvation']},
 };
 const BLESSING_IDS = Object.keys(BLESSINGS);
 const MAX_BLESSING_SLOTS = 6;
@@ -194,7 +298,6 @@ const SELL_PRICES = {common:3,uncommon:9,rare:25,legendary:60};
 const DOMAIN_COST = 200;
 
 // ── UPGRADES ─────────────────────────────────────────────────
-// Multipliers are stored in G.upgradeMults and applied AFTER item flat bonuses.
 const UPGRADES_DEF = [
   {id:'dialectics', name:'Dialettica', desc:'+5% ATK (base+oggetti) per livello.',
    baseCost:15, costScale:1.5,
@@ -396,7 +499,104 @@ function buildItemsDB(){
     {n:"Sandali degli Dei",       i:"✨",r:"legendary",s:{maxMp:80,def:11,mpRegen:4},  sid:"divine_wisdom"},
   ];
   const norm=(arr,slot)=>arr.map(t=>({name:t.n,icon:t.i,rarity:t.r,stats:t.s,setId:t.sid,slot}));
-  return{weapon:norm(W,'weapon'),armor:norm(A,'armor'),ring:norm(R,'ring'),amulet:norm(AM,'amulet'),boots:norm(B,'boots')};
+  // ── Destruction & Elation set items ──────────────────────────
+  const W2=[
+    {n:"Lama della Ferita",     i:"🩸",r:"common",   s:{atk:6},                sid:"iron_will"},
+    {n:"Spada del Dolore",      i:"💢",r:"uncommon", s:{atk:11,def:3},          sid:"iron_will"},
+    {n:"Ascia della Rabbia",    i:"🪓",r:"rare",     s:{atk:18,def:6},          sid:"iron_will"},
+    {n:"Lama Sanguinante",      i:"⚔", r:"legendary",s:{atk:30,def:10},         sid:"iron_will"},
+    {n:"Frammento di Corona",   i:"👑",r:"common",   s:{atk:4,maxHp:20},        sid:"broken_crown"},
+    {n:"Scudo Spezzato",        i:"🛡",r:"uncommon", s:{atk:8,maxHp:45},        sid:"broken_crown"},
+    {n:"Lama del Martire",      i:"🗡",r:"rare",     s:{atk:14,maxHp:80},       sid:"broken_crown"},
+    {n:"Corona Spezzata",       i:"👁‍🗨",r:"legendary",s:{atk:22,maxHp:130},     sid:"broken_crown"},
+    {n:"Bacchetta del Giullare",i:"🎪",r:"common",   s:{atk:5,critChance:3},    sid:"jester_soul"},
+    {n:"Tamburo Ridente",       i:"🥁",r:"uncommon", s:{atk:9,critChance:6},    sid:"jester_soul"},
+    {n:"Tromba dell'Assurdo",   i:"🎺",r:"rare",     s:{atk:15,critChance:10},  sid:"jester_soul"},
+    {n:"Microfono d'Oro",       i:"🎤",r:"legendary",s:{atk:25,critChance:16},  sid:"jester_soul"},
+    {n:"Dado della Sorte",      i:"🎲",r:"common",   s:{atk:5,critChance:4},    sid:"crowd_pleaser"},
+    {n:"Carta Selvaggia",       i:"🃏",r:"uncommon", s:{atk:10,critChance:8},   sid:"crowd_pleaser"},
+    {n:"Maschera Ridente",      i:"😂",r:"rare",     s:{atk:16,critChance:13},  sid:"crowd_pleaser"},
+    {n:"Stella dello Spettacolo",i:"⭐",r:"legendary",s:{atk:26,critChance:20}, sid:"crowd_pleaser"},
+  ];
+  const A2=[
+    {n:"Armatura della Resistenza",i:"🛡",r:"common",  s:{def:5,maxHp:18},      sid:"iron_will"},
+    {n:"Corazza del Ferito",    i:"💢",r:"uncommon", s:{def:9,maxHp:38},        sid:"iron_will"},
+    {n:"Veste di Ferro",        i:"⛓",r:"rare",     s:{def:15,maxHp:65},       sid:"iron_will"},
+    {n:"Armatura del Sopravvissuto",i:"🩸",r:"legendary",s:{def:24,maxHp:105},  sid:"iron_will"},
+    {n:"Veste Spezzata",        i:"👁‍🗨",r:"common",   s:{def:4,maxHp:30},       sid:"broken_crown"},
+    {n:"Armatura del Martire",  i:"⛓",r:"uncommon", s:{def:7,maxHp:65},        sid:"broken_crown"},
+    {n:"Corazza Rovinata",      i:"🛡",r:"rare",     s:{def:12,maxHp:110},      sid:"broken_crown"},
+    {n:"Veste del Re Caduto",   i:"👑",r:"legendary",s:{def:19,maxHp:175},      sid:"broken_crown"},
+    {n:"Costume del Giullare",  i:"🎪",r:"common",   s:{def:3,critChance:4},    sid:"jester_soul"},
+    {n:"Armatura Buffona",      i:"🤹",r:"uncommon", s:{def:6,critChance:7},    sid:"jester_soul"},
+    {n:"Veste dell'Intrattenitore",i:"🎭",r:"rare",  s:{def:10,critChance:12},  sid:"jester_soul"},
+    {n:"Abito da Palcoscenico", i:"🌟",r:"legendary",s:{def:16,critChance:19},  sid:"jester_soul"},
+    {n:"Mantello del Pubblico", i:"🎭",r:"common",   s:{def:3,maxHp:25},        sid:"crowd_pleaser"},
+    {n:"Corazza della Folla",   i:"🎪",r:"uncommon", s:{def:6,maxHp:55},        sid:"crowd_pleaser"},
+    {n:"Armatura dell'Ovazione",i:"👏",r:"rare",     s:{def:10,maxHp:95},       sid:"crowd_pleaser"},
+    {n:"Veste del Campione",    i:"🏆",r:"legendary",s:{def:16,maxHp:150},      sid:"crowd_pleaser"},
+  ];
+  const R2=[
+    {n:"Anello della Cicatrice",i:"🩸",r:"common",   s:{atk:4,maxHp:18},       sid:"iron_will"},
+    {n:"Sigillo del Guerriero", i:"💢",r:"uncommon", s:{atk:7,maxHp:38},        sid:"iron_will"},
+    {n:"Anello del Sopravvissuto",i:"⚔",r:"rare",   s:{atk:12,maxHp:65},       sid:"iron_will"},
+    {n:"Sigillo di Ferro",      i:"🛡",r:"legendary",s:{atk:20,maxHp:105},      sid:"iron_will"},
+    {n:"Anello Spezzato",       i:"👁‍🗨",r:"common",  s:{def:4,maxHp:28},        sid:"broken_crown"},
+    {n:"Sigillo del Caduto",    i:"👑",r:"uncommon", s:{def:8,maxHp:60},        sid:"broken_crown"},
+    {n:"Anello della Rovina",   i:"💀",r:"rare",     s:{def:13,maxHp:100},      sid:"broken_crown"},
+    {n:"Sigillo della Corona",  i:"⛓",r:"legendary",s:{def:21,maxHp:160},      sid:"broken_crown"},
+    {n:"Anello del Giullare",   i:"🎪",r:"common",   s:{critChance:6,atk:2},    sid:"jester_soul"},
+    {n:"Sigillo Burlone",       i:"🃏",r:"uncommon", s:{critChance:11,atk:5},   sid:"jester_soul"},
+    {n:"Anello dell'Assurdo",   i:"🎭",r:"rare",     s:{critChance:17,atk:8},   sid:"jester_soul"},
+    {n:"Occhio del Palcoscenico",i:"👁",r:"legendary",s:{critChance:26,atk:13}, sid:"jester_soul"},
+    {n:"Anello della Platea",   i:"🎲",r:"common",   s:{critChance:7,atk:2},    sid:"crowd_pleaser"},
+    {n:"Sigillo dell'Applauso", i:"👏",r:"uncommon", s:{critChance:12,atk:5},   sid:"crowd_pleaser"},
+    {n:"Anello del Bis",        i:"🌟",r:"rare",     s:{critChance:18,atk:9},   sid:"crowd_pleaser"},
+    {n:"Sigillo della Star",    i:"⭐",r:"legendary",s:{critChance:28,atk:14},  sid:"crowd_pleaser"},
+  ];
+  const AM2=[
+    {n:"Amuleto del Dolore",    i:"🩸",r:"common",   s:{atk:5,maxHp:20},        sid:"iron_will"},
+    {n:"Ciondolo della Rabbia", i:"💢",r:"uncommon", s:{atk:9,maxHp:42},        sid:"iron_will"},
+    {n:"Amuleto di Ferro",      i:"⚔", r:"rare",     s:{atk:15,maxHp:72},       sid:"iron_will"},
+    {n:"Cuore di Ferro",        i:"❤",r:"legendary",s:{atk:24,maxHp:115},       sid:"iron_will"},
+    {n:"Amuleto Spezzato",      i:"👑",r:"common",   s:{def:5,maxHp:28},        sid:"broken_crown"},
+    {n:"Corona in Frantumi",    i:"👁‍🗨",r:"uncommon",s:{def:9,maxHp:60},        sid:"broken_crown"},
+    {n:"Amuleto del Re Caduto", i:"⛓",r:"rare",     s:{def:15,maxHp:105},       sid:"broken_crown"},
+    {n:"Cuore Spezzato",        i:"💔",r:"legendary",s:{def:24,maxHp:165},       sid:"broken_crown"},
+    {n:"Amuleto del Riso",      i:"😂",r:"common",   s:{critChance:5,atk:3},    sid:"jester_soul"},
+    {n:"Mascherina Ridente",    i:"🎭",r:"uncommon", s:{critChance:9,atk:6},    sid:"jester_soul"},
+    {n:"Amuleto della Commedia",i:"🎪",r:"rare",     s:{critChance:14,atk:10},  sid:"jester_soul"},
+    {n:"Cuore del Giullare",    i:"🤹",r:"legendary",s:{critChance:22,atk:16},  sid:"jester_soul"},
+    {n:"Amuleto della Folla",   i:"👏",r:"common",   s:{critChance:5,maxHp:22}, sid:"crowd_pleaser"},
+    {n:"Biglietto d'Oro",       i:"🎟",r:"uncommon", s:{critChance:9,maxHp:48}, sid:"crowd_pleaser"},
+    {n:"Amuleto dell'Ovazione", i:"🌟",r:"rare",     s:{critChance:15,maxHp:82},sid:"crowd_pleaser"},
+    {n:"Cuore della Folla",     i:"💛",r:"legendary",s:{critChance:24,maxHp:130},sid:"crowd_pleaser"},
+  ];
+  const B2=[
+    {n:"Stivali del Ferito",    i:"🩸",r:"common",   s:{def:3,maxHp:18},        sid:"iron_will"},
+    {n:"Calzari della Resistenza",i:"💢",r:"uncommon",s:{def:6,maxHp:38},       sid:"iron_will"},
+    {n:"Stivali dell'Acciaio",  i:"⛓",r:"rare",     s:{def:10,maxHp:65,atk:5}, sid:"iron_will"},
+    {n:"Sandali del Guerriero", i:"🥾",r:"legendary",s:{def:16,maxHp:105,atk:9},sid:"iron_will"},
+    {n:"Sandali Spezzati",      i:"👡",r:"common",   s:{def:3,maxHp:26},        sid:"broken_crown"},
+    {n:"Calzari del Martire",   i:"👟",r:"uncommon", s:{def:6,maxHp:55},        sid:"broken_crown"},
+    {n:"Stivali della Rovina",  i:"🥿",r:"rare",     s:{def:10,maxHp:95},       sid:"broken_crown"},
+    {n:"Sandali del Re Caduto", i:"🥾",r:"legendary",s:{def:16,maxHp:150},      sid:"broken_crown"},
+    {n:"Scarpe del Giullare",   i:"🎪",r:"common",   s:{critChance:5,def:2},    sid:"jester_soul"},
+    {n:"Calzari Burloni",       i:"🤹",r:"uncommon", s:{critChance:9,def:4},    sid:"jester_soul"},
+    {n:"Stivali del Buffone",   i:"🎭",r:"rare",     s:{critChance:14,def:7,atk:4},sid:"jester_soul"},
+    {n:"Sandali del Palcoscenico",i:"🌟",r:"legendary",s:{critChance:22,def:11,atk:8},sid:"jester_soul"},
+    {n:"Scarpe della Platea",   i:"👟",r:"common",   s:{critChance:5,def:2},    sid:"crowd_pleaser"},
+    {n:"Calzari dell'Applauso", i:"👏",r:"uncommon", s:{critChance:9,def:4},    sid:"crowd_pleaser"},
+    {n:"Stivali dello Spettacolo",i:"🎟",r:"rare",   s:{critChance:15,def:7},   sid:"crowd_pleaser"},
+    {n:"Sandali della Star",    i:"⭐",r:"legendary",s:{critChance:24,def:11,atk:6},sid:"crowd_pleaser"},
+  ];
+  return{
+    weapon:[...norm(W,'weapon'),...norm(W2,'weapon')],
+    armor:[...norm(A,'armor'),...norm(A2,'armor')],
+    ring:[...norm(R,'ring'),...norm(R2,'ring')],
+    amulet:[...norm(AM,'amulet'),...norm(AM2,'amulet')],
+    boots:[...norm(B,'boots'),...norm(B2,'boots')],
+  };
 }
 
 // ── GAME STATE ───────────────────────────────────────────────
@@ -406,7 +606,7 @@ function defaultState(){
     domainActive:false,domainId:null,domainEnemy:1,domainLoot:[],
     battleOver:false,playerTurn:true,
     autoMode:false,autoTimer:null,
-    cooldowns:[0,0,0,0],playerStatuses:[],enemyStatuses:[],
+    cooldowns:[0,0,0,0,0],playerStatuses:[],enemyStatuses:[],
     upgradeMults:{atk:1.0,maxHp:1.0,def:1.0,maxMp:1.0,critDmg:1.0},
     upgradeLevels:{dialectics:0,virtue:0,temperance:0,logos:0,insight:0,wisdom_gain:0},
     playerName:'Socrate',
@@ -419,12 +619,15 @@ function defaultState(){
     blessingCollection:[],
     equippedBlessings:[null,null,null,null,null,null],
     logosSpentBattle:0,firstSkillUsed:false,firstHitNegated:false,
+    isBossFight:false,bossDoubleAttack:0,
+    punchline:0,bloodSteelCharged:false,phoenixRageUsed:false,woundedFuryStacks:0,
+    lastStandUsed:false,brokenCrownDmgAccum:0,brokenCrownAtkBonus:0,
   };
 }
 let G=defaultState();
 
 // ── SAVE / LOAD ──────────────────────────────────────────────
-const SAVE_KEY='sokrates_save_v5';
+const SAVE_KEY='sokrates_save_v6';
 let _saveTimer=null;
 
 function saveGame(){
@@ -458,10 +661,14 @@ function loadGame(){
     if(!G.blessingCollection)G.blessingCollection=[];
     if(!G.equippedBlessings)G.equippedBlessings=[null,null,null,null,null,null];
     if(G.blessingTokens==null)G.blessingTokens=0;
-    G.battleOver=false;G.playerTurn=true;G.cooldowns=[0,0,0,0];
+    G.battleOver=false;G.playerTurn=true;G.cooldowns=[0,0,0,0,0];
     G.playerStatuses=[];G.enemyStatuses=[];G.autoMode=false;G.autoTimer=null;
     G.domainActive=false;G.domainId=null;G.domainEnemy=1;G.domainLoot=[];
     G.logosSpentBattle=0;G.firstSkillUsed=false;G.firstHitNegated=false;
+    G.isBossFight=false;G.bossDoubleAttack=0;G.pendingBossDebuff=null;
+    G.punchline=G.punchline||0;G.bloodSteelCharged=false;G.phoenixRageUsed=false;
+    G.lastStandUsed=false;G.brokenCrownDmgAccum=G.brokenCrownDmgAccum||0;
+    G.brokenCrownAtkBonus=G.brokenCrownAtkBonus||0;
     return true;
   }catch(e){console.warn('Load failed:',e);return false;}
 }
@@ -486,14 +693,15 @@ function resetSave(){
 // ── PRESTIGE FORMULA ─────────────────────────────────────────
 function prestigeRequiredFloor(){return 20+G.prestige*2;}
 
+// ── IS BOSS FLOOR ─────────────────────────────────────────────
+function isBossFloor(floor){return floor>0&&floor%5===0;}
+
 // ── STATS ─────────────────────────────────────────────────────
 function computeStats(){
   const p=G.player;
-  // 1) base
   let atk=p.baseAtk,def=p.baseDef,maxHp=p.baseMaxHp,
       critChance=p.baseCritChance,maxMp=p.baseMaxMp,
       mpRegen=p.baseMpRegen,critDmg=p.baseCritDmg||200;
-  // 2) item flat bonuses
   Object.values(G.equipped).forEach(item=>{
     if(!item)return;
     if(item.stats.atk)       atk       +=item.stats.atk;
@@ -504,14 +712,12 @@ function computeStats(){
     if(item.stats.mpRegen)   mpRegen   +=item.stats.mpRegen;
     if(item.stats.critDmg)   critDmg   +=item.stats.critDmg;
   });
-  // 3) upgrade multipliers (after items — scales base+items)
   const um=G.upgradeMults;
   atk    =Math.round(atk    *um.atk);
   def    =Math.round(def    *um.def);
   maxHp  =Math.round(maxHp  *um.maxHp);
   maxMp  =Math.round(maxMp  *um.maxMp);
   critDmg=Math.round(critDmg*um.critDmg);
-  // 4) set 2pc bonuses
   const counts=getSetCounts();
   Object.entries(counts).forEach(([sid,cnt])=>{
     if(cnt<2)return;
@@ -523,7 +729,6 @@ function computeStats(){
     if(b.maxMpPct)     maxMp     =Math.round(maxMp     *(1+b.maxMpPct));
     if(b.critDmgFlat)  critDmg  +=b.critDmgFlat;
   });
-  // 5) blessing stat bonuses
   const bf=getBlessingStats();
   if(bf.atkPct)       atk       =Math.round(atk       *(1+bf.atkPct));
   if(bf.defPct)       def       =Math.round((def||1)  *(1+bf.defPct));
@@ -533,13 +738,35 @@ function computeStats(){
   if(bf.maxMpFlat)    maxMp    +=bf.maxMpFlat;
   if(bf.mpRegenFlat)  mpRegen  +=bf.mpRegenFlat;
   if(bf.mpRegenMult)  mpRegen   =Math.round(mpRegen*bf.mpRegenMult);
-  // Preservation IV: every 5 DEF = +1% ATK
   if(hasBlessing('preservation_4'))atk=Math.round(atk*(1+Math.floor(def/5)*0.01));
-  // Preservation III: below 30% HP, DEF doubles
   if(hasBlessing('preservation_3')&&maxHp>0&&p.hp/maxHp<0.30)def=Math.round(def*2);
-  // cap crit chance
+  // ── Destruction: wounded rage — ogni 10% HP mancanti = +10% ATK ──
+  if(hasBlessing('destruction_1')&&maxHp>0){
+    const missingPct=Math.max(0,1-(p.hp/maxHp));
+    const rageMult=Math.min(0.90,Math.floor(missingPct/0.10)*0.10);
+    if(rageMult>0)atk=Math.round(atk*(1+rageMult));
+  }
+  // broken_crown: accumulated ATK bonus from damage taken
+  if(G.brokenCrownAtkBonus>0)atk=Math.round(atk*(1+Math.min(1.0,G.brokenCrownAtkBonus)));
+  // iron_will 2pc: ogni 10% HP persi = +8% danno
+  const counts2=getSetCounts();
+  if((counts2['iron_will']||0)>=2&&maxHp>0){
+    const missingPct=Math.max(0,1-(p.hp/maxHp));
+    const bonus=Math.min(0.80,Math.floor(missingPct/0.10)*0.08);
+    if(bonus>0)atk=Math.round(atk*(1+bonus));
+  }
+  // apply player status modifiers
+  const weakDebuff=G.playerStatuses.find(s=>s.type==='debuff');
+  if(weakDebuff)atk=Math.round(atk*(weakDebuff.atkMult||1));
+  const blindStatus=G.playerStatuses.find(s=>s.type==='blind');
+  if(blindStatus)critChance=0;
+  const corrodeStatus=G.playerStatuses.find(s=>s.type==='corrode');
+  if(corrodeStatus)def=0;
   critChance=Math.min(critChance,100);
-  return{atk,def,maxHp,critChance,maxMp,mpRegen,critDmg};
+  // ── Punchline damage stat (ATK equivalent used by Catarsi) ──
+  // Base punchlineDmg = ATK, boosted by crowd_pleaser 2pc
+  const punchlineDmg=Math.round(atk*(1+getPunchlineDmgBonus()));
+  return{atk,def,maxHp,critChance,maxMp,mpRegen,critDmg,punchlineDmg};
 }
 
 function getSetCounts(){
@@ -556,6 +783,118 @@ function getWisdomBonus(){
   const counts=getSetCounts();let m=1;
   Object.entries(counts).forEach(([sid,cnt])=>{if(cnt>=2&&SETS[sid].bonus2.wisdomPct)m+=SETS[sid].bonus2.wisdomPct*(cnt>=4?2:1);});
   return m;
+}
+
+// ── DOMINANT SET DETECTION (for smart auto) ──────────────────
+function getDominantSetId(){
+  const counts=getSetCounts();
+  let best=null,bestCnt=0;
+  Object.entries(counts).forEach(([sid,cnt])=>{if(cnt>bestCnt){bestCnt=cnt;best=sid;}});
+  return best;
+}
+
+// ── ELATION SYSTEM HELPERS ───────────────────────────────────
+function elationBlessingCount(){
+  return G.equippedBlessings.filter(id=>id&&BLESSINGS[id]&&BLESSINGS[id].path==='Elation').length;
+}
+function elationActive(){return elationBlessingCount()>=2;}
+function getPunchlineDmgBonus(){
+  // from set 2pc crowd_pleaser
+  const counts=getSetCounts();let bonus=0;
+  if((counts['crowd_pleaser']||0)>=2)bonus+=SETS['crowd_pleaser'].bonus2.punchlineDmgPct||0;
+  return bonus;
+}
+
+// ── SET STRATEGY for auto ─────────────────────────────────────
+// Returns priority order [skillIdx...] for the given set
+function getAutoStrategy(){
+  const dom=getDominantSetId();
+  const st=computeStats();
+  const sp=getActiveBonus4Specials();
+  const needsHeal=G.player.hp<st.maxHp*0.45;
+  const hasEironeia=!G.enemyStatuses.find(s=>s.type==='debuff');
+
+  // Default fallback
+  const defaultStrat=()=>{
+    if(G.player.mp>=40&&G.cooldowns[3]===0)return 3;       // Aporia
+    if(needsHeal&&G.player.mp>=20&&G.cooldowns[1]===0)return 1; // Maieutica
+    if(G.player.mp>=25&&G.cooldowns[2]===0)return 2;       // Eironeia
+    return 0; // Elenchos
+  };
+
+  if(!dom)return defaultStrat();
+
+  // sophist_mask: healing/tank set — prioritize Maieutica, keep enemy debuffed
+  if(dom==='sophist_mask'){
+    if(G.player.mp>=20&&G.cooldowns[1]===0&&G.player.hp<st.maxHp*0.70)return 1;
+    if(hasEironeia&&G.player.mp>=25&&G.cooldowns[2]===0)return 2;
+    if(G.player.mp>=40&&G.cooldowns[3]===0)return 3;
+    return 0;
+  }
+  // academy_mind: Eironeia for long debuff, then Aporia for MP scaling
+  if(dom==='academy_mind'){
+    if(hasEironeia&&G.player.mp>=25&&G.cooldowns[2]===0)return 2; // debuff ASAP
+    if(G.player.mp>=40&&G.cooldowns[3]===0)return 3;
+    if(needsHeal&&G.player.mp>=20&&G.cooldowns[1]===0)return 1;
+    return 0;
+  }
+  // ideal_form / prometheus_fire: crit DPS — Elenchos spam + Aporia
+  if(dom==='ideal_form'||dom==='prometheus_fire'){
+    if(G.player.mp>=40&&G.cooldowns[3]===0)return 3;
+    if(needsHeal&&G.player.mp>=20&&G.cooldowns[1]===0)return 1;
+    return 0; // spam Elenchos for double hit / crits
+  }
+  // nicomachean: Eironeia for Arcana DOT, then Aporia
+  if(dom==='nicomachean'){
+    if(hasEironeia&&G.player.mp>=25&&G.cooldowns[2]===0)return 2; // apply Arcana
+    if(G.player.mp>=40&&G.cooldowns[3]===0)return 3;
+    if(needsHeal&&G.player.mp>=20&&G.cooldowns[1]===0)return 1;
+    return 0;
+  }
+  // pure_logic: survive — heal often, let counter-dmg proc
+  if(dom==='pure_logic'){
+    if(G.player.mp>=20&&G.cooldowns[1]===0&&G.player.hp<st.maxHp*0.80)return 1;
+    if(hasEironeia&&G.player.mp>=25&&G.cooldowns[2]===0)return 2;
+    if(G.player.mp>=40&&G.cooldowns[3]===0)return 3;
+    return 0;
+  }
+  // socratic_order: Aporia with boost
+  if(dom==='socratic_order'){
+    if(G.player.mp>=40&&G.cooldowns[3]===0)return 3;
+    if(needsHeal&&G.player.mp>=20&&G.cooldowns[1]===0)return 1;
+    if(hasEironeia&&G.player.mp>=25&&G.cooldowns[2]===0)return 2;
+    return 0;
+  }
+  // divine_wisdom: Logos regen focus — Aporia for MP scaling
+  if(dom==='divine_wisdom'){
+    if(G.player.mp>=40&&G.cooldowns[3]===0)return 3;
+    if(needsHeal&&G.player.mp>=20&&G.cooldowns[1]===0)return 1;
+    if(hasEironeia&&G.player.mp>=25&&G.cooldowns[2]===0)return 2;
+    return 0;
+  }
+  // iron_will: berserk — spam Elenchos (more dmg the lower hp), use Maieutica only if critical
+  if(dom==='iron_will'){
+    if(G.player.hp<st.maxHp*0.25&&G.player.mp>=20&&G.cooldowns[1]===0)return 1;
+    if(G.player.mp>=40&&G.cooldowns[3]===0)return 3;
+    return 0; // stay low HP for rage bonus
+  }
+  // broken_crown: survive and accumulate dmg stacks — heal often
+  if(dom==='broken_crown'){
+    if(G.player.mp>=20&&G.cooldowns[1]===0&&G.player.hp<st.maxHp*0.80)return 1;
+    if(hasEironeia&&G.player.mp>=25&&G.cooldowns[2]===0)return 2;
+    if(G.player.mp>=40&&G.cooldowns[3]===0)return 3;
+    return 0;
+  }
+  // jester_soul / crowd_pleaser: Catarsi priority when punchline stacked
+  if(dom==='jester_soul'||dom==='crowd_pleaser'){
+    if(elationActive()&&G.punchline>=60&&G.cooldowns[4]===0)return 4; // Catarsi
+    if(G.player.mp>=40&&G.cooldowns[3]===0)return 3; // build punchline fast
+    if(needsHeal&&G.player.mp>=20&&G.cooldowns[1]===0)return 1;
+    if(hasEironeia&&G.player.mp>=25&&G.cooldowns[2]===0)return 2;
+    return 0;
+  }
+
+  return defaultStrat();
 }
 
 // ── BLESSING HELPERS ─────────────────────────────────────────
@@ -580,6 +919,11 @@ function makeItem(domainId=null){
   const r=Math.random();let rarity;
   if(domainId){if(r<.06)rarity='legendary';else if(r<.22)rarity='rare';else if(r<.55)rarity='uncommon';else rarity='common';}
   else{if(r<.03)rarity='legendary';else if(r<.13)rarity='rare';else if(r<.38)rarity='uncommon';else rarity='common';}
+  // Boss floors slightly better loot
+  if(G.isBossFight&&!domainId){
+    const rb=Math.random();
+    if(rb<.08)rarity='legendary';else if(rb<.25)rarity='rare';else if(rb<.50)rarity='uncommon';else rarity='common';
+  }
   const slots=Object.keys(SLOT_ICONS),slot=slots[Math.floor(Math.random()*slots.length)];
   let pool;
   if(domainId){
@@ -641,13 +985,31 @@ function checkSetMessages(){
 }
 
 // ── BLESSING MANAGEMENT ──────────────────────────────────────
+
+// Get all blessing IDs currently owned (equipped + collection)
+function ownedBlessingIds(){
+  const owned=new Set();
+  G.equippedBlessings.forEach(id=>{if(id)owned.add(id);});
+  G.blessingCollection.forEach(id=>owned.add(id));
+  return owned;
+}
+
 function rollBlessing(){
   if(G.blessingTokens<1){addLog('Nessun Token Rinascita!','system');return;}
   G.blessingTokens--;
-  const id=BLESSING_IDS[Math.floor(Math.random()*BLESSING_IDS.length)];
+  const owned=ownedBlessingIds();
+  const available=BLESSING_IDS.filter(id=>!owned.has(id));
+  if(!available.length){
+    // all blessings already owned — refund token
+    G.blessingTokens++;
+    addLog('⚡ Hai già tutte le Blessing! Token rimborsato.','system');
+    renderBlessings();updateUI();scheduleSave();
+    return;
+  }
+  const id=available[Math.floor(Math.random()*available.length)];
   G.blessingCollection.push(id);
   const b=BLESSINGS[id],path=BLESSING_PATHS[b.path];
-  addLog(`✦ Roll: <b>${b.name}</b> [${path.icon} ${b.path}]`,'item');
+  addLog(`✦ Roll: <b>${b.name}</b> [${path.icon} ${b.path}] — Nuova!`,'item');
   renderBlessings();updateUI();scheduleSave();
 }
 function equipBlessing(collIdx){
@@ -670,8 +1032,9 @@ function enterDomain(domainId){
   if(G.domainActive){addLog('Esci prima dal dominio attuale!','system');return;}
   if(G.wisdom<DOMAIN_COST){addLog(`Servono ${DOMAIN_COST} Saggezza.`,'system');return;}
   G.wisdom-=DOMAIN_COST;G.domainActive=true;G.domainId=domainId;G.domainEnemy=1;G.domainLoot=[];
-  G.battleOver=false;G.playerTurn=true;G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0];
-  G.logosSpentBattle=0;G.firstSkillUsed=false;G.firstHitNegated=false;
+  G.battleOver=false;G.playerTurn=true;G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0,0];
+  G.logosSpentBattle=0;G.firstSkillUsed=false;G.firstHitNegated=false;G.isBossFight=false;
+  G.bloodSteelCharged=false;G.phoenixRageUsed=false;G.lastStandUsed=false;G.punchline=0;
   addLog(`✦ Dominio: <b>${DOMAINS.find(d=>d.id===domainId).name}</b>! 5 nemici.`,'domain');
   spawnDomainEnemy();
   document.getElementById('btn-exit-domain').style.display='inline-block';
@@ -682,7 +1045,9 @@ function enterDomain(domainId){
 function exitDomain(){
   if(!G.domainActive)return;
   G.domainActive=false;G.domainId=null;G.domainEnemy=1;G.domainLoot=[];
-  G.battleOver=false;G.playerTurn=true;G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0];
+  G.battleOver=false;G.playerTurn=true;G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0,0];
+  G.isBossFight=false;G.bossDoubleAttack=0;G.bloodSteelCharged=false;
+  G.phoenixRageUsed=false;G.lastStandUsed=false;G.punchline=0;
   addLog('Uscito dal Dominio.','system');
   document.getElementById('btn-exit-domain').style.display='none';
   document.getElementById('domain-progress').style.display='none';
@@ -701,6 +1066,7 @@ function spawnDomainEnemy(){
   document.getElementById('enemy-name').textContent=base.icon+' '+base.name;
   document.getElementById('enemy-title').textContent=base.title;
   document.getElementById('enemy-card').classList.add('domain-enemy');
+  document.getElementById('enemy-card').classList.remove('boss-enemy');
   document.getElementById('arena-location').innerHTML=`<span style="color:${dom.color}">${dom.icon} ${dom.name}</span>`;
   document.getElementById('domain-progress').style.display='flex';
   updateDomainProgress();
@@ -717,10 +1083,38 @@ function updateDomainProgress(){
   document.getElementById('domain-enemy-label').textContent=`Nemico ${G.domainEnemy}/5`;
 }
 
+// ── BOSS SPAWN ────────────────────────────────────────────────
+function spawnBossEnemy(){
+  G.isBossFight=true;G.bossDoubleAttack=0;
+  const base=BOSSES[Math.floor(Math.random()*BOSSES.length)];
+  const scale=Math.pow(1.22,G.floor); // boss is stronger
+  G.enemy={
+    name:base.name,title:base.title,
+    hp:Math.floor(120*scale),maxHp:Math.floor(120*scale),
+    atk:Math.floor(10*Math.pow(1.15,G.floor)),
+    def:Math.floor(G.floor*0.8),
+    isBoss:true,
+  };
+  document.getElementById('enemy-name').textContent=base.icon+' '+base.name;
+  document.getElementById('enemy-title').textContent=base.title;
+  document.getElementById('enemy-card').classList.remove('domain-enemy');
+  document.getElementById('enemy-card').classList.add('boss-enemy');
+  document.getElementById('arena-location').innerHTML=`<span style="color:#e8a030">⚡ BOSS — Piano ${G.floor}</span>`;
+  document.getElementById('domain-progress').style.display='none';
+  // Pick a random boss debuff and announce it
+  const debuff=BOSS_DEBUFFS[Math.floor(Math.random()*BOSS_DEBUFFS.length)];
+  G.pendingBossDebuff=debuff;
+  addLog(`⚡ <b>BOSS APPARE!</b> ${base.icon} ${base.name}!`,'crit');
+  addLog(`💀 Abilità Boss: <b>${debuff.name}</b> — ${debuff.desc}`,'enemy');
+}
+
 // ── COMBAT ───────────────────────────────────────────────────
 function applyHeal(amount){
   const st=computeStats(),bf=getBlessingFlags(),bs=getBlessingStats();
-  const healed=Math.round(amount*(1+(bs.healBoostPct||0)));
+  // Check if cursed (heal reduction)
+  const curse=G.playerStatuses.find(s=>s.type==='curse');
+  const curseMult=curse?(curse.healMult||1):1;
+  const healed=Math.round(amount*(1+(bs.healBoostPct||0))*curseMult);
   G.player.hp=Math.min(G.player.hp+healed,st.maxHp);
   showHealPop('player-card',healed);
   if(bf.has('healDamage')){
@@ -732,7 +1126,7 @@ function applyHeal(amount){
 }
 
 function getSkillCooldowns(){
-  const cds=[0,3,4,5];
+  const cds=[0,3,4,5,4]; // 4 = Catarsi CD
   if(hasBlessing('abundance_1'))cds[1]=Math.max(1,cds[1]-1);
   return cds;
 }
@@ -743,10 +1137,16 @@ const SKILLS=[
      const st=computeStats(),sp=getActiveBonus4Specials(),bf=getBlessingFlags();
      const hits=sp.has('elenchosDouble')?2:1;
      const firstBoost=bf.has('firstSkillBoost')&&!g.firstSkillUsed;
+     const silenced=g.playerStatuses.find(s=>s.type==='silence');
+     // Blood&Steel: next attack +50% dmg
+     const bloodBoost=bf.has('bloodSteel')&&g.bloodSteelCharged;
+     if(bloodBoost)g.bloodSteelCharged=false;
      let total=0;
      for(let h=0;h<hits;h++){
        let base=st.atk*(1+g.floor*0.05);
        if(firstBoost)base*=2;
+       if(silenced)base*=0.5;
+       if(bloodBoost)base*=1.5;
        const crit=Math.random()*100<st.critChance;
        const critMult=sp.has('critMult')?(st.critDmg/100)*1.5:(st.critDmg/100);
        if(crit)base*=critMult;
@@ -757,9 +1157,26 @@ const SKILLS=[
          const bonus=Math.max(1,Math.round(dmg*0.7));total+=bonus;dealDamageToEnemy(bonus,false);
          addLog('Colpo Letale: secondo colpo!','crit');
        }
+       // Elation: generate punchline on hit
+       if(elationActive()){
+         const base_pl=bf.has('comicTiming')?8:5;
+         let pl=base_pl;
+         if(crit&&bf.has('comicTiming'))pl+=5;
+         // crowd_pleaser 4pc: crit generates +8 extra
+         if(crit&&sp.has('crowdCrit'))pl+=8;
+         // jester_soul 2pc: +10 extra per skill
+         if(sp.has('jesterFlow')&&h===0)pl+=10;
+         g.punchline=Math.min(200,g.punchline+pl);
+       }
+       // Destruction hpElenchos heals generation happens outside (no cost path)
      }
      g.firstSkillUsed=true;
-     const tags=[sp.has('elenchosDouble')?'×2':null,firstBoost?'Primo Sangue!':null].filter(Boolean).join(' ');
+     const tags=[
+       sp.has('elenchosDouble')?'×2':null,
+       firstBoost?'Primo Sangue!':null,
+       silenced?'[Silenziato -50%]':null,
+       bloodBoost?'[Sangue e Acciaio +50%]':null,
+     ].filter(Boolean).join(' ');
      addLog(`${g.playerName} usa <b>Elenchos</b>${tags?' ['+tags+']':''}. ${total} danni.`,total>st.atk*3?'crit':'player');
      if(sp.has('logosAttackRegen'))g.player.mp=Math.min(g.player.mp+5,st.maxMp);
      return true;
@@ -783,6 +1200,7 @@ const SKILLS=[
      }
      if(bf.has('skillHealPerLogos')){g.player.hp=Math.min(g.player.hp+80,computeStats().maxHp);showHealPop('player-card',80);}
      if(sp.has('logosAttackRegen'))g.player.mp=Math.min(g.player.mp+5,computeStats().maxMp);
+     if(elationActive())g.punchline=Math.min(200,g.punchline+(sp.has('jesterFlow')?15:5));
      g.firstSkillUsed=true;return true;
    }},
   {name:'Eironeia',cost:25,cd:4,
@@ -805,6 +1223,7 @@ const SKILLS=[
      addLog(`Colpo iniziale: ${dmg} danni.`,'player');
      if(sp.has('logosAttackRegen'))g.player.mp=Math.min(g.player.mp+5,computeStats().maxMp);
      if(bf.has('skillHealPerLogos')){g.player.hp=Math.min(g.player.hp+100,computeStats().maxHp);showHealPop('player-card',100);}
+     if(elationActive())g.punchline=Math.min(200,g.punchline+(sp.has('jesterFlow')?15:5));
      g.firstSkillUsed=true;return true;
    }},
   {name:'Aporia',cost:40,cd:5,
@@ -830,7 +1249,40 @@ const SKILLS=[
      log+=`! ${total} danni!`;addLog(log,'crit');
      if(sp.has('logosAttackRegen'))g.player.mp=Math.min(g.player.mp+5,computeStats().maxMp);
      if(bf.has('skillHealPerLogos')){g.player.hp=Math.min(g.player.hp+160,computeStats().maxHp);showHealPop('player-card',160);}
+     if(elationActive())g.punchline=Math.min(200,g.punchline+(sp.has('jesterFlow')?20:5));
      g.firstSkillUsed=true;return true;
+   }},
+  // ── CATARSI: skill Elation, appare solo con >=2 blessing Elation ──
+  {name:'Catarsi',cost:0,cd:4,
+   use(g){
+     if(!elationActive()){addLog('Catarsi richiede almeno 2 Blessing Elation equipaggiate!','system');return false;}
+     if(g.punchline<=0){addLog('Nessuna Punchline accumulata!','system');return false;}
+     const st=computeStats(),sp=getActiveBonus4Specials(),bf=getBlessingFlags();
+     const pl=g.punchline;
+     // Danno = punchlineDmg × moltiplicatore generoso basato sulle punchline
+     // Ogni punchline vale 3.5× il danno base → generoso ma non assurdo
+     const mult=Math.floor(pl*3.5);
+     let dmg=Math.max(1,Math.round(st.punchlineDmg*mult/100));
+     // crowd_pleaser 4pc: può critare
+     let isCrit=false;
+     if(sp.has('crowdCrit')&&Math.random()*100<st.critChance){
+       dmg=Math.round(dmg*(st.critDmg/100));isCrit=true;
+     }
+     dealDamageToEnemy(dmg,isCrit);
+     // Standing Ovation: se aveva 80+ pl → +50% ATK per 2T
+     if(bf.has('standingOvation')&&pl>=80){
+       g.playerStatuses.push({type:'buff',name:'Ovazione+50%',turns:2});
+       addLog(`🎪 <b>Standing Ovation!</b> +50% ATK × 2T!`,'crit');
+     }
+     addLog(`${g.playerName} usa <b>Catarsi</b> [${pl} Punchline × 3.5]${isCrit?' CRITICO!':''}: ${dmg} danni!`,'crit');
+     // jester_soul 4pc: no CD se aveva 50+ punchline
+     const noCd=sp.has('jesterFlow')&&pl>=50;
+     if(noCd)addLog('🃏 Jester Flow: Catarsi senza cooldown!','set');
+     g.punchline=0;
+     g.firstSkillUsed=true;
+     // return special flag so useSkill knows not to set CD
+     g._catarsiNoCd=noCd;
+     return true;
    }},
 ];
 
@@ -863,12 +1315,19 @@ function addLog(msg,type='system'){
 function attack(){if(!G.playerTurn||G.battleOver)return;useSkill(0);}
 function useSkill(idx){
   if(!G.playerTurn||G.battleOver)return;
-  const skill=SKILLS[idx];
+  // Catarsi (idx 4) is only accessible if Elation is active
+  if(idx===4&&!elationActive())return;
+  const skill=SKILLS[idx];if(!skill)return;
   const baseCds=getSkillCooldowns();
   if(G.cooldowns[idx]>0){addLog(`${skill.name} in ricarica: ${G.cooldowns[idx]} turni.`);return;}
   if(G.player.mp<skill.cost){addLog(`Logos insufficiente per ${skill.name}.`);return;}
-  G.player.mp-=skill.cost;if(baseCds[idx]>0)G.cooldowns[idx]=baseCds[idx];
-  if(!skill.use(G))return;
+  G.player.mp-=skill.cost;
+  const result=skill.use(G);
+  if(!result)return;
+  // Handle Catarsi noCd flag
+  const noCd=SKILLS[idx]._catarsiNoCd;
+  SKILLS[idx]._catarsiNoCd=false;
+  if(!noCd&&baseCds[idx]>0)G.cooldowns[idx]=baseCds[idx];
   G.playerTurn=false;updateUI();if(checkBattleEnd())return;
   setTimeout(enemyTurn,650);
 }
@@ -879,14 +1338,12 @@ function enemyTurn(){
   const debuff=G.enemyStatuses.find(s=>s.type==='debuff');
   if(debuff){
     addLog(`${G.enemy.name} è Confuso! ATK ridotto.`,'enemy');
-    // Nihility II: debuffed enemy takes 25% ATK DoT per turn
     if(bf.has('debuffPoison')){
       const dot=Math.max(1,Math.round(st.atk*0.25));
       dealDamageToEnemy(dot,false);
       addLog(`Veleno del Nulla: ${dot} danni.`,'set');
     }
   }
-  // Arcana DoT
   const arcana=G.enemyStatuses.find(s=>s.type==='arcana');
   if(arcana&&G.enemy.hp>0){
     dealDamageToEnemy(Math.max(1,arcana.dmg),false);
@@ -894,21 +1351,98 @@ function enemyTurn(){
   }
   if(checkBattleEnd())return;
 
+  // Boss applies pending debuff on first attack
+  if(G.isBossFight&&G.pendingBossDebuff){
+    const debuffToApply=G.pendingBossDebuff;
+    G.pendingBossDebuff=null;
+    debuffToApply.apply(G,st);
+    addLog(`⚡ ${G.enemy.name} usa <b>${debuffToApply.name}</b>! ${debuffToApply.desc}`,'enemy');
+  }
+
+  // Apply player MP drain from boss debuff
+  const drainStatus=G.playerStatuses.find(s=>s.type==='drain');
+  if(drainStatus&&G.player.mp>0){
+    G.player.mp=Math.max(0,G.player.mp-drainStatus.mpDrain);
+    addLog(`Drenaggio: -${drainStatus.mpDrain} Logos.`,'enemy');
+  }
+
   let baseAtk=Math.round(G.enemy.atk*(debuff?debuff.atkMult:1));
   const isSpecial=G.floor>=10&&Math.random()<.28;
   const incomingDmg=isSpecial?Math.round(baseAtk*1.8):baseAtk;
+  const finalDmg=G.isBossFight?Math.round(incomingDmg*1.3):incomingDmg;
 
-  // Preservation II: first hit negate
-  if(bf.has('firstHitNegate')&&!G.firstHitNegated){
-    G.firstHitNegated=true;
-    addLog('Scudo Riflesso: primo colpo negato!','set');
-  }else{
-    const dmgTaken=dealDamageToPlayer(incomingDmg);
-    if(isSpecial)addLog(`${G.enemy.name} usa attacco speciale! ${dmgTaken} danni!`,'enemy');
-    else addLog(`${G.enemy.name} attacca per ${dmgTaken} danni.`,'enemy');
+  const doAttack=(dmgVal,label)=>{
+    if(bf.has('firstHitNegate')&&!G.firstHitNegated){
+      G.firstHitNegated=true;
+      addLog('Scudo Riflesso: primo colpo negato!','set');
+      return 0;
+    }
+    // ── Destruction: Last Stand (broken_crown 4pc) ──
+    const sp2=getActiveBonus4Specials();
+    if(sp2.has('lastStand')&&!G.lastStandUsed){
+      const stNow=computeStats();
+      const wouldDie=G.player.hp-Math.max(1,dmgVal-stNow.def)<=0;
+      if(wouldDie){
+        G.lastStandUsed=true;
+        G.player.hp=1;
+        addLog(`👁‍🗨 <b>Last Stand!</b> Sopravvivi con 1 HP!`,'crit');
+        showDmgPop('player-card',0,'#ff8080');
+        return 0;
+      }
+    }
+    const dmgTaken=dealDamageToPlayer(dmgVal);
+    addLog(label.replace('{d}',dmgTaken),'enemy');
+    // ── Destruction: Blood&Steel — carica prossimo attacco ──
+    if(bf.has('bloodSteel')&&G.player.hp>0){
+      G.bloodSteelCharged=true;
+    }
+    // ── Destruction: broken_crown — accumula ATK bonus dal danno subito ──
+    const counts3=getSetCounts();
+    if((counts3['broken_crown']||0)>=2){
+      G.brokenCrownDmgAccum=(G.brokenCrownDmgAccum||0)+dmgTaken;
+      const newStacks=Math.floor(G.brokenCrownDmgAccum/50);
+      const oldStacks=Math.floor((G.brokenCrownDmgAccum-dmgTaken)/50);
+      if(newStacks>oldStacks){
+        const gained=(newStacks-oldStacks)*0.05;
+        G.brokenCrownAtkBonus=Math.min(1.0,(G.brokenCrownAtkBonus||0)+gained);
+        addLog(`👁‍🗨 Corona Spezzata: +${Math.round(gained*100)}% ATK dal dolore! (tot: +${Math.round(G.brokenCrownAtkBonus*100)}%)`,'set');
+      }
+    }
+    // ── Destruction: phoenix rage ──
+    if(bf.has('phoenixRage')&&!G.phoenixRageUsed){
+      const stNow2=computeStats();
+      if(G.player.hp>0&&G.player.hp/stNow2.maxHp<0.20){
+        G.phoenixRageUsed=true;
+        G.playerStatuses.push({type:'buff',name:'Fenice+80%',turns:3});
+        addLog(`💢 <b>Rinascita dalla Cenere!</b> +80% ATK +40% DEF × 3T!`,'crit');
+      }
+    }
+    // ── Elation: Crowd Work — sotto 50% HP genera punchline ──
+    if(elationActive()&&bf.has('crowdWork')){
+      const stNow3=computeStats();
+      if(G.player.hp>0&&G.player.hp/stNow3.maxHp<0.50){
+        G.punchline=Math.min(200,G.punchline+10);
+      }
+    }
+    return dmgTaken;
+  };
+
+  if(G.isBossFight&&isSpecial)
+    doAttack(finalDmg,`${G.enemy.name} usa <b>Colpo del Boss</b>! {d} danni!`);
+  else
+    doAttack(finalDmg,`${G.enemy.name} attacca per {d} danni.`);
+
+  // Boss double attack if Frenzy active
+  if(G.bossDoubleAttack>0){
+    G.bossDoubleAttack--;
+    if(G.player.hp>0){
+      const dmg2=dealDamageToPlayer(Math.round(baseAtk*0.7));
+      addLog(`${G.enemy.name} <b>Frenesia</b>: secondo colpo! ${dmg2} danni.`,'enemy');
+    }
   }
 
-  // pure_logic 4pc: regen + counter ONLY if alive (bug fix: no immortality)
+  if(checkBattleEnd())return;
+
   if(sp.has('turnRegen')&&G.player.hp>0){
     const reg=Math.round(st.maxHp*.03);
     G.player.hp=Math.min(G.player.hp+reg,st.maxHp);
@@ -916,7 +1450,6 @@ function enemyTurn(){
     const ctr=Math.max(1,st.def);dealDamageToEnemy(ctr,false);
     addLog(`Riflesso [Logica 4pc]: +${reg} HP, ${ctr} danni.`,'set');
   }
-  // Abundance II: passive regen 2% HP per turn
   if(bf.has('passiveRegen')&&G.player.hp>0){
     const reg=Math.round(st.maxHp*.02);
     G.player.hp=Math.min(G.player.hp+reg,st.maxHp);
@@ -939,22 +1472,35 @@ function checkBattleEnd(){
         const lootCount=3+Math.floor(Math.random()*4);const loot=[];
         for(let i=0;i<lootCount;i++){const item=makeItem(G.domainId);addToInventory(item);loot.push(item);}
         const wGain=Math.floor(50*Math.pow(1.1,G.floor)*G.wisdomMult*getWisdomBonus()*G.prestigeBonus);
-        G.wisdom+=wGain; // NO G.floor++ here (domain bug fix)
+        G.wisdom+=wGain;
         updateUI();renderInventory();showDomainCompleteOverlay(loot,wGain);scheduleSave();
       }else{
         G.domainEnemy++;G.battleOver=false;G.playerTurn=true;
-        G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0];
-        G.logosSpentBattle=0;G.firstHitNegated=false;
+        G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0,0];
+        G.logosSpentBattle=0;G.firstHitNegated=false;G.bloodSteelCharged=false;
+        G.phoenixRageUsed=false;G.lastStandUsed=false;G.punchline=0;
         const st=computeStats();G.player.mp=Math.min(G.player.mp+Math.round(st.maxMp*.2),st.maxMp);
         spawnDomainEnemy();updateUI();addLog(`— Avanza: Nemico ${G.domainEnemy}/5 —`,'domain');
         if(G.autoMode)scheduleAuto();
       }
     }else{
-      const wGain=Math.floor(10*Math.pow(1.15,G.floor)*G.wisdomMult*getWisdomBonus()*G.prestigeBonus);
+      // Tower: boss or normal
+      const wasBoss=G.isBossFight;
+      const wGain=Math.floor((wasBoss?25:10)*Math.pow(1.15,G.floor)*G.wisdomMult*getWisdomBonus()*G.prestigeBonus);
       G.wisdom+=wGain;G.floor++;
-      const droppedItem=Math.random()<.70?makeItem(null):null;
+      const dropChance=wasBoss?.95:.70;
+      const droppedItem=Math.random()<dropChance?makeItem(null):null;
+      // Boss also drops extra item
+      const bossExtraItem=wasBoss&&Math.random()<0.60?makeItem(null):null;
       if(droppedItem)addToInventory(droppedItem);
-      updateUI();renderInventory();showVictoryOverlay(wGain,droppedItem);scheduleSave();
+      if(bossExtraItem)addToInventory(bossExtraItem);
+      // Boss gives blessing token
+      if(wasBoss){
+        G.blessingTokens++;
+        addLog(`⚡ Boss sconfitto! +1 Token Rinascita!`,'crit');
+      }
+      G.isBossFight=false;G.bossDoubleAttack=0;G.pendingBossDebuff=null;
+      updateUI();renderInventory();showVictoryOverlay(wGain,droppedItem,bossExtraItem,wasBoss);scheduleSave();
     }
     return true;
   }
@@ -965,8 +1511,11 @@ function checkBattleEnd(){
 function nextBattle(){
   if(G.domainActive)return;
   spawnTowerEnemy();G.battleOver=false;G.playerTurn=true;
-  G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0];
+  G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0,0];
   G.logosSpentBattle=0;G.firstSkillUsed=false;G.firstHitNegated=false;
+  G.isBossFight=false;G.bossDoubleAttack=0;G.pendingBossDebuff=null;
+  G.bloodSteelCharged=false;G.phoenixRageUsed=false;G.lastStandUsed=false;
+  G.punchline=0;
   const st=computeStats();G.player.mp=Math.min(G.player.mp+Math.round(st.maxMp*.3),st.maxMp);
   document.getElementById('btn-next').style.display='none';
   document.getElementById('btn-attack').disabled=false;
@@ -974,6 +1523,11 @@ function nextBattle(){
   if(G.autoMode)scheduleAuto();
 }
 function spawnTowerEnemy(){
+  G.isBossFight=false;G.bossDoubleAttack=0;G.pendingBossDebuff=null;
+  if(isBossFloor(G.floor)){
+    spawnBossEnemy();
+    return;
+  }
   const base=ENEMIES[Math.floor(Math.random()*ENEMIES.length)];
   const scale=Math.pow(1.18,G.floor);
   G.enemy={name:base.name,title:base.title,
@@ -981,32 +1535,37 @@ function spawnTowerEnemy(){
     atk:Math.floor(6*Math.pow(1.12,G.floor)),def:Math.floor(G.floor*.4)};
   document.getElementById('enemy-name').textContent=base.icon+' '+base.name;
   document.getElementById('enemy-title').textContent=base.title;
-  document.getElementById('enemy-card').classList.remove('domain-enemy');
+  document.getElementById('enemy-card').classList.remove('domain-enemy','boss-enemy');
   document.getElementById('arena-location').innerHTML=`Torre · Piano <span id="floor-num">${G.floor}</span>`;
   document.getElementById('domain-progress').style.display='none';
 }
 
 // ── OVERLAYS ─────────────────────────────────────────────────
-function showVictoryOverlay(wGain,droppedItem){
-  document.getElementById('ov-icon').textContent='🏛';
-  document.getElementById('ov-title').textContent='Vittoria!';
-  document.getElementById('ov-body').textContent=`"${G.enemy.name}" sconfitto con la Dialettica.`;
-  document.getElementById('ov-rewards').innerHTML=`<div class="reward-line">+${wGain} Saggezza</div><div class="reward-line">Piano ${G.floor} sbloccato</div>`;
+function showVictoryOverlay(wGain,droppedItem,bossExtraItem,wasBoss){
+  document.getElementById('ov-icon').textContent=wasBoss?'⚡':'🏛';
+  document.getElementById('ov-title').textContent=wasBoss?'Boss Sconfitto!':'Vittoria!';
+  document.getElementById('ov-body').textContent=wasBoss
+    ?`"${G.enemy.name}" è caduto. La saggezza trionfa sulla tirannia.`
+    :`"${G.enemy.name}" sconfitto con la Dialettica.`;
+  let rewardsHtml=`<div class="reward-line"${wasBoss?' style="color:#e8a030"':''}>+${wGain} Saggezza</div><div class="reward-line">Piano ${G.floor} sbloccato</div>`;
+  if(wasBoss)rewardsHtml+=`<div class="reward-line" style="color:#a080d0">+1 Token Rinascita</div>`;
+  document.getElementById('ov-rewards').innerHTML=rewardsHtml;
+
   const drop=document.getElementById('ov-item-drop');
-  if(droppedItem){
-    const set=SETS[droppedItem.setId];
-    drop.innerHTML=`<div class="item-drop-box">
-      <div class="item-drop-label">⚗ Oggetto trovato!</div>
-      <div class="item-drop-row">
-        <div class="item-drop-icon">${droppedItem.icon}</div>
-        <div class="item-drop-info">
-          <div class="item-drop-name" style="color:${rarityColor(droppedItem.rarity)}">${droppedItem.name}
-            <span class="rarity-pill rp-${droppedItem.rarity}">${RARITY_NAMES[droppedItem.rarity]}</span></div>
-          <div class="item-drop-sub">${SLOT_NAMES[droppedItem.slot]}</div>
-          <div class="item-drop-stats">${statsText(droppedItem.stats)}</div>
-          <div class="item-drop-set" style="color:${set.color}">${set.icon} ${set.name}</div>
-        </div>
-      </div></div>`;
+  const items=[droppedItem,bossExtraItem].filter(Boolean);
+  if(items.length){
+    let html=`<div class="loot-domain-label">⚗ Oggetti trovati (${items.length})</div><div class="loot-grid">`;
+    items.forEach(item=>{
+      const set=SETS[item.setId];
+      html+=`<div class="loot-item" style="border-color:${rarityBorderColor(item.rarity)};background:rgba(0,0,0,.25)">
+        <div class="loot-item-icon">${item.icon}</div>
+        <div class="loot-item-info">
+          <div class="loot-item-name" style="color:${rarityColor(item.rarity)}">${item.name}
+            <span class="rarity-pill rp-${item.rarity}">${RARITY_NAMES[item.rarity]}</span></div>
+          <div class="loot-item-sub">${SLOT_NAMES[item.slot]} · ${statsText(item.stats)} · <span style="color:${set.color}">${set.icon} ${set.name}</span></div>
+        </div></div>`;
+    });
+    html+='</div>';drop.innerHTML=html;
   }else drop.innerHTML='<div style="font-size:12px;color:var(--text-dim);padding:6px 0;font-style:italic">Nessun oggetto questa volta…</div>';
   document.getElementById('overlay').classList.add('show');
 }
@@ -1049,7 +1608,10 @@ function closeOverlay(){
       document.getElementById('btn-exit-domain').style.display='none';
       document.getElementById('domain-progress').style.display='none';
     }else G.floor=Math.max(1,G.floor-2);
-    G.battleOver=false;G.playerTurn=true;G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0];
+    G.isBossFight=false;G.bossDoubleAttack=0;G.pendingBossDebuff=null;
+    G.bloodSteelCharged=false;G.phoenixRageUsed=false;G.lastStandUsed=false;
+    G.punchline=0;G.brokenCrownDmgAccum=0;G.brokenCrownAtkBonus=0;
+    G.battleOver=false;G.playerTurn=true;G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0,0];
     G.logosSpentBattle=0;G.firstSkillUsed=false;G.firstHitNegated=false;
     spawnTowerEnemy();document.getElementById('btn-attack').disabled=false;
     updateUI();renderDomains();scheduleSave();
@@ -1057,7 +1619,9 @@ function closeOverlay(){
     G.domainActive=false;G.domainId=null;G.domainEnemy=1;G.domainLoot=[];
     document.getElementById('btn-exit-domain').style.display='none';
     document.getElementById('domain-progress').style.display='none';
-    G.battleOver=false;G.playerTurn=true;G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0];
+    G.bloodSteelCharged=false;G.phoenixRageUsed=false;G.lastStandUsed=false;
+    G.punchline=0;
+    G.battleOver=false;G.playerTurn=true;G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0,0];
     G.logosSpentBattle=0;G.firstSkillUsed=false;G.firstHitNegated=false;
     spawnTowerEnemy();document.getElementById('btn-attack').disabled=false;
     updateUI();renderDomains();renderUpgrades();scheduleSave();
@@ -1070,25 +1634,37 @@ function closeOverlay(){
 }
 
 // ── AUTO ─────────────────────────────────────────────────────
+const AUTO_STRATEGY_NAMES={
+  sophist_mask:'🫧 Tank/Heal',academy_mind:'😏 Debuff',
+  ideal_form:'🔍 Crit',prometheus_fire:'🔍 Crit×2',
+  nicomachean:'😏 Arcana',pure_logic:'🛡 Difesa',
+  socratic_order:'⚡ Aporia',divine_wisdom:'⚡ Logos',
+  iron_will:'💢 Berserk',broken_crown:'👁‍🗨 Martire',
+  jester_soul:'🎪 Punchline',crowd_pleaser:'🎭 Catarsi',
+};
+function updateAutoStrategyDisplay(){
+  const el=document.getElementById('auto-strategy-display');if(!el)return;
+  if(!G.autoMode){el.style.display='none';return;}
+  const dom=getDominantSetId();
+  const label=dom&&AUTO_STRATEGY_NAMES[dom]?AUTO_STRATEGY_NAMES[dom]:'⚔ Default';
+  el.textContent='Auto: '+label;el.style.display='inline-block';
+}
 function toggleAuto(){
   G.autoMode=!G.autoMode;const btn=document.getElementById('btn-auto');
-  if(G.autoMode){btn.textContent='◉ Auto ON';btn.classList.add('auto-on');scheduleAuto();}
-  else{btn.textContent='◎ Auto OFF';btn.classList.remove('auto-on');stopAuto();}
+  if(G.autoMode){btn.textContent='◉ Auto ON';btn.classList.add('auto-on');updateAutoStrategyDisplay();scheduleAuto();}
+  else{btn.textContent='◎ Auto OFF';btn.classList.remove('auto-on');updateAutoStrategyDisplay();stopAuto();}
 }
 function stopAuto(){
   G.autoMode=false;clearTimeout(G.autoTimer);const btn=document.getElementById('btn-auto');
-  btn.textContent='◎ Auto OFF';btn.classList.remove('auto-on');
+  btn.textContent='◎ Auto OFF';btn.classList.remove('auto-on');updateAutoStrategyDisplay();
 }
 function scheduleAuto(){
   if(!G.autoMode)return;
   G.autoTimer=setTimeout(()=>{
     if(G.battleOver&&!G.domainActive){if(!G.player.hp)return;nextBattle();}
     else if(G.playerTurn&&!G.battleOver){
-      const st=computeStats();
-      if(G.player.mp>=40&&G.cooldowns[3]===0)useSkill(3);
-      else if(G.player.hp<st.maxHp*.4&&G.player.mp>=20&&G.cooldowns[1]===0)useSkill(1);
-      else if(G.player.mp>=25&&G.cooldowns[2]===0)useSkill(2);
-      else attack();
+      const skillIdx=getAutoStrategy();
+      useSkill(skillIdx);
     }
     if(G.autoMode)scheduleAuto();
   },820);
@@ -1104,8 +1680,11 @@ function prestige(){
     baseMpRegen:3+G.prestige,baseAtk:10+G.prestige*5,baseDef:2,
     baseCritChance:5+G.prestige*2,baseCritDmg:200+G.prestige*10};
   G.blessingTokens+=2;
-  G.battleOver=false;G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0];
+  G.battleOver=false;G.playerStatuses=[];G.enemyStatuses=[];G.cooldowns=[0,0,0,0,0];
   G.logosSpentBattle=0;G.firstSkillUsed=false;G.firstHitNegated=false;
+  G.isBossFight=false;G.bossDoubleAttack=0;G.pendingBossDebuff=null;
+  G.bloodSteelCharged=false;G.phoenixRageUsed=false;G.lastStandUsed=false;
+  G.punchline=0;G.brokenCrownDmgAccum=0;G.brokenCrownAtkBonus=0;
   if(G.domainActive){
     G.domainActive=false;G.domainId=null;G.domainEnemy=1;
     document.getElementById('btn-exit-domain').style.display='none';
@@ -1160,7 +1739,10 @@ function buyUpgrade(id){
 // ── BLESSINGS RENDER ─────────────────────────────────────────
 function renderBlessings(){
   const el=document.getElementById('blessings-panel');if(!el)return;
-  const pathOrder=['Hunt','Nihility','Propagation','Abundance','Preservation'];
+  const pathOrder=['Hunt','Nihility','Propagation','Abundance','Preservation','Destruction','Elation'];
+  const owned=ownedBlessingIds();
+  const totalBlessings=BLESSING_IDS.length;
+  const ownedCount=owned.size;
   let html=`
     <div class="blessing-header">
       <div class="blessing-token-display">
@@ -1168,12 +1750,13 @@ function renderBlessings(){
         <span class="blessing-token-count">${G.blessingTokens}</span>
         <span class="blessing-token-label">Token Rinascita</span>
       </div>
-      <button class="btn primary" style="font-size:10px;padding:6px 14px" onclick="rollBlessing()" ${G.blessingTokens>=1?'':'disabled'}>
+      <button class="btn primary" style="font-size:10px;padding:6px 14px" onclick="rollBlessing()" ${G.blessingTokens>=1&&ownedCount<totalBlessings?'':'disabled'}>
         ✦ Roll (1 token)
       </button>
     </div>
-    <div style="font-size:11px;color:var(--text-dim);font-style:italic;margin-bottom:10px;line-height:1.5">
-      Ottieni <b style="color:var(--gold-light)">2 token</b> per ogni Reincarnazione. Puoi equipaggiare fino a <b style="color:var(--gold-light)">6 Blessing</b>.
+    <div style="font-size:11px;color:var(--text-dim);font-style:italic;margin-bottom:6px;line-height:1.5">
+      Ottieni <b style="color:var(--gold-light)">2 token</b> per Reincarnazione · <b style="color:#e8a030">1 token</b> per Boss · max <b style="color:var(--gold-light)">6 slot</b>.<br>
+      <span style="color:#80c080">${ownedCount}/${totalBlessings} Blessing possedute</span>${ownedCount>=totalBlessings?' — <span style="color:#e8a030">Collezione completa!</span>':''}
     </div>
     <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:5px">Slot Equipaggiati (${G.equippedBlessings.filter(Boolean).length}/6)</div>
     <div class="blessing-slots">`;
@@ -1214,7 +1797,6 @@ function renderBlessings(){
     });
     html+='</div>';
   }
-  // Reference list
   html+=`<div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin:12px 0 5px">Tutte le Blessing</div>`;
   pathOrder.forEach(pathName=>{
     const path=BLESSING_PATHS[pathName];
@@ -1222,9 +1804,13 @@ function renderBlessings(){
       <div style="font-family:'Cinzel',serif;font-size:10px;font-weight:600;color:${path.color};margin-bottom:6px">${path.icon} ${pathName}</div>`;
     Object.values(BLESSINGS).filter(b=>b.path===pathName).forEach(b=>{
       const equipped=G.equippedBlessings.includes(b.id);
+      const inCollection=G.blessingCollection.includes(b.id);
+      const isOwned=equipped||inCollection;
       html+=`<div style="display:flex;gap:6px;align-items:flex-start;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04)">
-        <span style="font-size:10px;color:${path.color};font-family:'Cinzel',serif;flex-shrink:0;width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${b.name}${equipped?` <span style="color:#80c080">●</span>`:''}</span>
-        <span style="font-size:10px;color:var(--text-dim);font-style:italic;flex:1">${b.desc}</span>
+        <span style="font-size:10px;color:${isOwned?path.color:'var(--text-dim)'};font-family:'Cinzel',serif;flex-shrink:0;width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+          ${b.name}${equipped?` <span style="color:#80c080">●</span>`:inCollection?` <span style="color:${path.color}">◎</span>`:''}
+        </span>
+        <span style="font-size:10px;color:${isOwned?'var(--text-dim)':'rgba(160,144,112,.4)'};font-style:italic;flex:1">${b.desc}</span>
       </div>`;
     });
     html+='</div>';
@@ -1342,18 +1928,56 @@ function updateUI(){
   if(!document.getElementById('name-input-field'))
     document.getElementById('player-name-display').textContent=G.playerName;
   const sp=getActiveBonus4Specials();
-  SKILLS.forEach((_,i)=>{
-    const btn=document.getElementById('skill-'+i),cd=G.cooldowns[i];
-    btn.disabled=!G.playerTurn||G.battleOver;
+  const elActive=elationActive();
+  // skill buttons 0-3 always exist; skill 4 (Catarsi) shown only if Elation active
+  const skillCount=elActive?5:4;
+  for(let i=0;i<5;i++){
+    const btn=document.getElementById('skill-'+i);
+    if(!btn)continue;
+    if(i===4){
+      btn.style.display=elActive?'':'none';
+      if(!elActive)continue;
+    }
+    const cd=G.cooldowns[i]||0;
+    btn.disabled=!G.playerTurn||G.battleOver||(i===4&&G.punchline<=0);
     const oldCd=btn.querySelector('.skill-cd');if(oldCd)oldCd.remove();
     if(cd>0){btn.classList.add('on-cooldown');const cdDiv=document.createElement('div');cdDiv.className='skill-cd';cdDiv.textContent=cd;btn.appendChild(cdDiv);}
     else btn.classList.remove('on-cooldown');
-  });
+    // Catarsi ready glow
+    if(i===4){
+      btn.classList.toggle('catarsi-ready',G.punchline>0&&cd===0);
+      // update punchline count in button
+      const plSpan=btn.querySelector('.skill-pl');
+      if(plSpan)plSpan.textContent=G.punchline+'✦';
+    }
+  }
+  // skills row: adjust grid columns
+  const skillsRow=document.querySelector('.skills-row');
+  if(skillsRow)skillsRow.style.gridTemplateColumns=elActive?'repeat(5,1fr)':'repeat(4,1fr)';
+
   const boostMap={3:'aporiaBoost',1:'maieuticaBoost',2:'eironeiaBuff',0:'elenchosDouble'};
   Object.entries(boostMap).forEach(([i,key])=>{document.getElementById('skill-'+i)?.classList.toggle('boosted',sp.has(key));});
   document.getElementById('player-card').classList.toggle('active-turn',G.playerTurn&&!G.battleOver);
   document.getElementById('enemy-card').classList.toggle('active-turn',!G.playerTurn&&!G.battleOver);
   renderStatuses('player-statuses',G.playerStatuses);renderStatuses('enemy-statuses',G.enemyStatuses);
+
+  // Punchline bar
+  const plWrap=document.getElementById('punchline-bar-wrap');
+  if(plWrap){
+    plWrap.classList.toggle('active',elActive);
+    if(elActive){
+      document.getElementById('punchline-fill').style.width=Math.min(100,G.punchline/2)+'%';
+      document.getElementById('punchline-count-txt').textContent=G.punchline;
+    }
+  }
+
+  // Punchline damage stat chip
+  const plDmgEl=document.getElementById('stat-punchlinedmg');
+  const plDmgWrap=document.getElementById('stat-punchlinedmg-wrap');
+  if(plDmgEl&&plDmgWrap){
+    plDmgWrap.style.display=elActive?'':'none';
+    if(elActive)plDmgEl.textContent=computeStats().punchlineDmg;
+  }
   let title='Il Filosofo';
   if(G.totalKills>=50)title='Il Saggio';if(G.totalKills>=100)title='Il Maestro';
   if(G.prestige>=1)title='L\'Immortale';if(G.prestige>=3)title='L\'Eterno';
@@ -1363,21 +1987,34 @@ function updateUI(){
     pp.style.display='block';
     document.getElementById('prestige-desc').textContent=`Reincarnarti darà +${Math.round((G.prestige+1)*30)}% Saggezza e +2 Token Rinascita. Prossima soglia: piano ${req+2}.`;
   }else pp.style.display='none';
+
+  // Boss floor indicator in arena header
+  const arenaHeader=document.getElementById('arena-header');
+  if(!G.domainActive&&isBossFloor(G.floor)&&!G.battleOver){
+    if(!document.getElementById('boss-warning')){
+      const w=document.createElement('div');w.id='boss-warning';
+      w.style.cssText='font-family:Cinzel,serif;font-size:10px;letter-spacing:2px;color:#e8a030;text-transform:uppercase;text-align:center;padding:2px 0;animation:pulse-arcana 1s infinite alternate';
+      w.textContent='⚡ Piano Boss — Sfida potenziata!';
+      arenaHeader.appendChild(w);
+    }
+  }else{
+    const bw=document.getElementById('boss-warning');if(bw)bw.remove();
+  }
 }
 
 function renderStatuses(elId,statuses){
   const el=document.getElementById(elId);el.innerHTML='';
   statuses.forEach(s=>{
     const b=document.createElement('span');
-    b.className=`status-badge status-${s.type==='arcana'?'arcana':s.type}`;
+    b.className=`status-badge status-${s.type==='arcana'?'arcana':s.type==='drain'||s.type==='blind'||s.type==='curse'||s.type==='silence'||s.type==='corrode'?'debuff':s.type}`;
     b.textContent=s.name+' '+s.turns;el.appendChild(b);
   });
 }
 
 // ── HELPERS ──────────────────────────────────────────────────
 function statsText(stats){
-  const labels={atk:'ATK',def:'DEF',maxHp:'HP',critChance:'Crit%',maxMp:'Logos',mpRegen:'Regen',critDmg:'CritDMG'};
-  return Object.entries(stats).map(([k,v])=>`+${v} ${labels[k]||k}`).join(' ');
+  const labels={atk:'ATK',def:'DEF',maxHp:'HP',critChance:'Crit%',maxMp:'Logos',mpRegen:'Regen',critDmg:'CritDMG',punchlineDmgPct:'PL DMG%'};
+  return Object.entries(stats).map(([k,v])=>`+${typeof v==='number'&&v<1&&v>0?Math.round(v*100)+'%':v} ${labels[k]||k}`).join(' ');
 }
 function rarityColor(r){return{common:'var(--common)',uncommon:'var(--uncommon)',rare:'var(--rare)',legendary:'var(--legendary)'}[r]||'var(--text)';}
 function rarityBorderColor(r){return{common:'rgba(160,144,112,.4)',uncommon:'rgba(90,170,90,.4)',rare:'rgba(80,144,208,.4)',legendary:'rgba(232,160,48,.5)'}[r]||'var(--border)';}
@@ -1422,6 +2059,7 @@ function init(){
   }else{
     addLog(`${G.playerName} si avvicina al primo sfidante…`,'system');
     addLog(`✦ Prima reincarnazione al piano ${prestigeRequiredFloor()}. +2 Token Rinascita per il roll Blessing.`,'system');
+    addLog(`⚡ Boss ogni 5 piani con debuff speciale. Ricompensa: +1 Token Rinascita extra!`,'system');
   }
 }
 init();
