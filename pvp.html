@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ΟΔΟ ΣΟΚΡΑΤΗΣ — Duello Filosofico</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#c9a84c;--gold-light:#e8c96a;
+  --marble:#1a1614;--marble2:#231f1b;--marble3:#2e2820;--marble4:#3a3028;
+  --text:#f0e8d8;--text-dim:#a09070;
+  --red:#c04040;--blue:#4080b0;--blue-light:#60aadd;--green:#5a9a5a;
+  --border:rgba(201,168,76,.22);--border-strong:rgba(201,168,76,.5);
+  --legendary:#e8a030;--punchline:#ffb830;
+}
+body{background:var(--marble);color:var(--text);font-family:'Crimson Text',Georgia,serif;font-size:15px;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 20% 50%,rgba(201,168,76,.04) 0%,transparent 60%),
+    repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(201,168,76,.012) 60px,rgba(201,168,76,.012) 61px),
+    repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(201,168,76,.012) 60px,rgba(201,168,76,.012) 61px)}
+
+#app{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:14px;display:flex;flex-direction:column;gap:12px;min-height:100vh}
+
+header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;
+  border:1px solid var(--border-strong);background:linear-gradient(135deg,var(--marble2),var(--marble3));border-radius:8px}
+.game-title{font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--gold-light);letter-spacing:3px}
+.game-subtitle{font-size:11px;color:var(--text-dim);letter-spacing:2px;margin-top:2px}
+.back-btn{font-family:'Cinzel',serif;font-size:10px;padding:5px 14px;border:1px solid var(--border-strong);
+  background:transparent;color:var(--gold-light);border-radius:5px;cursor:pointer;letter-spacing:1px;transition:all .15s}
+.back-btn:hover{background:rgba(201,168,76,.12)}
+
+/* ── LOBBY ── */
+.lobby{background:linear-gradient(160deg,var(--marble2),var(--marble3));border:1px solid var(--border);border-radius:8px;padding:22px}
+.lobby-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.player-preview{padding:10px 14px;border:1px solid rgba(201,168,76,.25);border-radius:6px;
+  background:rgba(201,168,76,.04);margin-bottom:16px}
+.player-preview-name{font-family:'Cinzel',serif;font-size:14px;color:var(--gold-light);font-weight:600}
+.player-preview-sub{font-size:11px;color:var(--text-dim);margin-top:3px}
+
+/* ── CODE SECTION ── */
+.code-section{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.code-box{background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center}
+.code-box-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:10px}
+.room-code-display{font-family:'Cinzel',serif;font-size:42px;font-weight:700;color:var(--gold-light);
+  letter-spacing:10px;margin:10px 0;text-shadow:0 0 20px rgba(201,168,76,.4);
+  background:rgba(0,0,0,.3);border:1px solid var(--border-strong);border-radius:6px;padding:10px 14px}
+.room-code-display.empty{opacity:.25;font-size:32px;letter-spacing:6px}
+.code-desc{font-size:11px;color:var(--text-dim);font-style:italic;margin-bottom:12px;line-height:1.5}
+
+/* digit input */
+.digit-input-row{display:flex;gap:6px;justify-content:center;margin-bottom:10px}
+.digit-input{width:38px;height:46px;background:rgba(0,0,0,.35);border:1px solid var(--border-strong);
+  border-radius:5px;text-align:center;font-family:'Cinzel',serif;font-size:20px;font-weight:700;
+  color:var(--gold-light);outline:none;transition:border-color .15s;-moz-appearance:textfield}
+.digit-input::-webkit-outer-spin-button,.digit-input::-webkit-inner-spin-button{-webkit-appearance:none}
+.digit-input:focus{border-color:var(--gold);box-shadow:0 0 8px rgba(201,168,76,.2)}
+
+/* Status */
+.conn-status{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;
+  background:rgba(0,0,0,.2);border:1px solid var(--border);font-size:12px;margin-bottom:12px}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.status-dot.off{background:#c04040;box-shadow:0 0 5px #c04040}
+.status-dot.wait{background:#e8a030;box-shadow:0 0 5px #e8a030;animation:blink .7s infinite alternate}
+.status-dot.on{background:#5a9a5a;box-shadow:0 0 5px #5a9a5a}
+@keyframes blink{to{opacity:.3}}
+
+/* Buttons */
+.btn{font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;padding:8px 18px;
+  border:1px solid var(--border-strong);background:linear-gradient(160deg,var(--marble3),var(--marble4));
+  color:var(--gold-light);border-radius:5px;cursor:pointer;transition:all .15s;text-transform:uppercase;width:100%}
+.btn:hover:not(:disabled){background:linear-gradient(160deg,var(--marble4),rgba(201,168,76,.12));border-color:var(--gold)}
+.btn.primary{background:linear-gradient(160deg,rgba(201,168,76,.22),rgba(201,168,76,.1));border-color:var(--gold)}
+.btn.danger{border-color:var(--red);color:#e08080}
+.btn.danger:hover:not(:disabled){background:rgba(192,64,64,.15)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-sm{font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;padding:4px 12px;
+  border:1px solid var(--border);background:transparent;color:var(--text-dim);border-radius:4px;cursor:pointer;transition:all .12s}
+.btn-sm:hover{border-color:var(--gold);color:var(--gold)}
+
+/* or divider */
+.or-divider{position:relative;text-align:center;margin:4px 0}
+.or-divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)}
+.or-divider span{position:relative;background:var(--marble2);padding:0 10px;font-size:10px;color:var(--text-dim);font-family:'Cinzel',serif;letter-spacing:2px}
+
+/* ── ARENA ── */
+#pvp-arena{display:none;flex-direction:column;gap:10px}
+.pvp-header{font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;text-align:center;padding:4px}
+.pvp-combatants{display:grid;grid-template-columns:1fr 56px 1fr;gap:8px;align-items:start}
+.combatant{padding:12px;border-radius:6px;border:1px solid var(--border);background:rgba(0,0,0,.2);position:relative;transition:border-color .3s,box-shadow .3s}
+.combatant.active-turn{border-color:var(--gold-light);box-shadow:inset 0 0 18px rgba(201,168,76,.06)}
+.combatant.my-side{border-left:3px solid var(--blue)}
+.combatant.opp-side{border-left:3px solid var(--red)}
+.combatant-name{font-family:'Cinzel',serif;font-size:13px;font-weight:600;margin-bottom:2px}
+.combatant-title{font-size:11px;color:var(--text-dim);font-style:italic;margin-bottom:8px}
+.hp-bar-wrap{margin-bottom:4px}
+.hp-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text-dim);margin-bottom:2px}
+.bar-track{height:7px;background:rgba(0,0,0,.4);border-radius:4px;overflow:hidden;border:1px solid rgba(255,255,255,.04)}
+.bar-fill{height:100%;border-radius:4px;transition:width .4s ease}
+.hp-fill{background:linear-gradient(90deg,#5a9a5a,#80cc80)}
+.hp-fill.low{background:linear-gradient(90deg,#801c1c,#c04040)}
+.hp-fill.critical{background:linear-gradient(90deg,#8b0000,#cc2020);animation:pred .6s infinite alternate}
+@keyframes pred{to{opacity:.7}}
+.mp-fill{background:linear-gradient(90deg,#4060a0,#6090d0)}
+.opp-hp-fill{background:linear-gradient(90deg,#8b2020,#cc4040)}
+.status-row{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px}
+.status-badge{font-size:9px;padding:1px 5px;border-radius:3px;font-family:'Cinzel',serif}
+.status-buff{background:rgba(90,154,90,.3);color:#a0e0a0;border:1px solid rgba(90,154,90,.4)}
+.status-debuff{background:rgba(180,60,60,.3);color:#e0a0a0;border:1px solid rgba(180,60,60,.4)}
+.status-arcana{background:rgba(140,60,180,.3);color:#d0a0f0;border:1px solid rgba(140,60,180,.5)}
+.vs-center{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding-top:16px}
+.vs-text{font-family:'Cinzel',serif;font-size:20px;font-weight:700;color:var(--border-strong)}
+.turn-badge{font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;padding:3px 7px;border-radius:8px;
+  background:rgba(201,168,76,.1);border:1px solid var(--gold);color:var(--gold);text-align:center}
+
+/* Skills */
+.pvp-skills{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px}
+.pvp-skills.has-catarsi{grid-template-columns:repeat(5,1fr)}
+.skill-btn{background:linear-gradient(160deg,var(--marble3),var(--marble4));border:1px solid var(--border);
+  border-radius:6px;padding:7px 3px;cursor:pointer;transition:all .15s;text-align:center;position:relative;overflow:hidden}
+.skill-btn:hover:not(:disabled){border-color:var(--gold);transform:translateY(-1px)}
+.skill-btn:disabled{opacity:.4;cursor:not-allowed}
+.skill-btn.on-cooldown{border-color:rgba(100,80,40,.4)}
+.skill-btn.boosted{border-color:var(--legendary);box-shadow:0 0 8px rgba(232,160,48,.3)}
+.skill-btn.catarsi-ready{border-color:var(--punchline);box-shadow:0 0 10px rgba(255,184,48,.3);animation:cat-pulse .9s ease-in-out infinite alternate}
+@keyframes cat-pulse{from{box-shadow:0 0 6px rgba(255,184,48,.2)}to{box-shadow:0 0 18px rgba(255,184,48,.5)}}
+.skill-icon{font-size:15px;display:block;margin-bottom:2px}
+.skill-name{font-family:'Cinzel',serif;font-size:9px;color:var(--gold);letter-spacing:1px;display:block}
+.skill-cost{font-size:8px;color:var(--blue-light);display:block;margin-top:1px}
+.skill-cd{position:absolute;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:var(--gold-light);border-radius:6px}
+
+/* Punchline */
+.pvp-punchline{display:none;margin-top:6px;padding:5px 9px;border:1px solid rgba(255,184,48,.2);border-radius:5px;background:rgba(255,184,48,.04)}
+.pvp-punchline.active{display:block}
+.punchline-label{display:flex;justify-content:space-between;font-size:10px;color:var(--punchline);margin-bottom:3px;font-family:'Cinzel',serif}
+.punchline-track{height:5px;background:rgba(0,0,0,.4);border-radius:3px;overflow:hidden}
+.punchline-fill{height:100%;background:linear-gradient(90deg,#cc7700,#ffb830);transition:width .3s}
+
+/* Log */
+.pvp-log{border:1px solid var(--border);background:rgba(0,0,0,.25);border-radius:6px;
+  padding:7px 10px;height:100px;overflow-y:auto;margin-top:8px;scroll-behavior:smooth}
+.pvp-log::-webkit-scrollbar{width:3px}
+.pvp-log::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:2px}
+.log-entry{font-size:11px;padding:1px 0;border-bottom:1px solid rgba(255,255,255,.03);line-height:1.4}
+.log-me{color:var(--blue-light)}.log-opp{color:#e08080}
+.log-sys{color:var(--gold);font-style:italic}.log-crit{color:var(--gold-light);font-weight:600}
+
+/* Damage pop */
+.dmg-pop{position:absolute;font-family:'Cinzel',serif;font-weight:700;font-size:18px;
+  pointer-events:none;animation:dmg-rise 1.1s ease-out forwards;z-index:100}
+@keyframes dmg-rise{0%{opacity:1;transform:translateY(0) scale(1)}60%{opacity:1;transform:translateY(-28px) scale(1.2)}100%{opacity:0;transform:translateY(-52px) scale(.8)}}
+.heal-pop{color:#80ee80!important}
+
+/* Overlay */
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,8,6,.9);z-index:200;align-items:center;justify-content:center}
+.overlay.show{display:flex}
+.overlay-box{background:linear-gradient(160deg,var(--marble2),var(--marble3));border:1px solid var(--border-strong);
+  border-radius:12px;padding:28px 36px;text-align:center;max-width:400px;width:90%;animation:pop-in .3s ease-out}
+@keyframes pop-in{from{transform:scale(.85) translateY(20px);opacity:0}to{transform:scale(1);opacity:1}}
+.overlay-icon{font-size:44px;margin-bottom:8px}
+.overlay-title{font-family:'Cinzel',serif;font-size:20px;font-weight:700;color:var(--gold-light);letter-spacing:2px;margin-bottom:6px}
+.overlay-body{font-size:13px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.7}
+
+/* Stat chips */
+.pvp-stats{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.stat-chip{display:flex;align-items:center;gap:3px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;background:rgba(0,0,0,.2)}
+.stat-chip-val{font-family:'Cinzel',serif;font-size:10px;font-weight:600;color:var(--gold-light)}
+.stat-chip-label{font-size:9px;color:var(--text-dim);letter-spacing:.5px}
+
+@media(max-width:600px){.code-section{grid-template-columns:1fr}.pvp-combatants{grid-template-columns:1fr 36px 1fr}}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <header>
+    <div>
+      <div class="game-title">⚔ Duello Filosofico</div>
+      <div class="game-subtitle">PvP — Battaglia 1v1</div>
+    </div>
+    <button class="back-btn" onclick="window.location.href='index.html'">← Torna al Gioco</button>
+  </header>
+
+  <!-- ══ LOBBY ══ -->
+  <div class="lobby" id="lobby">
+    <div class="lobby-title">Sala d'Attesa</div>
+
+    <div class="player-preview" id="player-preview">
+      <div class="player-preview-name" id="preview-name">Caricamento…</div>
+      <div class="player-preview-sub"  id="preview-sub"></div>
+    </div>
+
+    <div class="conn-status" id="conn-status">
+      <div class="status-dot wait" id="status-dot"></div>
+      <span id="status-text">Connessione al server…</span>
+    </div>
+
+    <div class="code-section">
+
+      <!-- Crea stanza -->
+      <div class="code-box">
+        <div class="code-box-title">🗡 Crea Stanza</div>
+        <div class="code-desc">Premi il bottone — ricevi un codice a 6 cifre da inviare al tuo avversario.</div>
+        <div class="room-code-display empty" id="my-code">· · · · · ·</div>
+        <button class="btn primary" id="btn-create" onclick="PVP.createRoom()" disabled>Crea Stanza</button>
+        <div style="margin-top:8px">
+          <button class="btn-sm" id="btn-copy" onclick="PVP.copyCode()" style="display:none">📋 Copia codice</button>
+        </div>
+      </div>
+
+      <!-- Unisciti -->
+      <div class="code-box">
+        <div class="code-box-title">⚔ Unisciti</div>
+        <div class="code-desc">Inserisci il codice a 6 cifre che l'avversario ti ha inviato.</div>
+        <div class="digit-input-row" id="digit-row">
+          <input class="digit-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="d0">
+          <input class="digit-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="d1">
+          <input class="digit-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="d2">
+          <input class="digit-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="d3">
+          <input class="digit-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="d4">
+          <input class="digit-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="d5">
+        </div>
+        <button class="btn primary" id="btn-join" onclick="PVP.joinRoom()" disabled>Entra nella Stanza</button>
+      </div>
+
+    </div>
+
+    <div style="font-size:11px;color:var(--text-dim);text-align:center;font-style:italic;margin-top:4px">
+      ✦ Connessione peer-to-peer via PeerJS · nessun server di gioco · statistiche dal tuo salvataggio
+    </div>
+  </div>
+
+  <!-- ══ ARENA PVP ══ -->
+  <div id="pvp-arena">
+    <div class="pvp-header" id="pvp-round-label">⚔ Duello — Turno 1</div>
+
+    <div class="pvp-combatants">
+      <div class="combatant my-side" id="pvp-my-card">
+        <div class="combatant-name"  id="pvp-my-name">Tu</div>
+        <div class="combatant-title" id="pvp-my-title">Il Filosofo</div>
+        <div class="hp-bar-wrap">
+          <div class="hp-label"><span>HP</span><span id="pvp-my-hp-txt">—</span></div>
+          <div class="bar-track"><div class="bar-fill hp-fill" id="pvp-my-hp-bar" style="width:100%"></div></div>
+        </div>
+        <div class="hp-bar-wrap">
+          <div class="hp-label"><span>Logos</span><span id="pvp-my-mp-txt">—</span></div>
+          <div class="bar-track"><div class="bar-fill mp-fill" id="pvp-my-mp-bar" style="width:100%"></div></div>
+        </div>
+        <div class="status-row" id="pvp-my-statuses"></div>
+        <div class="pvp-punchline" id="pvp-my-punchline">
+          <div class="punchline-label"><span>🎪 Punchline</span><span id="pvp-my-pl-txt">0</span></div>
+          <div class="punchline-track"><div class="punchline-fill" id="pvp-my-pl-fill" style="width:0%"></div></div>
+        </div>
+        <div class="pvp-stats" id="pvp-my-stats"></div>
+      </div>
+
+      <div class="vs-center">
+        <div class="vs-text">VS</div>
+        <div class="turn-badge" id="turn-badge">—</div>
+      </div>
+
+      <div class="combatant opp-side" id="pvp-opp-card">
+        <div class="combatant-name"  id="pvp-opp-name">Avversario</div>
+        <div class="combatant-title" id="pvp-opp-title">Il Filosofo</div>
+        <div class="hp-bar-wrap">
+          <div class="hp-label"><span>HP</span><span id="pvp-opp-hp-txt">—</span></div>
+          <div class="bar-track"><div class="bar-fill opp-hp-fill" id="pvp-opp-hp-bar" style="width:100%"></div></div>
+        </div>
+        <div class="hp-bar-wrap">
+          <div class="hp-label"><span>Logos</span><span id="pvp-opp-mp-txt">—</span></div>
+          <div class="bar-track"><div class="bar-fill mp-fill" id="pvp-opp-mp-bar" style="width:100%"></div></div>
+        </div>
+        <div class="status-row" id="pvp-opp-statuses"></div>
+      </div>
+    </div>
+
+    <!-- Skills -->
+    <div class="pvp-skills" id="pvp-skills">
+      <button class="skill-btn" id="pvp-skill-0" onclick="PVP.useSkill(0)">
+        <span class="skill-icon">🔍</span><span class="skill-name">ELENCHOS</span><span class="skill-cost">0 Logos</span>
+      </button>
+      <button class="skill-btn" id="pvp-skill-1" onclick="PVP.useSkill(1)">
+        <span class="skill-icon">🫧</span><span class="skill-name">MAIEUTICA</span><span class="skill-cost">20 Logos</span>
+      </button>
+      <button class="skill-btn" id="pvp-skill-2" onclick="PVP.useSkill(2)">
+        <span class="skill-icon">😏</span><span class="skill-name">EIRONEIA</span><span class="skill-cost">25 Logos</span>
+      </button>
+      <button class="skill-btn" id="pvp-skill-3" onclick="PVP.useSkill(3)">
+        <span class="skill-icon">⚡</span><span class="skill-name">APORIA</span><span class="skill-cost">40 Logos</span>
+      </button>
+      <button class="skill-btn catarsi-ready" id="pvp-skill-4" onclick="PVP.useSkill(4)" style="display:none">
+        <span class="skill-icon">🎪</span><span class="skill-name">CATARSI</span>
+        <span class="skill-cost" id="pvp-pl-cost" style="color:var(--punchline)">0✦</span>
+      </button>
+    </div>
+
+    <div class="pvp-log" id="pvp-log">
+      <div class="log-entry log-sys">⚔ Duello iniziato — che vinca il più saggio!</div>
+    </div>
+
+    <div style="display:flex;justify-content:center;margin-top:6px">
+      <button class="btn danger" style="width:auto;padding:6px 20px" onclick="PVP.surrender()">🏳 Arrendersi</button>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- Result overlay -->
+<div class="overlay" id="pvp-overlay">
+  <div class="overlay-box">
+    <div class="overlay-icon" id="pvp-ov-icon">⚔</div>
+    <div class="overlay-title" id="pvp-ov-title">Vittoria!</div>
+    <div class="overlay-body"  id="pvp-ov-body"></div>
+    <button class="btn primary" style="margin-top:10px" onclick="window.location.href='index.html'">← Torna al Gioco</button>
+  </div>
+</div>
+
+<script src="pvp.js"></script>
+</body>
+</html>
